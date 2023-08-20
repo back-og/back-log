@@ -26,9 +26,10 @@ public class OAuthLoginService {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
-    public AuthTokens login(OAuthLoginParams params) {
-        OAuthInfoResponse response = requestOAuthInfoService.request(params);
-        Long userId = findOrCreateUser(response, params.blogTitle());
+    public AuthTokens login(KakaoLoginParams params) {
+        OAuthLoginParams oAuthLoginParams = new OAuthLoginParams(params.getAuthorizationCode(), params.getBlogTitle(), params.getOauthProvider());
+        OAuthInfoResponse response = requestOAuthInfoService.request(oAuthLoginParams);
+        Long userId = findOrCreateUser(response, oAuthLoginParams.blogTitle());
         return authTokensGenerator.generate(userId);
     }
 
