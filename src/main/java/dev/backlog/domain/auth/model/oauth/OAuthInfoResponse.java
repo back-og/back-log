@@ -1,17 +1,13 @@
 package dev.backlog.domain.auth.model.oauth;
 
 import dev.backlog.domain.user.model.OAuthProvider;
+import lombok.Builder;
 
-public interface OAuthInfoResponse {
-    String getEmail();
-
-    String getNickname();
-
-    String getProfileImage();
-
-    String getBlogTitle();
-
-    Long getOauthProviderId();
-
-    OAuthProvider getOauthProvider();
+@Builder
+public record OAuthInfoResponse(
+        String nickname,
+        String profileImage,
+        String email,
+        Long oauthProviderId,
+        OAuthProvider oauthProvider) {
 }
