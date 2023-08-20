@@ -1,5 +1,6 @@
 package dev.backlog.domain.auth.application;
 
+import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
@@ -26,32 +27,31 @@ public class OAuthLoginService {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
-    public AuthTokens login(OAuthLoginParams params) {
-        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
-        Long userId = findOrCreateUser(oAuthInfoResponse);
+    public AuthTokens kakaoLogin(KakaoLoginParams params) {
+        OAuthLoginParams oAuthLoginParams = new OAuthLoginParams(params.getAuthorizationCode(), params.getBlogTitle(), params.getOauthProvider());
+        OAuthInfoResponse response = requestOAuthInfoService.request(oAuthLoginParams);
+        Long userId = findOrCreateUser(response, oAuthLoginParams.blogTitle());
         return authTokensGenerator.generate(userId);
     }
 
-    private Long findOrCreateUser(OAuthInfoResponse response) {
-        return userRepository.findByEmail(response.getEmail())
+    private Long findOrCreateUser(OAuthInfoResponse response, String blogTitle) {
+        return userRepository.findByEmail(new Email(response.email()))
                 .map(User::getId)
-                .orElseGet(() -> newUser(response));
+                .orElseGet(() -> createUser(response, blogTitle));
     }
 
-    private Long newUser(OAuthInfoResponse response) {
-        checkUser(response.getOauthProviderId(), response.getOauthProvider());
-        String profileImage = checkProfileImage(response.getProfileImage());
-        String blogTitle = checkBlogTitle(
-                response.getBlogTitle(),
-                response.getNickname()
-        );
+    private Long createUser(OAuthInfoResponse response, String blogTitle) {
+        checkUser(response.oauthProviderId(), response.oauthProvider());
+        String profileImage = checkProfileImage(response.profileImage());
+        String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
 
         User user = new User(
-                response.getNickname(),
-                new Email(response.getEmail()),
+                response.nickname(),
+                new Email(response.email()),
                 profileImage,
-                blogTitle,
-                response.getOauthProvider()
+                checkedBlogTitle,
+                response.oauthProviderId(),
+                response.oauthProvider()
         );
         return userRepository.save(user).getId();
     }
