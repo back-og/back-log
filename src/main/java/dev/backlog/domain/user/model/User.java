@@ -30,7 +30,7 @@ public class User {
     private OAuthProvider oauthProvider;
 
     @Column(nullable = false)
-    private String oauthProviderId;
+    private Long oauthProviderId;
 
     @Column(nullable = false, length = 20)
     private String nickname;
@@ -48,14 +48,14 @@ public class User {
     @Column(nullable = false, length = 20)
     private String blogTitle;
 
-    @Column(nullable = false)
     private LocalDate deletedDate;
 
-    public User(String nickname, Email email, String profileImage, String blogTitle, OAuthProvider oauthProvider) {
+    public User(String nickname, Email email, String profileImage, String blogTitle, Long oauthProviderId, OAuthProvider oauthProvider) {
         this.nickname = nickname;
         this.email = email;
         this.profileImage = profileImage;
         this.blogTitle = blogTitle;
+        this.oauthProviderId = oauthProviderId;
         this.oauthProvider = oauthProvider;
     }
 }
