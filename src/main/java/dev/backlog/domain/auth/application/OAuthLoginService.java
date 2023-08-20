@@ -57,8 +57,8 @@ public class OAuthLoginService {
     }
 
     private void checkUser(Long oauthProviderId, OAuthProvider oauthProvider) {
-        Optional<User> findUser = userRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId.toString(), oauthProvider);
-        if (findUser.isPresent() && Objects.equals(findUser.get().getOauthProviderId(), oauthProviderId.toString())) {
+        Optional<User> findUser = userRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
+        if (findUser.isPresent() && Objects.equals(findUser.get().getOauthProviderId(), oauthProviderId)) {
             throw new IllegalArgumentException("이미 등록된 사용자입니다.");
         }
     }
