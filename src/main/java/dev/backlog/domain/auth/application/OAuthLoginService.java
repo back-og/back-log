@@ -33,7 +33,7 @@ public class OAuthLoginService {
     }
 
     private Long findOrCreateUser(OAuthInfoResponse response) {
-        return userRepository.findByEmail(response.getEmail())
+        return userRepository.findByEmail(new Email(response.getEmail()))
                 .map(User::getId)
                 .orElseGet(() -> newUser(response));
     }
