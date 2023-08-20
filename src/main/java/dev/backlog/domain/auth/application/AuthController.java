@@ -17,7 +17,7 @@ public class AuthController {
     private final OAuthLoginService oAuthLoginService;
 
     @PostMapping("/kakao")
-    public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams params) {
-        return ResponseEntity.ok(oAuthLoginService.login(params));
+    public ResponseEntity<AuthTokens> kakaoLogin(@RequestBody KakaoLoginParams params) {
+        return ResponseEntity.ok(oAuthLoginService.kakaoLogin(params));
     }
 }
