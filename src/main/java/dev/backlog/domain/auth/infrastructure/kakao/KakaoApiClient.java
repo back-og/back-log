@@ -51,7 +51,6 @@ public class KakaoApiClient implements OAuthApiClient {
         return response.getAccessToken();
     }
 
-    @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
         String url = apiUrl + "/v2/user/me";
 
@@ -61,6 +60,15 @@ public class KakaoApiClient implements OAuthApiClient {
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
 
-        return restTemplate.exchange(url, HttpMethod.GET, request, KakaoInfoResponse.class).getBody();
+        KakaoInfoResponse response = restTemplate.exchange(url, HttpMethod.GET, request, KakaoInfoResponse.class).getBody();
+        assert response != null;
+
+        return OAuthInfoResponse.builder()
+                .nickname(response.getNickname())
+                .profileImage(response.getProfileImage())
+                .email(response.getEmail())
+                .oauthProviderId(response.getOauthProviderId())
+                .oauthProvider(oAuthProvider())
+                .build();
     }
 }

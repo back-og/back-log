@@ -27,31 +27,29 @@ public class OAuthLoginService {
     private final RequestOAuthInfoService requestOAuthInfoService;
 
     public AuthTokens login(OAuthLoginParams params) {
-        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
-        Long userId = findOrCreateUser(oAuthInfoResponse);
+        OAuthInfoResponse response = requestOAuthInfoService.request(params);
+        Long userId = findOrCreateUser(response, params.blogTitle());
         return authTokensGenerator.generate(userId);
     }
 
-    private Long findOrCreateUser(OAuthInfoResponse response) {
-        return userRepository.findByEmail(new Email(response.getEmail()))
+    private Long findOrCreateUser(OAuthInfoResponse response, String blogTitle) {
+        return userRepository.findByEmail(new Email(response.email()))
                 .map(User::getId)
-                .orElseGet(() -> newUser(response));
+                .orElseGet(() -> newUser(response, blogTitle));
     }
 
-    private Long newUser(OAuthInfoResponse response) {
-        checkUser(response.getOauthProviderId(), response.getOauthProvider());
-        String profileImage = checkProfileImage(response.getProfileImage());
-        String blogTitle = checkBlogTitle(
-                response.getBlogTitle(),
-                response.getNickname()
-        );
+    private Long newUser(OAuthInfoResponse response, String blogTitle) {
+        checkUser(response.oauthProviderId(), response.oauthProvider());
+        String profileImage = checkProfileImage(response.profileImage());
+        String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
 
         User user = new User(
-                response.getNickname(),
-                new Email(response.getEmail()),
+                response.nickname(),
+                new Email(response.email()),
                 profileImage,
-                blogTitle,
-                response.getOauthProvider()
+                checkedBlogTitle,
+                response.oauthProviderId(),
+                response.oauthProvider()
         );
         return userRepository.save(user).getId();
     }
