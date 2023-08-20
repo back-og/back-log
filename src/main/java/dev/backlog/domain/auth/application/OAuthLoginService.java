@@ -1,5 +1,6 @@
 package dev.backlog.domain.auth.application;
 
+import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
@@ -26,7 +27,7 @@ public class OAuthLoginService {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
-    public AuthTokens login(KakaoLoginParams params) {
+    public AuthTokens kakaoLogin(KakaoLoginParams params) {
         OAuthLoginParams oAuthLoginParams = new OAuthLoginParams(params.getAuthorizationCode(), params.getBlogTitle(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oAuthLoginParams);
         Long userId = findOrCreateUser(response, oAuthLoginParams.blogTitle());
@@ -36,10 +37,10 @@ public class OAuthLoginService {
     private Long findOrCreateUser(OAuthInfoResponse response, String blogTitle) {
         return userRepository.findByEmail(new Email(response.email()))
                 .map(User::getId)
-                .orElseGet(() -> newUser(response, blogTitle));
+                .orElseGet(() -> createUser(response, blogTitle));
     }
 
-    private Long newUser(OAuthInfoResponse response, String blogTitle) {
+    private Long createUser(OAuthInfoResponse response, String blogTitle) {
         checkUser(response.oauthProviderId(), response.oauthProvider());
         String profileImage = checkProfileImage(response.profileImage());
         String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
