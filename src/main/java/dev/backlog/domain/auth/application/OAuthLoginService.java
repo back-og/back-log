@@ -7,7 +7,6 @@ import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.OAuthLoginParams;
 import dev.backlog.domain.auth.model.oauth.RequestOAuthInfoService;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
-import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;
 import dev.backlog.domain.user.model.User;
 import lombok.AllArgsConstructor;
@@ -35,19 +34,19 @@ public class OAuthLoginService {
     }
 
     private Long findOrCreateUser(OAuthInfoResponse response, String blogTitle) {
-        return userRepository.findByEmail(new Email(response.email()))
+        return userRepository.findByEmail(response.email())
                 .map(User::getId)
                 .orElseGet(() -> createUser(response, blogTitle));
     }
 
     private Long createUser(OAuthInfoResponse response, String blogTitle) {
         checkUser(response.oauthProviderId(), response.oauthProvider());
-        String profileImage = checkProfileImage(response.profileImage());
+        String profileImage = Optional.ofNullable(response.profileImage()).orElse(DEFAULT_PROFILE_IMAGE_URL);
         String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
 
         User user = new User(
                 response.nickname(),
-                new Email(response.email()),
+                response.email(),
                 profileImage,
                 checkedBlogTitle,
                 response.oauthProviderId(),
@@ -68,12 +67,5 @@ public class OAuthLoginService {
             return nickname + DEFAULT_BLOG_TITLE;
         }
         return blogTitle;
-    }
-
-    private String checkProfileImage(String profileImage) {
-        if (Objects.isNull(profileImage) || profileImage.isEmpty()) {
-            profileImage = DEFAULT_PROFILE_IMAGE_URL;
-        }
-        return profileImage;
     }
 }

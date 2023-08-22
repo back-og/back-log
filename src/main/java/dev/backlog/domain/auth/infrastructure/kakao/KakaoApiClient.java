@@ -4,6 +4,7 @@ package dev.backlog.domain.auth.infrastructure.kakao;
 import dev.backlog.domain.auth.model.oauth.OAuthApiClient;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.OAuthLoginParams;
+import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,8 +66,8 @@ public class KakaoApiClient implements OAuthApiClient {
 
         return OAuthInfoResponse.builder()
                 .nickname(response.getNickname())
-                .profileImage(response.getProfileImage())
-                .email(response.getEmail())
+                .profileImage(response.getProfileImage().orElse(null))
+                .email(new Email(response.getEmail()))
                 .oauthProviderId(response.getOauthProviderId())
                 .oauthProvider(oAuthProvider())
                 .build();
