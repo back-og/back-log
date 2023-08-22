@@ -1,5 +1,6 @@
 package dev.backlog.domain.auth.model.oauth;
 
+import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;
 import lombok.Builder;
 
@@ -7,7 +8,7 @@ import lombok.Builder;
 public record OAuthInfoResponse(
         String nickname,
         String profileImage,
-        String email,
+        Email email,
         Long oauthProviderId,
         OAuthProvider oauthProvider) {
 }
