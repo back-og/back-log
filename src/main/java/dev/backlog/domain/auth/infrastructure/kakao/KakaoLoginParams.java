@@ -1,9 +1,11 @@
 package dev.backlog.domain.auth.infrastructure.kakao;
 
 import dev.backlog.domain.user.model.OAuthProvider;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 public class KakaoLoginParams {
 
     private String authorizationCode;
