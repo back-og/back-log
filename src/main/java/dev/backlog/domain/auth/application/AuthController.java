@@ -1,6 +1,7 @@
 package dev.backlog.domain.auth.application;
 
 import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
+import dev.backlog.domain.auth.infrastructure.kakao.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,12 @@ public class AuthController {
 
     private final OAuthLoginService oAuthLoginService;
 
-    @PostMapping("/kakao")
+    @PostMapping("/signup/kakao")
+    public ResponseEntity<AuthTokens> kakaoSignUp(@RequestBody KakaoSignUpParams params) {
+        return ResponseEntity.ok(oAuthLoginService.kakaoSignUp(params));
+    }
+
+    @PostMapping("/login/kakao")
     public ResponseEntity<AuthTokens> kakaoLogin(@RequestBody KakaoLoginParams params) {
         return ResponseEntity.ok(oAuthLoginService.kakaoLogin(params));
     }

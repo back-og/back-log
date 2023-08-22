@@ -1,10 +1,11 @@
 package dev.backlog.domain.auth.application;
 
 import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
+import dev.backlog.domain.auth.infrastructure.kakao.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.OAuthLoginParams;
+import dev.backlog.domain.auth.model.oauth.OAuthLoginAndSignUpParams;
 import dev.backlog.domain.auth.model.oauth.RequestOAuthInfoService;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.OAuthProvider;
@@ -27,16 +28,27 @@ public class OAuthLoginService {
     private final RequestOAuthInfoService requestOAuthInfoService;
 
     public AuthTokens kakaoLogin(KakaoLoginParams params) {
-        OAuthLoginParams oAuthLoginParams = new OAuthLoginParams(params.getAuthorizationCode(), params.getBlogTitle(), params.getOauthProvider());
-        OAuthInfoResponse response = requestOAuthInfoService.request(oAuthLoginParams);
-        Long userId = findOrCreateUser(response, oAuthLoginParams.blogTitle());
+        OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
+        OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
+        Long userId = findUser(response);
         return authTokensGenerator.generate(userId);
     }
 
-    private Long findOrCreateUser(OAuthInfoResponse response, String blogTitle) {
+    public AuthTokens kakaoSignUp(KakaoSignUpParams params) {
+        OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
+        OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
+        Optional<User> findUser = userRepository.findByEmail(response.email());
+        if (findUser.isPresent()) {
+            throw new IllegalArgumentException("이미 가입된 사용자입니다.");
+        }
+        Long userId = createUser(response, params.getBlogTitle());
+        return authTokensGenerator.generate(userId);
+    }
+
+    private Long findUser(OAuthInfoResponse response) {
         return userRepository.findByEmail(response.email())
                 .map(User::getId)
-                .orElseGet(() -> createUser(response, blogTitle));
+                .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));
     }
 
     private Long createUser(OAuthInfoResponse response, String blogTitle) {

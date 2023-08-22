@@ -4,10 +4,10 @@ import dev.backlog.domain.user.model.OAuthProvider;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-public record OAuthLoginParams(
+public record OAuthLoginAndSignUpParams(
         String authorizationCode,
-        String blogTitle,
-        OAuthProvider oauthProvider) {
+        OAuthProvider oauthProvider
+) {
 
     public MultiValueMap<String, String> makeBody() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

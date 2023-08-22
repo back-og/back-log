@@ -3,7 +3,7 @@ package dev.backlog.domain.auth.infrastructure.kakao;
 
 import dev.backlog.domain.auth.model.oauth.OAuthApiClient;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.OAuthLoginParams;
+import dev.backlog.domain.auth.model.oauth.OAuthLoginAndSignUpParams;
 import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class KakaoApiClient implements OAuthApiClient {
     }
 
     @Override
-    public String requestAccessToken(OAuthLoginParams params) {
+    public String requestAccessToken(OAuthLoginAndSignUpParams params) {
         String url = authUrl + "/oauth/token";
 
         HttpHeaders httpHeaders = new HttpHeaders();
