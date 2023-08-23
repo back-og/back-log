@@ -1,4 +1,4 @@
-package dev.backlog.domain.auth.application;
+package dev.backlog.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;

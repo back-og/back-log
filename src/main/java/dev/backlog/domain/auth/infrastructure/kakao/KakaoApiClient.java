@@ -1,6 +1,7 @@
 package dev.backlog.domain.auth.infrastructure.kakao;
 
 
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoInfoResponse;
 import dev.backlog.domain.auth.model.oauth.OAuthApiClient;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.OAuthLoginAndSignUpParams;
