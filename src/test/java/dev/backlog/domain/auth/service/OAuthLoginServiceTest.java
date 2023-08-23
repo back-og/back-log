@@ -96,10 +96,9 @@ class OAuthLoginServiceTest {
     void kakaoLoginFailTest() {
         KakaoLoginParams params = new KakaoLoginParams("authorizationCode");
         OAuthInfoResponse response = new OAuthInfoResponse("닉네임", "프로필 사진", new Email("email123@gmail.com"), 123L, OAuthProvider.KAKAO);
-        User user = new User("닉네임", new Email("email123@gmail.com"), "프로필 사진", "블로그 제목", 123L, OAuthProvider.KAKAO);
 
         when(requestOAuthInfoService.request(any())).thenReturn(response);
-        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> oAuthLoginService.kakaoLogin(params))
                 .isInstanceOf(IllegalArgumentException.class);
