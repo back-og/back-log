@@ -45,7 +45,7 @@ public class OAuthLoginService {
         if (findUser.isPresent()) {
             throw new IllegalArgumentException("이미 가입된 사용자입니다.");
         }
-        User user = createUser(response, params.getBlogTitle());
+        User user = createUser(response, params.getBlogTitle(), params.getIntroduction());
         return authTokensGenerator.generate(user.getId());
     }
 
@@ -54,23 +54,24 @@ public class OAuthLoginService {
                 .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));
     }
 
-    private User createUser(OAuthInfoResponse response, String blogTitle) {
-        checkUser(response.oauthProviderId(), response.oauthProvider());
+    private User createUser(OAuthInfoResponse response, String blogTitle, String introduction) {
+        checkUser(response.oauthProviderId().toString(), response.oauthProvider());
         String profileImage = Optional.ofNullable(response.profileImage()).orElse(DEFAULT_PROFILE_IMAGE_URL);
         String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
+        User user = User.builder()
+                .oauthProvider(response.oauthProvider())
+                .oauthProviderId(response.oauthProviderId().toString())
+                .nickname(response.nickname())
+                .email(response.email())
+                .profileImage(profileImage)
+                .introduction(introduction)
+                .blogTitle(checkedBlogTitle)
+                .build();
 
-        User user = new User(
-                response.nickname(),
-                response.email(),
-                profileImage,
-                checkedBlogTitle,
-                response.oauthProviderId(),
-                response.oauthProvider()
-        );
         return userRepository.save(user);
     }
 
-    private void checkUser(Long oauthProviderId, OAuthProvider oauthProvider) {
+    private void checkUser(String oauthProviderId, OAuthProvider oauthProvider) {
         Optional<User> findUser = userRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
         if (findUser.isPresent() && Objects.equals(findUser.get().getOauthProviderId(), oauthProviderId)) {
             throw new IllegalArgumentException("이미 등록된 사용자입니다.");
