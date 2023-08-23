@@ -22,7 +22,11 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoApiClient implements OAuthApiClient {
 
     private static final String GRANT_TYPE = "authorization_code";
+    private static final String BEARER_TYPE = "Bearer";
+    private static final String REQUEST_TOKEN_URL = "/oauth/token";
+    private static final String REQUEST_INFO_URL = "/v2/user/me";
     private final RestTemplate restTemplate;
+
     @Value("${oauth.kakao.url.auth}")
     private String authUrl;
     @Value("${oauth.kakao.url.api}")
@@ -37,7 +41,7 @@ public class KakaoApiClient implements OAuthApiClient {
 
     @Override
     public String requestAccessToken(OAuthLoginAndSignUpParams params) {
-        String url = authUrl + "/oauth/token";
+        String url = authUrl + REQUEST_TOKEN_URL;
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -54,11 +58,11 @@ public class KakaoApiClient implements OAuthApiClient {
     }
 
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
-        String url = apiUrl + "/v2/user/me";
+        String url = apiUrl + REQUEST_INFO_URL;
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        httpHeaders.set("Authorization", "Bearer " + accessToken);
+        httpHeaders.set("Authorization", BEARER_TYPE + accessToken);
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
 

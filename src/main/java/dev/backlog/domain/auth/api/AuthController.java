@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
-        String accessToken = request.get("access-token");
+        String accessToken = request.get("access_token");
         oAuthLogoutService.kakaoLogout(accessToken);
         return ResponseEntity.ok().build();
     }
