@@ -41,8 +41,8 @@ public class OAuthLoginService {
         if (findUser.isPresent()) {
             throw new IllegalArgumentException("이미 가입된 사용자입니다.");
         }
-        Long userId = createUser(response, params.getBlogTitle());
-        return authTokensGenerator.generate(userId);
+        User user = createUser(response, params.getBlogTitle());
+        return authTokensGenerator.generate(user.getId());
     }
 
     private Long findUser(OAuthInfoResponse response) {
@@ -51,7 +51,7 @@ public class OAuthLoginService {
                 .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));
     }
 
-    private Long createUser(OAuthInfoResponse response, String blogTitle) {
+    private User createUser(OAuthInfoResponse response, String blogTitle) {
         checkUser(response.oauthProviderId(), response.oauthProvider());
         String profileImage = Optional.ofNullable(response.profileImage()).orElse(DEFAULT_PROFILE_IMAGE_URL);
         String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
@@ -64,7 +64,7 @@ public class OAuthLoginService {
                 response.oauthProviderId(),
                 response.oauthProvider()
         );
-        return userRepository.save(user).getId();
+        return userRepository.save(user);
     }
 
     private void checkUser(Long oauthProviderId, OAuthProvider oauthProvider) {
