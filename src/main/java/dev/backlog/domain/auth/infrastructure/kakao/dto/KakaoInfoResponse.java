@@ -1,4 +1,4 @@
-package dev.backlog.domain.auth.infrastructure.kakao;
+package dev.backlog.domain.auth.infrastructure.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package dev.backlog.domain.auth.infrastructure.kakao;
+package dev.backlog.domain.auth.infrastructure.kakao.dto;
 
 import dev.backlog.domain.user.model.OAuthProvider;
 import lombok.AllArgsConstructor;

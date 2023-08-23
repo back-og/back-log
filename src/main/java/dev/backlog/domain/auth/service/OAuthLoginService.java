@@ -1,7 +1,7 @@
-package dev.backlog.domain.auth.application;
+package dev.backlog.domain.auth.service;
 
-import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
-import dev.backlog.domain.auth.infrastructure.kakao.KakaoSignUpParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;

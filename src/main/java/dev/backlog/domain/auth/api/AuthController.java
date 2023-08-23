@@ -1,8 +1,10 @@
-package dev.backlog.domain.auth.application;
+package dev.backlog.domain.auth.api;
 
-import dev.backlog.domain.auth.infrastructure.kakao.KakaoLoginParams;
-import dev.backlog.domain.auth.infrastructure.kakao.KakaoSignUpParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
+import dev.backlog.domain.auth.service.OAuthLoginService;
+import dev.backlog.domain.auth.service.OAuthLogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
