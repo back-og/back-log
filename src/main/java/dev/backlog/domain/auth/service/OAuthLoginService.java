@@ -12,12 +12,14 @@ import dev.backlog.domain.user.model.OAuthProvider;
 import dev.backlog.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class OAuthLoginService {
 
     private static final String DEFAULT_BLOG_TITLE = ".log";
@@ -27,13 +29,15 @@ public class OAuthLoginService {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
+    @Transactional
     public AuthTokens kakaoLogin(KakaoLoginParams params) {
         OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
-        Long userId = findUser(response);
-        return authTokensGenerator.generate(userId);
+        User user = findUser(response);
+        return authTokensGenerator.generate(user.getId());
     }
 
+    @Transactional
     public AuthTokens kakaoSignUp(KakaoSignUpParams params) {
         OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
@@ -45,9 +49,8 @@ public class OAuthLoginService {
         return authTokensGenerator.generate(user.getId());
     }
 
-    private Long findUser(OAuthInfoResponse response) {
+    private User findUser(OAuthInfoResponse response) {
         return userRepository.findByEmail(response.email())
-                .map(User::getId)
                 .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));
     }
 
