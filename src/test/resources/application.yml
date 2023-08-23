@@ -12,11 +12,6 @@ spring:
       hibernate:
         format_sql: true
 
-  data:
-    redis:
-      host: localhost
-      port: 1234
-      password: test
 jwt:
   secret-key: 05e3335bdc9386856eaaf0f3f9e35eec3e63aa538e8695302c95c4bd02396c04c90b4264eb17a0a5269b9bc6c1db5781199a8df3bacc473b0fc424308459d582
   access-token-expire-time: 1000
