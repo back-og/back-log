@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 public class KakaoSignUpParams {
     private String authorizationCode;
     private String blogTitle;
+    private String introduction;
 
     public String getAuthorizationCode() {
         return authorizationCode;
@@ -14,6 +15,10 @@ public class KakaoSignUpParams {
 
     public String getBlogTitle() {
         return blogTitle;
+    }
+
+    public String getIntroduction() {
+        return introduction;
     }
 
     public OAuthProvider getOauthProvider() {
