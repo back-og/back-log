@@ -60,9 +60,17 @@ class OAuthServiceTest {
     @Test
     @DisplayName("카카오 소셜 회원가입에 성공한다.")
     void kakaoSignUpTest() {
-        KakaoSignUpParams params = new KakaoSignUpParams("authorizationCode", "블로그제목제목");
+        KakaoSignUpParams params = new KakaoSignUpParams("authorizationCode", "블로그제목제목", "안녕하세요소개입니다안녕하세요소개입니다");
         OAuthInfoResponse response = new OAuthInfoResponse("닉네임", "프로필 사진", new Email("email123@gmail.com"), 123L, OAuthProvider.KAKAO);
-        User user = new User("닉네임", new Email("email123@gmail.com"), "프로필 사진", "블로그 제목", 123L, OAuthProvider.KAKAO);
+        User user = User.builder()
+                .oauthProvider(OAuthProvider.KAKAO)
+                .oauthProviderId("123L")
+                .nickname("닉네임")
+                .email(new Email("email123@gmail.com"))
+                .profileImage("프로필 사진")
+                .introduction(params.getIntroduction())
+                .blogTitle(params.getBlogTitle())
+                .build();
         AuthTokens authTokens = AuthTokens.of("accessToken", "refreshToken", "Bearer", 3600L);
 
         when(requestOAuthInfoService.request(any())).thenReturn(response);
@@ -79,10 +87,18 @@ class OAuthServiceTest {
     @DisplayName("카카오 소셜 회원가입 후 사용자는 로그인에 성공한다.")
     void kakaoLoginTest() {
         /* 회원가입 */
-        KakaoSignUpParams signUpParams = new KakaoSignUpParams("authorizationCode", "블로그제목제목");
+        KakaoSignUpParams signUpParams = new KakaoSignUpParams("authorizationCode", "블로그제목제목", "안녕하세요소개입니다안녕하세요소개입니다");
         OAuthLoginAndSignUpParams oAuthSignUpParams = new OAuthLoginAndSignUpParams(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
         OAuthInfoResponse signUpResponse = new OAuthInfoResponse("닉네임", "프로필 사진", new Email("email123@gmail.com"), 123L, OAuthProvider.KAKAO);
-        User user = new User("닉네임", new Email("email123@gmail.com"), "프로필 사진", "블로그 제목", 123L, OAuthProvider.KAKAO);
+        User user = User.builder()
+                .oauthProvider(OAuthProvider.KAKAO)
+                .oauthProviderId("123L")
+                .nickname("닉네임")
+                .email(new Email("email123@gmail.com"))
+                .profileImage("프로필 사진")
+                .introduction(signUpParams.getIntroduction())
+                .blogTitle(signUpParams.getBlogTitle())
+                .build();
         AuthTokens authTokensAfterSignUp = AuthTokens.of("accessTokenForSignUp", "refreshTokenForSignUp", "Bearer", 3600L);
 
         when(requestOAuthInfoService.request(eq(oAuthSignUpParams))).thenReturn(signUpResponse);
@@ -126,10 +142,18 @@ class OAuthServiceTest {
     @DisplayName("카카오 소셜 회원가입 된 사용자는 로그아웃 후 재로그인에 성공한다.")
     void kakaoLogoutTest() {
         /* 회원가입 */
-        KakaoSignUpParams signUpParams = new KakaoSignUpParams("authorizationCode", "블로그제목제목");
+        KakaoSignUpParams signUpParams = new KakaoSignUpParams("authorizationCode", "블로그제목제목", "안녕하세요소개입니다안녕하세요소개입니다");
         OAuthLoginAndSignUpParams oAuthSignUpParams = new OAuthLoginAndSignUpParams(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
         OAuthInfoResponse signUpResponse = new OAuthInfoResponse("닉네임", "프로필 사진", new Email("email123@gmail.com"), 123L, OAuthProvider.KAKAO);
-        User user = new User("닉네임", new Email("email123@gmail.com"), "프로필 사진", "블로그 제목", 123L, OAuthProvider.KAKAO);
+        User user = User.builder()
+                .oauthProvider(OAuthProvider.KAKAO)
+                .oauthProviderId("123L")
+                .nickname("닉네임")
+                .email(new Email("email123@gmail.com"))
+                .profileImage("프로필 사진")
+                .introduction(signUpParams.getIntroduction())
+                .blogTitle(signUpParams.getBlogTitle())
+                .build();
         AuthTokens authTokensAfterSignUp = AuthTokens.of("accessTokenForSignUp", "refreshTokenForSignUp", "Bearer", 3600L);
 
         when(requestOAuthInfoService.request(eq(oAuthSignUpParams))).thenReturn(signUpResponse);
