@@ -77,4 +77,5 @@ public class KakaoApiClient implements OAuthApiClient {
                 .oauthProvider(oAuthProvider())
                 .build();
     }
+
 }

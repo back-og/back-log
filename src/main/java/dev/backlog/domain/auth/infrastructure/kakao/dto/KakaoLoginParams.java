@@ -17,4 +17,5 @@ public class KakaoLoginParams {
     public OAuthProvider getOauthProvider() {
         return OAuthProvider.KAKAO;
     }
+
 }

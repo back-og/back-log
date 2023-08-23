@@ -60,4 +60,5 @@ public class KakaoInfoResponse {
     public String getNickname() {
         return kakaoAccount.getProfile().getNickname();
     }
+
 }

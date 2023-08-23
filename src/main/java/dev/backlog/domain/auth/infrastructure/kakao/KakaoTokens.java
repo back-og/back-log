@@ -19,4 +19,5 @@ public class KakaoTokens {
     private int expiresIn;
 
     private int refreshTokenExpiresIn;
+
 }
