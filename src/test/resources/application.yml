@@ -22,4 +22,4 @@ oauth:
     client-id: client-id
     url:
       auth: https://kauth.kakao.com
-      api: https://kapi.kakao.com
+      api: https://kapi.kakao.c
