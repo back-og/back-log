@@ -8,5 +8,5 @@ public interface OAuthApiClient {
     String requestAccessToken(OAuthLoginAndSignUpParams params);
 
     OAuthInfoResponse requestOauthInfo(String accessToken);
-}
 
+}

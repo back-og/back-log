@@ -34,4 +34,5 @@ public class OAuthLogoutService {
             throw new RuntimeException("로그아웃에 실패했습니다.");
         }
     }
+
 }

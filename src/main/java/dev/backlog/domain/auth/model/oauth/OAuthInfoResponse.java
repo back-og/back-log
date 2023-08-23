@@ -10,5 +10,6 @@ public record OAuthInfoResponse(
         String profileImage,
         Email email,
         Long oauthProviderId,
-        OAuthProvider oauthProvider) {
+        OAuthProvider oauthProvider
+) {
 }

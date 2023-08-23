@@ -8,10 +8,10 @@ public record OAuthLoginAndSignUpParams(
         String authorizationCode,
         OAuthProvider oauthProvider
 ) {
-
     public MultiValueMap<String, String> makeBody() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", authorizationCode);
         return body;
     }
+
 }
