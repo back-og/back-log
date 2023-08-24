@@ -10,7 +10,7 @@ import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import dev.backlog.domain.user.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,7 @@ import java.util.Optional;
 import static dev.backlog.domain.user.model.User.checkBlogTitle;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OAuthLoginService {
 
