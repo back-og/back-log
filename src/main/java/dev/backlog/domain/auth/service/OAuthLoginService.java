@@ -8,32 +8,33 @@ import dev.backlog.domain.auth.model.oauth.RequestOAuthInfoService;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
-import dev.backlog.domain.user.model.OAuthProvider;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Optional;
+
+import static dev.backlog.domain.user.model.User.checkBlogTitle;
 
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class OAuthLoginService {
 
-    private static final String DEFAULT_BLOG_TITLE = ".log";
     private static final String DEFAULT_PROFILE_IMAGE_URL = "기본 프로필 사진 URL";
 
     private final UserRepository userRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
+    private final UserService userService;
 
     @Transactional
     public AuthTokens kakaoLogin(KakaoLoginParams params) {
         OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
-        User user = findUser(response);
+        User user = findLoginUser(response);
         return authTokensGenerator.generate(user.getId());
     }
 
@@ -49,13 +50,13 @@ public class OAuthLoginService {
         return authTokensGenerator.generate(user.getId());
     }
 
-    private User findUser(OAuthInfoResponse response) {
+    private User findLoginUser(OAuthInfoResponse response) {
         return userRepository.findByEmail(response.email())
                 .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));
     }
 
     private User createUser(OAuthInfoResponse response, String blogTitle, String introduction) {
-        checkUser(response.oauthProviderId().toString(), response.oauthProvider());
+        userService.checkUser(response.oauthProviderId().toString(), response.oauthProvider());
         String profileImage = Optional.ofNullable(response.profileImage()).orElse(DEFAULT_PROFILE_IMAGE_URL);
         String checkedBlogTitle = checkBlogTitle(blogTitle, response.nickname());
         User user = User.builder()
@@ -69,20 +70,6 @@ public class OAuthLoginService {
                 .build();
 
         return userRepository.save(user);
-    }
-
-    private void checkUser(String oauthProviderId, OAuthProvider oauthProvider) {
-        Optional<User> findUser = userRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
-        if (findUser.isPresent() && Objects.equals(findUser.get().getOauthProviderId(), oauthProviderId)) {
-            throw new IllegalArgumentException("이미 등록된 사용자입니다.");
-        }
-    }
-
-    private String checkBlogTitle(String blogTitle, String nickname) {
-        if (Objects.isNull(blogTitle) || blogTitle.isEmpty()) {
-            return nickname + DEFAULT_BLOG_TITLE;
-        }
-        return blogTitle;
     }
 
 }

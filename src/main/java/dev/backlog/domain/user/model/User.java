@@ -15,12 +15,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
+    private static final String DEFAULT_BLOG_TITLE = ".log";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +71,13 @@ public class User {
         this.introduction = introduction;
         this.blogTitle = blogTitle;
         this.deletedDate = LocalDate.MAX;
+    }
+
+    public static String checkBlogTitle(String blogTitle, String nickname) {
+        if (Objects.isNull(blogTitle) || blogTitle.isEmpty()) {
+            return nickname + DEFAULT_BLOG_TITLE;
+        }
+        return blogTitle;
     }
 
 }
