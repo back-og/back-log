@@ -70,12 +70,4 @@ public class User {
         this.deletedDate = LocalDate.MAX;
     }
 
-    public User(String nickname, Email email, String profileImage, String blogTitle, OAuthProvider oauthProvider) {
-        this.nickname = nickname;
-        this.email = email;
-        this.profileImage = profileImage;
-        this.blogTitle = blogTitle;
-        this.oauthProvider = oauthProvider;
-    }
-
 }
