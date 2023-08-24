@@ -3,6 +3,7 @@ package dev.backlog.domain.auth.api;
 import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
 import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
+import dev.backlog.domain.auth.model.oauth.dto.LogoutParams;
 import dev.backlog.domain.auth.service.OAuthLoginService;
 import dev.backlog.domain.auth.service.OAuthLogoutService;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +32,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
-        String accessToken = request.get("access_token");
-        oAuthLogoutService.kakaoLogout(accessToken);
+    public ResponseEntity<Void> kakaoLogout(@RequestBody LogoutParams params) {
+        oAuthLogoutService.kakaoLogout(params.accessToken());
 
         return ResponseEntity.ok().build();
     }
