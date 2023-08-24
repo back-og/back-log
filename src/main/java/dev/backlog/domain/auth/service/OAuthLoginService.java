@@ -1,12 +1,12 @@
 package dev.backlog.domain.auth.service;
 
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginRequest;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpRequest;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.RequestOAuthInfoService;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
+import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpRequest;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import dev.backlog.domain.user.service.UserService;
@@ -31,16 +31,16 @@ public class OAuthLoginService {
     private final UserService userService;
 
     @Transactional
-    public AuthTokens kakaoLogin(KakaoLoginParams params) {
-        OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
+    public AuthTokens kakaoLogin(KakaoLoginRequest params) {
+        OAuthLoginAndSignUpRequest oauthParams = new OAuthLoginAndSignUpRequest(params.getAuthorizationCode(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
         User user = findLoginUser(response);
         return authTokensGenerator.generate(user.getId());
     }
 
     @Transactional
-    public AuthTokens kakaoSignUp(KakaoSignUpParams params) {
-        OAuthLoginAndSignUpParams oauthParams = new OAuthLoginAndSignUpParams(params.getAuthorizationCode(), params.getOauthProvider());
+    public AuthTokens kakaoSignUp(KakaoSignUpRequest params) {
+        OAuthLoginAndSignUpRequest oauthParams = new OAuthLoginAndSignUpRequest(params.getAuthorizationCode(), params.getOauthProvider());
         OAuthInfoResponse response = requestOAuthInfoService.request(oauthParams);
         Optional<User> findUser = userRepository.findByEmail(response.email());
         if (findUser.isPresent()) {

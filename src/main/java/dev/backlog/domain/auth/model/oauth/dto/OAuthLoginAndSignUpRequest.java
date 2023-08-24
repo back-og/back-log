@@ -4,7 +4,7 @@ import dev.backlog.domain.user.model.OAuthProvider;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-public record OAuthLoginAndSignUpParams(
+public record OAuthLoginAndSignUpRequest(
         String authorizationCode,
         OAuthProvider oauthProvider
 ) {

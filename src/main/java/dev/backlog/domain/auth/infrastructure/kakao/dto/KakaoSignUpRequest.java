@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoSignUpParams {
+public class KakaoSignUpRequest {
     private String authorizationCode;
     private String blogTitle;
     private String introduction;

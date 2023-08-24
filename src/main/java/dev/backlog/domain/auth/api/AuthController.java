@@ -1,10 +1,10 @@
 package dev.backlog.domain.auth.api;
 
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginRequest;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpRequest;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.oauth.dto.CreateAccessTokenRequest;
-import dev.backlog.domain.auth.model.oauth.dto.LogoutParams;
+import dev.backlog.domain.auth.model.oauth.dto.LogoutRequest;
 import dev.backlog.domain.auth.service.OAuthLoginService;
 import dev.backlog.domain.auth.service.OAuthLogoutService;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,12 @@ public class AuthController {
     private final OAuthLogoutService oAuthLogoutService;
 
     @PostMapping("/signup/kakao")
-    public ResponseEntity<AuthTokens> kakaoSignUp(@RequestBody KakaoSignUpParams params) {
+    public ResponseEntity<AuthTokens> kakaoSignUp(@RequestBody KakaoSignUpRequest params) {
         return ResponseEntity.ok(oAuthLoginService.kakaoSignUp(params));
     }
 
     @PostMapping("/login/kakao")
-    public ResponseEntity<AuthTokens> kakaoLogin(@RequestBody KakaoLoginParams params) {
+    public ResponseEntity<AuthTokens> kakaoLogin(@RequestBody KakaoLoginRequest params) {
         return ResponseEntity.ok(oAuthLoginService.kakaoLogin(params));
     }
 
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> kakaoLogout(@RequestBody LogoutParams params) {
+    public ResponseEntity<Void> kakaoLogout(@RequestBody LogoutRequest params) {
         oAuthLogoutService.kakaoLogout(params.accessToken());
 
         return ResponseEntity.ok().build();

@@ -1,11 +1,11 @@
 package dev.backlog.domain.auth.service;
 
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
-import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginRequest;
+import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpRequest;
 import dev.backlog.domain.auth.model.AuthTokens;
 import dev.backlog.domain.auth.model.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
+import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpRequest;
 import dev.backlog.domain.auth.model.oauth.RequestOAuthInfoService;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.Email;
@@ -80,7 +80,7 @@ class OAuthServiceTest {
     @Test
     @DisplayName("카카오 소셜 회원가입에 성공한다.")
     void kakaoSignUpTest() {
-        KakaoSignUpParams params = new KakaoSignUpParams(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
+        KakaoSignUpRequest params = new KakaoSignUpRequest(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
         OAuthInfoResponse response = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
         User user = User.builder()
                 .oauthProvider(OAuthProvider.KAKAO)
@@ -107,8 +107,8 @@ class OAuthServiceTest {
     @DisplayName("카카오 소셜 회원가입 후 사용자는 로그인에 성공한다.")
     void kakaoLoginTest() {
         /* 회원가입 */
-        KakaoSignUpParams signUpParams = new KakaoSignUpParams(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
-        OAuthLoginAndSignUpParams oAuthSignUpParams = new OAuthLoginAndSignUpParams(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
+        KakaoSignUpRequest signUpParams = new KakaoSignUpRequest(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
+        OAuthLoginAndSignUpRequest oAuthSignUpParams = new OAuthLoginAndSignUpRequest(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
         OAuthInfoResponse signUpResponse = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
 
         User user = User.builder()
@@ -132,8 +132,8 @@ class OAuthServiceTest {
         assertThat(authTokensAfterSignUp).isEqualTo(resultOfSignUp);
 
         /* 로그인 */
-        KakaoLoginParams loginParams = new KakaoLoginParams(AUTHORIZATION_CODE);
-        OAuthLoginAndSignUpParams oAuthLoginParams = new OAuthLoginAndSignUpParams(loginParams.getAuthorizationCode(), loginParams.getOauthProvider());
+        KakaoLoginRequest loginParams = new KakaoLoginRequest(AUTHORIZATION_CODE);
+        OAuthLoginAndSignUpRequest oAuthLoginParams = new OAuthLoginAndSignUpRequest(loginParams.getAuthorizationCode(), loginParams.getOauthProvider());
         OAuthInfoResponse loginResponse = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
         AuthTokens authTokensAfterLogin = AuthTokens.of(ACCESS_TOKEN, REFRESH_TOKEN, BEARER, EXPIRES_IN);
 
@@ -149,7 +149,7 @@ class OAuthServiceTest {
     @Test
     @DisplayName("카카오 소셜 회원가입 되지 않은 사용자가 로그인을 시도하면 예외가 발생한다.")
     void kakaoLoginFailTest() {
-        KakaoLoginParams params = new KakaoLoginParams(AUTHORIZATION_CODE);
+        KakaoLoginRequest params = new KakaoLoginRequest(AUTHORIZATION_CODE);
         OAuthInfoResponse response = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
 
         when(requestOAuthInfoService.request(any())).thenReturn(response);
@@ -163,8 +163,8 @@ class OAuthServiceTest {
     @DisplayName("카카오 소셜 회원가입 된 사용자는 로그아웃 후 재로그인에 성공한다.")
     void kakaoLogoutTest() {
         /* 회원가입 */
-        KakaoSignUpParams signUpParams = new KakaoSignUpParams(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
-        OAuthLoginAndSignUpParams oAuthSignUpParams = new OAuthLoginAndSignUpParams(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
+        KakaoSignUpRequest signUpParams = new KakaoSignUpRequest(AUTHORIZATION_CODE, BLOG_TITLE, INTRODUCTION);
+        OAuthLoginAndSignUpRequest oAuthSignUpParams = new OAuthLoginAndSignUpRequest(signUpParams.getAuthorizationCode(), signUpParams.getOauthProvider());
         OAuthInfoResponse signUpResponse = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
 
         User user = User.builder()
@@ -188,8 +188,8 @@ class OAuthServiceTest {
         assertThat(authTokensAfterSignUp).isEqualTo(resultOfSignUp);
 
         /* 로그인 */
-        KakaoLoginParams loginParams = new KakaoLoginParams(AUTHORIZATION_CODE);
-        OAuthLoginAndSignUpParams oAuthLoginParams = new OAuthLoginAndSignUpParams(loginParams.getAuthorizationCode(), loginParams.getOauthProvider());
+        KakaoLoginRequest loginParams = new KakaoLoginRequest(AUTHORIZATION_CODE);
+        OAuthLoginAndSignUpRequest oAuthLoginParams = new OAuthLoginAndSignUpRequest(loginParams.getAuthorizationCode(), loginParams.getOauthProvider());
         OAuthInfoResponse loginResponse = new OAuthInfoResponse(NICKNAME, PROFILE_IMAGE, new Email(EMAIL), OAUTH_PROVIDER_ID, OAuthProvider.KAKAO);
         AuthTokens authTokensAfterLogin = AuthTokens.of(ACCESS_TOKEN_FOR_LOGIN, REFRESH_TOKEN_FOR_LOGIN, BEARER, EXPIRES_IN);
 

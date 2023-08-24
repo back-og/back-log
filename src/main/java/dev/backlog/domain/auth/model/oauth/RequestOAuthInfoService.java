@@ -1,7 +1,7 @@
 package dev.backlog.domain.auth.model.oauth;
 
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
+import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpRequest;
 import dev.backlog.domain.user.model.OAuthProvider;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class RequestOAuthInfoService {
         );
     }
 
-    public OAuthInfoResponse request(OAuthLoginAndSignUpParams params) {
+    public OAuthInfoResponse request(OAuthLoginAndSignUpRequest params) {
         OAuthApiClient user = users.get(params.oauthProvider());
         String accessToken = user.requestAccessToken(params);
         return user.requestOauthInfo(accessToken);
