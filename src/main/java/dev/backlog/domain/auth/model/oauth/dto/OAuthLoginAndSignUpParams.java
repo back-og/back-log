@@ -1,4 +1,4 @@
-package dev.backlog.domain.auth.model.oauth;
+package dev.backlog.domain.auth.model.oauth.dto;
 
 import dev.backlog.domain.user.model.OAuthProvider;
 import org.springframework.util.LinkedMultiValueMap;

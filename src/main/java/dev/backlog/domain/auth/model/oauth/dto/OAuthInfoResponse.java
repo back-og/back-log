@@ -1,4 +1,4 @@
-package dev.backlog.domain.auth.model.oauth;
+package dev.backlog.domain.auth.model.oauth.dto;
 
 import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;

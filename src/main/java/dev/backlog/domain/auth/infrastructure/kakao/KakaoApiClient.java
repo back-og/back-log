@@ -3,8 +3,8 @@ package dev.backlog.domain.auth.infrastructure.kakao;
 
 import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoInfoResponse;
 import dev.backlog.domain.auth.model.oauth.OAuthApiClient;
-import dev.backlog.domain.auth.model.oauth.OAuthInfoResponse;
-import dev.backlog.domain.auth.model.oauth.OAuthLoginAndSignUpParams;
+import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
+import dev.backlog.domain.auth.model.oauth.dto.OAuthLoginAndSignUpParams;
 import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.OAuthProvider;
 import lombok.RequiredArgsConstructor;
