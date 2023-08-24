@@ -3,6 +3,7 @@ package dev.backlog.domain.auth.api;
 import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoLoginParams;
 import dev.backlog.domain.auth.infrastructure.kakao.dto.KakaoSignUpParams;
 import dev.backlog.domain.auth.model.AuthTokens;
+import dev.backlog.domain.auth.model.oauth.dto.CreateAccessTokenRequest;
 import dev.backlog.domain.auth.model.oauth.dto.LogoutParams;
 import dev.backlog.domain.auth.service.OAuthLoginService;
 import dev.backlog.domain.auth.service.OAuthLogoutService;
@@ -29,6 +30,13 @@ public class AuthController {
     @PostMapping("/login/kakao")
     public ResponseEntity<AuthTokens> kakaoLogin(@RequestBody KakaoLoginParams params) {
         return ResponseEntity.ok(oAuthLoginService.kakaoLogin(params));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthTokens> refreshAccessToken(@RequestBody CreateAccessTokenRequest request) {
+        AuthTokens newTokens = oAuthLoginService.refreshAccessToken(request.refreshToken());
+
+        return ResponseEntity.ok(newTokens);
     }
 
     @PostMapping("/logout")

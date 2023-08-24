@@ -50,6 +50,10 @@ public class OAuthLoginService {
         return authTokensGenerator.generate(user.getId());
     }
 
+    public AuthTokens refreshAccessToken(String refreshToken) {
+        return authTokensGenerator.renewGenerate(refreshToken);
+    }
+
     private User findLoginUser(OAuthInfoResponse response) {
         return userRepository.findByEmail(response.email())
                 .orElseThrow(() -> new IllegalArgumentException("회원가입을 먼저 진행해 주세요."));

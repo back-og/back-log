@@ -32,4 +32,9 @@ public class AuthTokensGenerator {
         return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, accessTokenExpireTime / 1000L);
     }
 
+    public AuthTokens renewGenerate(String refreshToken) {
+        Long userId = jwtTokenProvider.extractUserId(refreshToken);
+        return generate(userId);
+    }
+
 }
