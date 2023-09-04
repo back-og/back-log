@@ -3,7 +3,6 @@ package dev.backlog.domain.post.infrastructure.persistence;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.post.model.QPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -16,11 +15,11 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.backlog.domain.post.model.QPost.post;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostQueryRepositoryImpl implements PostQueryRepository {
-
-    private static final QPost post = new QPost("post");
 
     private final JPAQueryFactory jpaQueryFactory;
 
