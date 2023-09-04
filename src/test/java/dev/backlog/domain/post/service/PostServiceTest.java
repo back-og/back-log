@@ -1,6 +1,5 @@
 package dev.backlog.domain.post.service;
 
-import dev.backlog.common.config.JpaConfig;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.infrastructure.persistence.CommentRepository;
 import dev.backlog.domain.comment.model.Comment;
@@ -25,9 +24,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -44,8 +44,7 @@ import static dev.backlog.common.fixture.TestFixture.좋아요1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Import(value = {JpaConfig.class})
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PostServiceTest extends TestContainerConfig {
 
     @Autowired
@@ -215,6 +214,38 @@ class PostServiceTest extends TestContainerConfig {
                 () -> assertThat(postSliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt).reversed()),
                 () -> assertThat(postSliceResponse.hasNext()).isFalse(),
                 () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size())
+        );
+    }
+
+    @DisplayName("좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"today, week, month, year, default"})
+    void findLikedPosts(String timePeriod) {
+        //given
+        User user1 = 유저1();
+        User user2 = 유저1();
+        userRepository.saveAll(List.of(user1, user2));
+
+        Post post1 = 게시물1(user1, null);
+        Post post2 = 게시물1(user1, null);
+        postRepository.saveAll(List.of(post1, post2));
+
+        Like like1 = 좋아요1(user1, post1);
+        Like like2 = 좋아요1(user1, post2);
+        Like like3 = 좋아요1(user2, post1);
+        likeRepository.saveAll(List.of(like1, like2, like3));
+
+        PageRequest pageRequest = PageRequest.of(0, 30);
+
+        //when
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.findLikedPosts(timePeriod, pageRequest);
+
+        //then
+        assertAll(
+                () -> assertThat(postSliceResponse.hasNext()).isFalse(),
+                () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size()),
+                () -> assertThat(postSliceResponse.data().get(0).postId()).isEqualTo(post1.getId()),
+                () -> assertThat(postSliceResponse.data().get(1).postId()).isEqualTo(post2.getId())
         );
     }
 
