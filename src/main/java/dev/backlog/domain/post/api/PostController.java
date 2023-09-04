@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -63,6 +64,13 @@ public class PostController {
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 20, sort = "createdAt", direction = DESC) Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> recentPosts = postService.findPostsInLatestOrder(pageable);
         return ResponseEntity.ok(recentPosts);
+    }
+
+    @GetMapping("trend")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
+                                                                                 Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> trendPosts = postService.findLikedPosts(timePeriod, pageable);
+        return ResponseEntity.ok(trendPosts);
     }
 
     @PutMapping("/{postId}")
