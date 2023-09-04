@@ -130,7 +130,7 @@ class PostControllerTest extends ControllerTestConfig {
         //when, then
         mockMvc.perform(get("/api/posts/like")
                         .param("page", String.valueOf(0))
-                        .param("size", String.valueOf(20))
+                        .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc")
                         .header("AuthorizationCode", "tmp"))
                 .andExpect(status().isOk())
@@ -172,7 +172,7 @@ class PostControllerTest extends ControllerTestConfig {
         mockMvc.perform(get("/api/posts")
                         .param("series", "시리즈")
                         .param("page", String.valueOf(0))
-                        .param("size", String.valueOf(20))
+                        .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc"))
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-series",
@@ -213,7 +213,7 @@ class PostControllerTest extends ControllerTestConfig {
         //when, then
         mockMvc.perform(get("/api/posts/recent")
                         .param("page", String.valueOf(0))
-                        .param("size", String.valueOf(20))
+                        .param("size", String.valueOf(30))
                         .param("sort", "createdAt,desc")
                         .header("AuthorizationCode", "tmp"))
                 .andExpect(status().isOk())
