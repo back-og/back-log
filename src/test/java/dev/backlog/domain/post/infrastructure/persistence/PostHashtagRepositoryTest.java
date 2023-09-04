@@ -1,5 +1,6 @@
 package dev.backlog.domain.post.infrastructure.persistence;
 
+import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.post.model.Post;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ import static dev.backlog.common.fixture.TestFixture.유저1;
 import static dev.backlog.common.fixture.TestFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class PostHashtagRepositoryTest {
+class PostHashtagRepositoryTest extends RepositoryTest {
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;

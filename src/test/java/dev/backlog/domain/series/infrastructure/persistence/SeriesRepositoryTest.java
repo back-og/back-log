@@ -1,5 +1,6 @@
 package dev.backlog.domain.series.infrastructure.persistence;
 
+import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.Email;
@@ -7,13 +8,11 @@ import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static dev.backlog.domain.auth.model.oauth.OAuthProvider.KAKAO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class SeriesRepositoryTest {
+class SeriesRepositoryTest extends RepositoryTest {
 
     @Autowired
     private SeriesRepository seriesRepository;
