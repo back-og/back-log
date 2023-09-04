@@ -98,6 +98,12 @@ public class PostService {
         return PostSliceResponse.from(postSummaryResponses);
     }
 
+    public PostSliceResponse<PostSummaryResponse> findLikedPosts(String timePeriod, Pageable pageable) {
+        Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByTimePeriod(timePeriod, pageable)
+                .map(this::getPostSummaryResponse);
+        return PostSliceResponse.from(postSummaryResponses);
+    }
+
     @Transactional
     public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
         User user = userRepository.findById(userId)
