@@ -26,6 +26,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -223,6 +224,48 @@ class PostControllerTest extends ControllerTestConfig {
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
                                         parameterWithName("sort").description("정렬 기준")
+                                ),
+                                responseFields(
+                                        fieldWithPath("numberOfElements").type(JsonFieldType.NUMBER).description("게시글 수"),
+                                        fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("마지막 페이지 체크"),
+                                        fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("게시글 데이터"),
+                                        fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
+                                        fieldWithPath("data[].thumbnailImage").type(JsonFieldType.STRING).description("시리즈"),
+                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
+                                        fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
+                                        fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
+                                        fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("좋아요 많이 받은 순서로 게시물을 조회한다.")
+    @Test
+    void findTrendPosts() throws Exception {
+        //given
+        final long postId = 1l;
+        final long userId = 1l;
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+        when(postService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(postSliceResponse);
+
+        //when, then
+        String defaultTimePeriod = "week";
+        mockMvc.perform(get("/api/posts/trend")
+                        .param("timePeriod", defaultTimePeriod)
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(30))
+                        .header("AuthorizationCode", "tmp"))
+                .andExpect(status().isOk())
+                .andDo(document("posts-find-trend",
+                                resourceDetails().tag("게시물").description("게시물 트렌딩 조회")
+                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                queryParameters(
+                                        parameterWithName("timePeriod").description("today, week, month, year 필터링 조건"),
+                                        parameterWithName("page").description("현재 페이지"),
+                                        parameterWithName("size").description("페이지 당 게시물 수")
                                 ),
                                 responseFields(
                                         fieldWithPath("numberOfElements").type(JsonFieldType.NUMBER).description("게시글 수"),
