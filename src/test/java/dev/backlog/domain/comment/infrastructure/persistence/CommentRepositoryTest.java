@@ -1,5 +1,6 @@
 package dev.backlog.domain.comment.infrastructure.persistence;
 
+import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.post.infrastructure.persistence.PostRepository;
 import dev.backlog.domain.post.model.Post;
@@ -8,7 +9,6 @@ import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
@@ -17,8 +17,7 @@ import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class CommentRepositoryTest {
+class CommentRepositoryTest extends RepositoryTest {
 
     @Autowired
     private CommentRepository commentRepository;

@@ -1,15 +1,14 @@
 package dev.backlog.domain.hashtag.infrastructure.persistence;
 
+import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.model.Hashtag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class HashtagRepositoryTest {
+class HashtagRepositoryTest extends RepositoryTest {
 
     @Autowired
     private HashtagRepository hashtagRepository;
