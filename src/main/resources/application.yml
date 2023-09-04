@@ -3,20 +3,26 @@ spring:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
+
   jpa:
     open-in-view: false
     show-sql: true
     hibernate:
       ddl-auto: create
-
     properties:
       hibernate:
         format_sql: true
+
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
+
+    web:
+      pageable:
+        default-page-size: 30
+
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expire-time: ${ACCESS_TOKEN_EXPIRE_TIME}
@@ -32,3 +38,11 @@ springdoc:
   swagger-ui:
     url: ${SWAGGER_UI_URL}
     path: ${SWAGGER_UI_PATH}
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
