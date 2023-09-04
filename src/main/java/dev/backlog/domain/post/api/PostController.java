@@ -47,7 +47,7 @@ public class PostController {
 
     @GetMapping("/like")
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
-                                                                                 @PageableDefault(size = 20, sort = "createdAt", direction = DESC) Pageable pageable) {
+                                                                                 @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> likedPosts = postService.findLikedPostsByUser(userId, pageable);
         return ResponseEntity.ok(likedPosts);
     }
@@ -55,13 +55,13 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
                                                                                   Long userId,
-                                                                                  @PageableDefault(size = 20, sort = "createdAt") Pageable pageable) {
+                                                                                  @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> seriesPosts = postService.findPostsByUserAndSeries(userId, series, pageable);
         return ResponseEntity.ok(seriesPosts);
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 20, sort = "createdAt", direction = DESC) Pageable pageable) {
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> recentPosts = postService.findPostsInLatestOrder(pageable);
         return ResponseEntity.ok(recentPosts);
     }
