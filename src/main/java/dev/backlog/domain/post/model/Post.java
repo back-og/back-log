@@ -1,6 +1,7 @@
 package dev.backlog.domain.post.model;
 
 import dev.backlog.common.entity.BaseEntity;
+import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.model.User;
 import jakarta.persistence.Column;
@@ -11,12 +12,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -39,6 +43,9 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     @Column(nullable = false, length = 50)
     private String title;
