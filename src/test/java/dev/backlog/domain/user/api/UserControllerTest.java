@@ -17,8 +17,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -82,8 +80,8 @@ class UserControllerTest extends ControllerTestConfig {
     @DisplayName("로그인 되어있는 자신의 프로필을 조회할 수 있다.")
     @Test
     void findMyProfile() throws Exception {
-        String token = "Bearer 토큰";
-        String realToken = token.substring(7);
+        Long userId = 1000L;
+        String token = "토큰";
         UserDetailsResponse response = new UserDetailsResponse(
                 "닉네임",
                 "소개",
@@ -92,10 +90,11 @@ class UserControllerTest extends ControllerTestConfig {
                 "이메일"
         );
 
-        when(userService.findMyProfile(realToken)).thenReturn(response);
+        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+        when(userService.findMyProfile(userId)).thenReturn(response);
 
         mockMvc.perform(get("/api/users/me")
-                        .header("Authorization", token)
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("my-profile",
@@ -103,9 +102,6 @@ class UserControllerTest extends ControllerTestConfig {
                                         .responseSchema(Schema.schema("UserDetailsResponse")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                requestHeaders(
-                                        headerWithName("Authorization").description("토큰")
-                                ),
                                 responseFields(
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                         fieldWithPath("introduction").type(JsonFieldType.STRING).description("소개"),

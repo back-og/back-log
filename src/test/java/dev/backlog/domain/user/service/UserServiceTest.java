@@ -29,9 +29,6 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
-
     private User 유저1;
 
     @BeforeEach
@@ -51,12 +48,11 @@ class UserServiceTest {
 
     @Test
     void findMyProfileTest() {
-        String token = "토큰";
+        Long userId = 유저1.getId();
 
-        when(jwtTokenProvider.extractUserId(token)).thenReturn(유저1.getId());
         when(userRepository.findById(유저1.getId())).thenReturn(Optional.of(유저1));
 
-        UserDetailsResponse myProfile = userService.findMyProfile(token);
+        UserDetailsResponse myProfile = userService.findMyProfile(userId);
 
         assertAll(
                 () -> assertThat(myProfile.nickname()).isEqualTo(유저1.getNickname()),
