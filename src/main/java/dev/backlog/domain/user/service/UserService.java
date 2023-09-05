@@ -1,6 +1,5 @@
 package dev.backlog.domain.user.service;
 
-import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
 import dev.backlog.domain.user.dto.UserDetailsResponse;
 import dev.backlog.domain.user.dto.UserResponse;
 import dev.backlog.domain.user.dto.UserUpdateRequest;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public UserResponse findUserProfile(String nickname) {
         User user = userRepository.findByNickname(nickname)
@@ -24,8 +22,7 @@ public class UserService {
         return UserResponse.from(user);
     }
 
-    public UserDetailsResponse findMyProfile(String token) {
-        Long userId = jwtTokenProvider.extractUserId(token);
+    public UserDetailsResponse findMyProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 찾을 수 없습니다."));
         return UserDetailsResponse.from(user);
