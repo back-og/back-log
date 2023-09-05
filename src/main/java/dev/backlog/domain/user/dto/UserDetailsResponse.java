@@ -1,6 +1,5 @@
 package dev.backlog.domain.user.dto;
 
-import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.User;
 
 public record UserDetailsResponse(
@@ -8,15 +7,15 @@ public record UserDetailsResponse(
         String introduction,
         String profileImage,
         String blogTitle,
-        Email email
+        String email
 ) {
-    public UserDetailsResponse(User user) {
-        this(
+    public static UserDetailsResponse from(User user) {
+        return new UserDetailsResponse(
                 user.getNickname(),
                 user.getIntroduction(),
                 user.getProfileImage(),
                 user.getBlogTitle(),
-                user.getEmail()
+                String.valueOf(user.getEmail())
         );
     }
 

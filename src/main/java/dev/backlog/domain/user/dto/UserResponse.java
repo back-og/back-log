@@ -8,8 +8,8 @@ public record UserResponse(
         String profileImage,
         String blogTitle
 ) {
-    public UserResponse(User user) {
-        this(
+    public static UserResponse from(User user) {
+        return new UserResponse(
                 user.getNickname(),
                 user.getIntroduction(),
                 user.getProfileImage(),
