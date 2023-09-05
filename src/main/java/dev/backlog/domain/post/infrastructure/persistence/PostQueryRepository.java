@@ -8,4 +8,6 @@ public interface PostQueryRepository {
 
     Slice<Post> findLikedPostsByTimePeriod(String timePeriod, Pageable pageable);
 
+    Slice<Post> findByUserNicknameAndHashtag(String nickName, String hashtag, Pageable pageable);
+
 }
