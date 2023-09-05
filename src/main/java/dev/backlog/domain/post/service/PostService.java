@@ -72,12 +72,17 @@ public class PostService {
         return savedPost.getId();
     }
 
+    public PostSliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, Pageable pageable) {
+        Slice<PostSummaryResponse> postSummaryResponses = fetchPostsByUserNickname(nickname, pageable);
+        return PostSliceResponse.from(postSummaryResponses);
+    }
+
     public PostSliceResponse<PostSummaryResponse> findLikedPostsByUser(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByUserId(user.getId(), pageable)
-                .map(this::getPostSummaryResponse);
+                .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
@@ -88,19 +93,19 @@ public class PostService {
                 .orElse(null);
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
-                .map(this::getPostSummaryResponse);
+                .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
     public PostSliceResponse<PostSummaryResponse> findPostsInLatestOrder(Pageable pageable) {
         Page<PostSummaryResponse> postSummaryResponses = postRepository.findAll(pageable)
-                .map(this::getPostSummaryResponse);
+                .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
     public PostSliceResponse<PostSummaryResponse> findLikedPosts(String timePeriod, Pageable pageable) {
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByTimePeriod(timePeriod, pageable)
-                .map(this::getPostSummaryResponse);
+                .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
@@ -131,6 +136,11 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, Pageable pageable) {
+        return postRepository.findByUserNickname(nickname, pageable)
+                .map(this::createPostSummaryResponse);
+    }
+
     private void updatePostByRequest(Post post, PostUpdateRequest request) {
         post.updateTitle(request.title());
         post.updateContent(request.content());
@@ -140,10 +150,18 @@ public class PostService {
         post.updatePath(request.path());
     }
 
-    private PostSummaryResponse getPostSummaryResponse(Post post) {
-        int commentCount = commentRepository.countByPost(post);
-        int likeCount = likeRepository.countByPost(post);
+    private PostSummaryResponse createPostSummaryResponse(Post post) {
+        int commentCount = countCommentsByPost(post);
+        int likeCount = countLikesByPost(post);
         return PostSummaryResponse.of(post, commentCount, likeCount);
+    }
+
+    private int countCommentsByPost(Post post) {
+        return commentRepository.countByPost(post);
+    }
+
+    private int countLikesByPost(Post post) {
+        return likeRepository.countByPost(post);
     }
 
 }

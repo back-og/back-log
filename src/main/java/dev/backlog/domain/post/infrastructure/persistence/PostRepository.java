@@ -20,4 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostQueryRepo
 
     Slice<Post> findAllByUserAndSeries(User user, Series series, Pageable pageable);
 
+    Slice<Post> findByUserNickname(String nickName, Pageable pageable);
+
 }
