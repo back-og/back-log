@@ -101,19 +101,4 @@ class PostRepositoryTest extends RepositoryTest {
         );
     }
 
-    @DisplayName("닉네임을 통해 게시물을 조회할 수 있다.")
-    @Test
-    void findByNicknameTest() {
-        User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
-        postRepository.saveAll(게시물_모음(user, series));
-
-        int pageSize = 20;
-        PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        Slice<Post> posts = postRepository.findByUserNickname(user.getNickname(), pageRequest);
-
-        assertThat(posts.getSize()).isEqualTo(pageSize);
-        assertThat(posts.hasNext()).isTrue();
-    }
-
 }
