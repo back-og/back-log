@@ -72,8 +72,8 @@ public class PostService {
         return savedPost.getId();
     }
 
-    public PostSliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, Pageable pageable) {
-        Slice<PostSummaryResponse> postSummaryResponses = fetchPostsByUserNickname(nickname, pageable);
+    public PostSliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, String hashtag, Pageable pageable) {
+        Slice<PostSummaryResponse> postSummaryResponses = fetchPostsByUserNickname(nickname, hashtag, pageable);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
@@ -136,8 +136,8 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, Pageable pageable) {
-        return postRepository.findByUserNickname(nickname, pageable)
+    private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, String hashtag, Pageable pageable) {
+        return postRepository.findByUserNicknameAndHashtag(nickname, hashtag, pageable)
                 .map(this::createPostSummaryResponse);
     }
 
