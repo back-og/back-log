@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<Void> updateProfile(@RequestBody UserUpdateRequest request, Long userId) {
         userService.updateProfile(request, userId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
