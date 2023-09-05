@@ -294,6 +294,21 @@ class PostServiceTest extends TestContainerConfig {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("사용자 닉네임으로 게시물리스트를 조회해 요약 리스트로 반환한다.")
+    @Test
+    void searchByUserNicknameTest() {
+        User user = userRepository.save(유저1);
+        postRepository.saveAll(게시물_모음);
+
+        int pageSize = 20;
+        PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(user.getNickname(), pageRequest);
+
+        assertThat(postSliceResponse.numberOfElements()).isEqualTo(pageSize);
+        assertThat(postSliceResponse.hasNext()).isTrue();
+
+    }
+
     private PostUpdateRequest getPostUpdateRequest() {
         return new PostUpdateRequest(
                 null,
