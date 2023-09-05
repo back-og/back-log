@@ -166,7 +166,7 @@ class PostServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
 
         //when
-        PostSliceResponse postSliceResponse = postService.findLikedPostsByUser(user.getId(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.findLikedPostsByUser(user.getId(), pageRequest);
 
         //then
         assertAll(
