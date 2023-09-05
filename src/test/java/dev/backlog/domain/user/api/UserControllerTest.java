@@ -155,7 +155,7 @@ class UserControllerTest extends ControllerTestConfig {
                                 )
                         )
                 )
-                .andExpect(status().isOk()
+                .andExpect(status().isNoContent()
                 );
     }
 
