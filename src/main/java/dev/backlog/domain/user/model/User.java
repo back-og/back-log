@@ -86,4 +86,24 @@ public class User {
         return Objects.hash(id);
     }
 
+    public void updateNickName(String nickName) {
+        this.nickname = nickName;
+    }
+
+    public void updateEmail(String email) {
+        this.email = new Email(email);
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void updateBlogTitle(String blogTitle) {
+        this.blogTitle = blogTitle;
+    }
+
 }
