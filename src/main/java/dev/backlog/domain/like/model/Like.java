@@ -40,4 +40,9 @@ public class Like {
         this.user = user;
         this.post = post;
     }
+
+    public void updateLikedPost() {
+        post.getLikes().add(this);
+    }
+
 }

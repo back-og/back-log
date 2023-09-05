@@ -22,3 +22,11 @@ oauth:
     client-id: 8cb00376d47f416927cadfded0f9dab3
     redirect-url: http://localhost:8080/oauth/redirected/kakao
     client-secret: 223lkwe934efj2349ewufwe23owf09p1
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
