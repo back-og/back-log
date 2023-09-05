@@ -66,11 +66,19 @@ public class PostController {
         return ResponseEntity.ok(recentPosts);
     }
 
-    @GetMapping("trend")
+    @GetMapping("/trend")
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
                                                                                  Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> trendPosts = postService.findLikedPosts(timePeriod, pageable);
         return ResponseEntity.ok(trendPosts);
+    }
+
+    @GetMapping("/{nickname}")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> searchByUserNickname(@PathVariable String nickname,
+                                                                                       @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(nickname, pageable);
+
+        return ResponseEntity.ok().body(postSliceResponse);
     }
 
     @PutMapping("/{postId}")
