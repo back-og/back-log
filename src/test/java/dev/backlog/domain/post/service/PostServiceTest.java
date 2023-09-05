@@ -302,7 +302,7 @@ class PostServiceTest extends TestContainerConfig {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(user.getNickname(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(user.getNickname(), "", pageRequest);
 
         assertThat(postSliceResponse.numberOfElements()).isEqualTo(pageSize);
         assertThat(postSliceResponse.hasNext()).isTrue();
