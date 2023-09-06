@@ -7,6 +7,7 @@ import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
 import dev.backlog.domain.post.service.PostService;
+import dev.backlog.domain.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,11 +33,40 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, Long userId) {
-        Long postId = postService.create(request, userId);
+    // TODO: 2023/09/06 userId에서 nickname으로 변경
 
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, AuthInfo authInfo) {
+        Long postId = postService.create(request, authInfo);
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
+                                                                                  Long userId,
+                                                                                  @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> seriesPosts = postService.findPostsByUserAndSeries(userId, series, pageable);
+        return ResponseEntity.ok(seriesPosts);
+    }
+
+    @GetMapping("/like")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
+                                                                                 @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> likedPosts = postService.findLikedPostsByUser(userId, pageable);
+        return ResponseEntity.ok(likedPosts);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> recentPosts = postService.findPostsInLatestOrder(pageable);
+        return ResponseEntity.ok(recentPosts);
+    }
+
+    @GetMapping("/trend")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
+                                                                                 Pageable pageable) {
+        PostSliceResponse<PostSummaryResponse> trendPosts = postService.findLikedPosts(timePeriod, pageable);
+        return ResponseEntity.ok(trendPosts);
     }
 
     @GetMapping("/{postId}")
@@ -52,36 +82,7 @@ public class PostController {
             @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable
     ) {
         PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(nickname, hashtag, pageable);
-
         return ResponseEntity.ok(postSliceResponse);
-    }
-
-    @GetMapping("/like")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
-                                                                                 @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> likedPosts = postService.findLikedPostsByUser(userId, pageable);
-        return ResponseEntity.ok(likedPosts);
-    }
-
-    @GetMapping
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
-                                                                                  Long userId,
-                                                                                  @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> seriesPosts = postService.findPostsByUserAndSeries(userId, series, pageable);
-        return ResponseEntity.ok(seriesPosts);
-    }
-
-    @GetMapping("/recent")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> recentPosts = postService.findPostsInLatestOrder(pageable);
-        return ResponseEntity.ok(recentPosts);
-    }
-
-    @GetMapping("/trend")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
-                                                                                 Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> trendPosts = postService.findLikedPosts(timePeriod, pageable);
-        return ResponseEntity.ok(trendPosts);
     }
 
     @PutMapping("/{postId}")

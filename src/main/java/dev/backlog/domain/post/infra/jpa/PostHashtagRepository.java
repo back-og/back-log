@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.post.model.Post;

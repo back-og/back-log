@@ -27,7 +27,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -51,7 +50,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("게시물 생성 요청을 받아 처리 후 201 코드를 반환하고 게시물 조회 URI를 반환한다.")
     @Test
-    void testCreate() throws Exception {
+    void createTest() throws Exception {
         Long userId = 1L;
         Long postId = 2L;
         PostCreateRequest request = new PostCreateRequest(
@@ -63,12 +62,13 @@ class PostControllerTest extends ControllerTestConfig {
                 "썸네일",
                 "경로"
         );
-        when(postService.create(any(PostCreateRequest.class), eq(userId)))
+        when(jwtTokenProvider.extractUserId(jwtToken)).thenReturn(userId);
+        when(postService.create(any(PostCreateRequest.class), any()))
                 .thenReturn(postId);
 
         mockMvc.perform(post("/api/posts")
-                        .param("userId", userId.toString())
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", jwtToken)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/posts/" + postId));
@@ -372,7 +372,7 @@ class PostControllerTest extends ControllerTestConfig {
     }
 
     private PostSliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
-        return new PostSliceResponse<PostSummaryResponse>(
+        return new PostSliceResponse<>(
                 10,
                 false,
                 List.of(new PostSummaryResponse(

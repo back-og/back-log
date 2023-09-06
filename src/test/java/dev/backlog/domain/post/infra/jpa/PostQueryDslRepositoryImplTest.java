@@ -1,12 +1,14 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
 import dev.backlog.domain.like.model.Like;
+import dev.backlog.domain.post.infra.PostRepositoryAdapter;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
+import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +32,13 @@ import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class PostQueryRepositoryImplTest extends RepositoryTest {
+class PostQueryDslRepositoryImplTest extends RepositoryTest {
 
     @Autowired
-    PostRepository postRepository;
+    PostRepositoryAdapter postRepository;
+
+    @Autowired
+    PostQueryRepository postQueryRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -56,6 +61,9 @@ class PostQueryRepositoryImplTest extends RepositoryTest {
         유저1 = 유저1();
         게시물_모음 = 게시물_모음(유저1, null);
         해쉬태그 = 해쉬태그_모음().get(0);
+
+        System.out.println("====================" + postRepository);
+        System.out.println("====================" + postRepository);
     }
 
     @DisplayName("오늘, 이번 주, 이번 달, 올해 필터링을 통해 좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
@@ -79,7 +87,7 @@ class PostQueryRepositoryImplTest extends RepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 30);
 
         //when
-        Slice<Post> postSlice = postRepository.findLikedPostsByTimePeriod(timePeriod, pageRequest);
+        Slice<Post> postSlice = postQueryRepository.findLikedPostsByTimePeriod(timePeriod, pageRequest);
 
         //then
         assertAll(
@@ -99,7 +107,7 @@ class PostQueryRepositoryImplTest extends RepositoryTest {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        Slice<Post> posts = postRepository.findByUserNicknameAndHashtag(user.getNickname(), null, pageRequest);
+        Slice<Post> posts = postQueryRepository.findByUserNicknameAndHashtag(user.getNickname(), null, pageRequest);
 
         assertThat(posts.getSize()).isEqualTo(pageSize);
         assertThat(posts.hasNext()).isTrue();
@@ -115,7 +123,7 @@ class PostQueryRepositoryImplTest extends RepositoryTest {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        Slice<Post> posts = postRepository.findByUserNicknameAndHashtag(null, "해쉬태그", pageRequest);
+        Slice<Post> posts = postQueryRepository.findByUserNicknameAndHashtag(null, "해쉬태그", pageRequest);
 
         assertThat(posts.getNumberOfElements()).isEqualTo(postHashtags.size());
         assertThat(posts.hasNext()).isFalse();
@@ -131,7 +139,7 @@ class PostQueryRepositoryImplTest extends RepositoryTest {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        Slice<Post> posts = postRepository.findByUserNicknameAndHashtag(user.getNickname(), "해쉬태그", pageRequest);
+        Slice<Post> posts = postQueryRepository.findByUserNicknameAndHashtag(user.getNickname(), "해쉬태그", pageRequest);
 
         assertThat(posts.getNumberOfElements()).isEqualTo(postHashtags.size());
         assertThat(posts.hasNext()).isFalse();

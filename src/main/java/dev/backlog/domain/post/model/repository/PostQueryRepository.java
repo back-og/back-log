@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.model.repository;
 
 import dev.backlog.domain.post.model.Post;
 import org.springframework.data.domain.Pageable;

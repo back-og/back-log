@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa.query;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -7,11 +7,13 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.backlog.domain.hashtag.model.QHashtag;
 import dev.backlog.domain.post.model.Post;
+import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
@@ -24,9 +26,10 @@ import static dev.backlog.domain.post.model.QPost.post;
 import static dev.backlog.domain.post.model.QPostHashtag.postHashtag;
 import static dev.backlog.domain.user.model.QUser.user;
 
-@Transactional(readOnly = true)
+@Repository
 @RequiredArgsConstructor
-public class PostQueryRepositoryImpl implements PostQueryRepository {
+@Transactional(readOnly = true)
+public class PostQueryDslRepositoryImpl implements PostQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -37,7 +40,7 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
                 .where(getDateCondition(timePeriod))
                 .orderBy(post.likes.size().desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1l)
+                .limit(pageable.getPageSize() + 1L)
                 .fetch();
 
         List<Post> content = getContent(postList);

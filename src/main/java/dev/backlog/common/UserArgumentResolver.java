@@ -1,7 +1,7 @@
 package dev.backlog.common;
 
 import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
-import dev.backlog.domain.user.dto.UserPrincipal;
+import dev.backlog.domain.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -19,12 +19,12 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(UserPrincipal.class);
+        return parameter.getParameterType().equals(AuthInfo.class);
     }
 
     @Override
-    public UserPrincipal resolveArgument(MethodParameter parampeter, ModelAndViewContainer mavContainer,
-                                         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public AuthInfo resolveArgument(MethodParameter parampeter, ModelAndViewContainer mavContainer,
+                                    NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String authHeader = httpServletRequest.getHeader("Authorization");
 
@@ -32,7 +32,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
             String token = authHeader.substring(7);
             Long userId = jwtTokenProvider.extractUserId(token);
 
-            return new UserPrincipal(userId);
+            return new AuthInfo(userId);
         }
         throw new IllegalArgumentException("잘못된 권한 헤더입니다.");
     }
