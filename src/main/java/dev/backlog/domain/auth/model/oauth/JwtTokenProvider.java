@@ -32,8 +32,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long extractUserId(String accessToken) {
-        Claims claims = parseClaims(accessToken);
+    public Long extractUserId(String token) {
+        Claims claims = parseClaims(token);
         return Long.parseLong(claims.getSubject());
     }
 
@@ -46,6 +46,18 @@ public class JwtTokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw new IllegalArgumentException("만료된 토큰입니다.");
+        }
+    }
+
+    public boolean isExpiredRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return false;
+        } catch (Exception e) {
+            return true;
         }
     }
 
