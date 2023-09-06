@@ -2,7 +2,7 @@ package dev.backlog.domain.series.infrastructure.persistence;
 
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.Email;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.DisplayName;
@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static dev.backlog.domain.auth.model.oauth.OAuthProvider.KAKAO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SeriesRepositoryTest extends RepositoryTest {
+class SeriesJpaRepositoryTest extends RepositoryTest {
 
     @Autowired
-    private SeriesRepository seriesRepository;
+    private SeriesJpaRepository seriesJpaRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @DisplayName("유저와 시리즈의 이름으로 시리즈를 조회할 수 있다.")
     @Test
@@ -30,15 +30,15 @@ class SeriesRepositoryTest extends RepositoryTest {
                 .profileImage("image")
                 .blogTitle("blogTitle")
                 .build();
-        User savedUser = userRepository.save(user);
+        User savedUser = userJpaRepository.save(user);
 
         Series series = Series.builder()
                 .user(savedUser)
                 .name("시리즈")
                 .build();
-        Series savedSeries = seriesRepository.save(series);
+        Series savedSeries = seriesJpaRepository.save(series);
 
-        Series foundSeries = seriesRepository.findByUserAndName(savedUser, "시리즈").get();
+        Series foundSeries = seriesJpaRepository.findByUserAndName(savedUser, "시리즈").get();
         assertThat(savedSeries).isEqualTo(foundSeries);
     }
 

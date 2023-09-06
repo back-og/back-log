@@ -1,10 +1,10 @@
 package dev.backlog.domain.post.service;
 
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
+import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.post.infra.jpa.PostHashtagRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
+import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 public class PostHashtagService {
 
     private final PostHashtagRepository postHashtagRepository;
-    private final HashtagRepository hashtagRepository;
+    private final HashtagJpaRepository hashtagJpaRepository;
 
     public void save(Set<String> names, Post post) {
         List<Hashtag> hashtags = findHashtags(names);
@@ -37,7 +37,7 @@ public class PostHashtagService {
         postHashtagRepository.deleteAllByPost(post);
         for (Hashtag hashtag : hashtags) {
             if (!postHashtagRepository.existsByHashtag(hashtag)) {
-                hashtagRepository.delete(hashtag);
+                hashtagJpaRepository.delete(hashtag);
             }
         }
     }
@@ -49,8 +49,8 @@ public class PostHashtagService {
     }
 
     private Hashtag findOrCreate(String hashtag) {
-        return hashtagRepository.findByName(hashtag)
-                .orElseGet(() -> hashtagRepository.save(new Hashtag(hashtag)));
+        return hashtagJpaRepository.findByName(hashtag)
+                .orElseGet(() -> hashtagJpaRepository.save(new Hashtag(hashtag)));
     }
 
 }

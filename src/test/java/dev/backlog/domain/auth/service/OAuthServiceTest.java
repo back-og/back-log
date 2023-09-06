@@ -9,7 +9,7 @@ import dev.backlog.domain.auth.model.oauth.authcode.AuthCodeRequestUrlProviderCo
 import dev.backlog.domain.auth.model.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class OAuthServiceTest {
     private OAuthService oAuthService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Mock
     private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
@@ -62,7 +62,7 @@ class OAuthServiceTest {
         OAuthInfoResponse response = createOAuthInfoResponse(newUser);
 
         when(oAuthMemberClientComposite.fetch(signupRequest.oAuthProvider(), signupRequest.authCode())).thenReturn(response);
-        when(userRepository.save(any())).thenReturn(newUser);
+        when(userJpaRepository.save(any())).thenReturn(newUser);
         when(authTokensGenerator.generate(newUser.getId())).thenReturn(authToken);
 
         AuthTokens authTokens = oAuthService.signup(signupRequest);
@@ -83,7 +83,7 @@ class OAuthServiceTest {
         AuthTokens expectedToken = DtoFixture.토큰생성();
 
         when(oAuthMemberClientComposite.fetch(any(), any())).thenReturn(response);
-        when(userRepository.findByOauthProviderIdAndOauthProvider(user.getOauthProviderId(), user.getOauthProvider())).thenReturn(Optional.of(user));
+        when(userJpaRepository.findByOauthProviderIdAndOauthProvider(user.getOauthProviderId(), user.getOauthProvider())).thenReturn(Optional.of(user));
         when(authTokensGenerator.generate(user.getId())).thenReturn(expectedToken);
 
         AuthTokens authTokens = oAuthService.login(OAuthProvider.KAKAO, "authCode");

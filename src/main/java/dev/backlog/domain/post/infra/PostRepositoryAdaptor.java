@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositoryAdapter implements PostRepository {
+public class PostRepositoryAdaptor implements PostRepository {
 
     private final PostJpaRepository postJpaRepository;
 

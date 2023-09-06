@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HashtagRepositoryTest extends RepositoryTest {
+class HashtagJpaRepositoryTest extends RepositoryTest {
 
     @Autowired
-    private HashtagRepository hashtagRepository;
+    private HashtagJpaRepository hashtagJpaRepository;
 
     @DisplayName("해쉬태그의 이름으로 해쉬태그를 찾을 수 있다.")
     @Test
@@ -19,8 +19,8 @@ class HashtagRepositoryTest extends RepositoryTest {
         String 해쉬태그 = "해쉬태그";
         Hashtag hashtag = new Hashtag(해쉬태그);
 
-        Hashtag savedHashtag = hashtagRepository.save(hashtag);
-        Hashtag foundHashtag = hashtagRepository.findByName(해쉬태그).get();
+        Hashtag savedHashtag = hashtagJpaRepository.save(hashtag);
+        Hashtag foundHashtag = hashtagJpaRepository.findByName(해쉬태그).get();
 
         assertThat(foundHashtag).isEqualTo(savedHashtag);
     }

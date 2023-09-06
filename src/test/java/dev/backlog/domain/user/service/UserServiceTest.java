@@ -3,7 +3,7 @@ package dev.backlog.domain.user.service;
 import dev.backlog.domain.user.dto.UserDetailsResponse;
 import dev.backlog.domain.user.dto.UserResponse;
 import dev.backlog.domain.user.dto.UserUpdateRequest;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +26,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     private User 유저1;
 
@@ -38,7 +38,7 @@ class UserServiceTest {
     @Test
     void findUserProfileTest() {
         String nickname = "닉네임";
-        when(userRepository.findByNickname(유저1.getNickname())).thenReturn(Optional.of(유저1));
+        when(userJpaRepository.findByNickname(유저1.getNickname())).thenReturn(Optional.of(유저1));
 
         UserResponse userProfile = userService.findUserProfile(nickname);
 
@@ -49,7 +49,7 @@ class UserServiceTest {
     void findMyProfileTest() {
         Long userId = 유저1.getId();
 
-        when(userRepository.findById(유저1.getId())).thenReturn(Optional.of(유저1));
+        when(userJpaRepository.findById(유저1.getId())).thenReturn(Optional.of(유저1));
 
         UserDetailsResponse myProfile = userService.findMyProfile(userId);
 
@@ -72,10 +72,10 @@ class UserServiceTest {
                 "새블로그제목"
         );
 
-        when(userRepository.findById(유저1.getId())).thenReturn(Optional.of(유저1));
+        when(userJpaRepository.findById(유저1.getId())).thenReturn(Optional.of(유저1));
 
         userService.updateProfile(updateRequest, 유저1.getId());
-        User updatedUser = userRepository.findById(유저1.getId()).get();
+        User updatedUser = userJpaRepository.findById(유저1.getId()).get();
 
         assertAll(
                 () -> assertThat(updatedUser.getNickname()).isEqualTo(updateRequest.nickname()),
