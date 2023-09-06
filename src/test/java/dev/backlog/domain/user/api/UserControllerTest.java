@@ -142,6 +142,8 @@ class UserControllerTest extends ControllerTestConfig {
                 .andDo(document("user-update",
                                 resourceDetails().tag("User").description("사용자 정보 수정")
                                         .requestSchema(Schema.schema("UserUpdateRequest")),
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
                                 requestFields(
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                         fieldWithPath("introduction").type(JsonFieldType.STRING).description("소개"),
