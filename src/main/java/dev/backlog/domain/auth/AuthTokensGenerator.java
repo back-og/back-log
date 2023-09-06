@@ -40,4 +40,18 @@ public class AuthTokensGenerator {
                 (accessTokenExpireTime / 1000L));
     }
 
+    public AuthTokens renewAccessToken(Long userId, String refreshToken) {
+        long now = (new Date()).getTime();
+        Date accessTokenExpiredAt = new Date(now + accessTokenExpireTime);
+
+        String subject = userId.toString();
+        String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
+
+        return AuthTokens.of(
+                accessToken,
+                refreshToken,
+                BEARER_TYPE,
+                (accessTokenExpireTime / 1000L));
+    }
+
 }
