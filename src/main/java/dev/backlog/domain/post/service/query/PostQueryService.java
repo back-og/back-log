@@ -1,19 +1,16 @@
-package dev.backlog.domain.post.service;
+package dev.backlog.domain.post.service.query;
 
 import dev.backlog.domain.comment.infrastructure.persistence.CommentRepository;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
-import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
-import dev.backlog.domain.post.dto.PostUpdateRequest;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
 import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +26,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PostService {
+public class PostQueryService {
 
     private static final String REDIS_KEY_PREFIX = "user:%s:post:%s";
 
-    private final PostHashtagService postHashtagService;
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
     private final CommentRepository commentRepository;
@@ -56,21 +52,6 @@ public class PostService {
             post.updateViewCount(increasedViewCount);
         }
         return PostResponse.from(post, comments);
-    }
-
-    @Transactional
-    public Long create(PostCreateRequest request, AuthInfo authInfo) {
-        User user = userRepository.findById(authInfo.userId())
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Series series = seriesRepository.findByUserAndName(user, request.series())
-                .orElse(null);
-        Post post = request.toEntity(series, user);
-
-        Post savedPost = postRepository.save(post);
-        if (request.hashtags() != null) {
-            postHashtagService.save(request.hashtags(), post);
-        }
-        return savedPost.getId();
     }
 
     public PostSliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, String hashtag, Pageable pageable) {
@@ -110,43 +91,9 @@ public class PostService {
         return PostSliceResponse.from(postSummaryResponses);
     }
 
-    @Transactional
-    public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Post post = postRepository.getById(postId);
-        updatePostByRequest(post, request);
-        Series series = seriesRepository.findByUserAndName(user, request.series())
-                .orElse(null);
-        post.updateSeries(series);
-        postHashtagService.deleteAllByPost(post);
-        if (request.hashtags() != null) {
-            postHashtagService.save(request.hashtags(), post);
-        }
-    }
-
-    @Transactional
-    public void deletePost(Long postId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Post post = postRepository.getById(postId);
-
-        post.verifyPostOwner(user);
-        postRepository.delete(post);
-    }
-
     private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, String hashtag, Pageable pageable) {
         return postQueryRepository.findByUserNicknameAndHashtag(nickname, hashtag, pageable)
                 .map(this::createPostSummaryResponse);
-    }
-
-    private void updatePostByRequest(Post post, PostUpdateRequest request) {
-        post.updateTitle(request.title());
-        post.updateContent(request.content());
-        post.updateSummary(request.summary());
-        post.updateIsPublic(request.isPublic());
-        post.updateThumbnailImage(request.thumbnailImage());
-        post.updatePath(request.path());
     }
 
     private PostSummaryResponse createPostSummaryResponse(Post post) {

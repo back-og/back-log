@@ -8,7 +8,8 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.service.PostService;
+import dev.backlog.domain.post.service.PostCommandService;
+import dev.backlog.domain.post.service.query.PostQueryService;
 import dev.backlog.domain.series.dto.SeriesResponse;
 import dev.backlog.domain.user.dto.Writer;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest extends ControllerTestConfig {
 
     @MockBean
-    private PostService postService;
+    private PostCommandService postCommandService;
+
+    @MockBean
+    private PostQueryService postQueryService;
 
     @DisplayName("게시물 생성 요청을 받아 처리 후 201 코드를 반환하고 게시물 조회 URI를 반환한다.")
     @Test
@@ -63,7 +67,7 @@ class PostControllerTest extends ControllerTestConfig {
                 "경로"
         );
         when(jwtTokenProvider.extractUserId(jwtToken)).thenReturn(userId);
-        when(postService.create(any(PostCreateRequest.class), any()))
+        when(postCommandService.create(any(PostCreateRequest.class), any()))
                 .thenReturn(postId);
 
         mockMvc.perform(post("/api/posts")
@@ -83,7 +87,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long userId = 1l;
         final long commentId = 1l;
         PostResponse postResponse = getPostResponse(postId, seriesId, userId, commentId);
-        when(postService.findPostById(any(), any())).thenReturn(postResponse);
+        when(postQueryService.findPostById(any(), any())).thenReturn(postResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/{postId}", postId)
@@ -126,7 +130,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/like")
@@ -167,7 +171,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts")
@@ -209,7 +213,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/recent")
@@ -250,7 +254,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
         String defaultTimePeriod = "week";
@@ -290,7 +294,7 @@ class PostControllerTest extends ControllerTestConfig {
     void updatePostTest() throws Exception {
         final Long postId = 1L;
         PostUpdateRequest request = getPostUpdateRequest();
-        doNothing().when(postService).updatePost(any(PostUpdateRequest.class), anyLong(), anyLong());
+        doNothing().when(postCommandService).updatePost(any(PostUpdateRequest.class), anyLong(), anyLong());
 
         mockMvc.perform(put("/api/posts/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -323,7 +327,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
 
-        when(postService.searchByUserNickname(any(), any(), any())).thenReturn(postSliceResponse);
+        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(postSliceResponse);
 
         mockMvc.perform(get("/api/posts/search")
                         .param("hashtag", "tag")
