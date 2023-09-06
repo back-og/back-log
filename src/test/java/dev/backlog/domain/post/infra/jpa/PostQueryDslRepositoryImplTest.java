@@ -62,9 +62,6 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
         유저1 = 유저1();
         게시물_모음 = 게시물_모음(유저1, null);
         해쉬태그 = 해쉬태그_모음().get(0);
-
-        System.out.println("====================" + postRepository);
-        System.out.println("====================" + postRepository);
     }
 
     @DisplayName("오늘, 이번 주, 이번 달, 올해 필터링을 통해 좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
