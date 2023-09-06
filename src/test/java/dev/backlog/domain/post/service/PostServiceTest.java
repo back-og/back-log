@@ -17,6 +17,7 @@ import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import org.assertj.core.api.Assertions;
@@ -147,7 +148,9 @@ class PostServiceTest extends TestContainerConfig {
                 "/path"
         );
 
-        Long postId = postService.create(request, user.getId());
+        AuthInfo authInfo = new AuthInfo(유저1.getId());
+        Long postId = postService.create(request, authInfo);
+
         assertThat(postId).isNotNull();
     }
 

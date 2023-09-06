@@ -1,7 +1,7 @@
 package dev.backlog.domain.user.api;
 
+import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.dto.UserDetailsResponse;
-import dev.backlog.domain.user.dto.UserPrincipal;
 import dev.backlog.domain.user.dto.UserResponse;
 import dev.backlog.domain.user.dto.UserUpdateRequest;
 import dev.backlog.domain.user.service.UserService;
@@ -27,8 +27,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDetailsResponse> findMyProfile(UserPrincipal userPrincipal) {
-        return ResponseEntity.ok(userService.findMyProfile(userPrincipal.userId()));
+    public ResponseEntity<UserDetailsResponse> findMyProfile(AuthInfo authInfo) {
+        return ResponseEntity.ok(userService.findMyProfile(authInfo.userId()));
     }
 
     @PutMapping("/me")

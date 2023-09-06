@@ -12,6 +12,7 @@ import dev.backlog.domain.post.infrastructure.persistence.PostRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -58,8 +59,8 @@ public class PostService {
     }
 
     @Transactional
-    public Long create(PostCreateRequest request, Long userId) {
-        User user = userRepository.findById(userId)
+    public Long create(PostCreateRequest request, AuthInfo authInfo) {
+        User user = userRepository.findById(authInfo.userId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Series series = seriesRepository.findByUserAndName(user, request.series())
                 .orElse(null);
