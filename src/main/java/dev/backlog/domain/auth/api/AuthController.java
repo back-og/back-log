@@ -43,4 +43,9 @@ public class AuthController {
         return ResponseEntity.ok(oAuthService.login(oAuthProvider, code));
     }
 
+    @PostMapping("/refresh_token")
+    public ResponseEntity<AuthTokens> renew(@RequestBody String refreshToken) {
+        return ResponseEntity.ok(oAuthService.refresh(refreshToken));
+    }
+
 }
