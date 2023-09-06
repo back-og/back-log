@@ -40,6 +40,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PostController.class)
@@ -311,6 +312,26 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("path").type(JsonFieldType.STRING).description("게시물 경로"))
                         )
                 );
+    }
+
+    @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
+    @Test
+    void searchByUserNicknameTest() throws Exception {
+        // Arrange
+        String nickname = "testUser";
+        final long postId = 1l;
+        final long userId = 1l;
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+
+        when(postService.searchByUserNickname(any(), any(), any())).thenReturn(postSliceResponse);
+
+        mockMvc.perform(get("/api/posts/search")
+                        .param("hashtag", "tag")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements").value(postSliceResponse.numberOfElements()))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andReturn();
     }
 
     private PostUpdateRequest getPostUpdateRequest() {

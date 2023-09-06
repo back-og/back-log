@@ -45,6 +45,17 @@ public class PostController {
         return ResponseEntity.ok(postResponse);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> searchByNicknameAndHashtag(
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String hashtag,
+            @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable
+    ) {
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postService.searchByUserNickname(nickname, hashtag, pageable);
+
+        return ResponseEntity.ok(postSliceResponse);
+    }
+
     @GetMapping("/like")
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
                                                                                  @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
@@ -66,7 +77,7 @@ public class PostController {
         return ResponseEntity.ok(recentPosts);
     }
 
-    @GetMapping("trend")
+    @GetMapping("/trend")
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
                                                                                  Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> trendPosts = postService.findLikedPosts(timePeriod, pageable);

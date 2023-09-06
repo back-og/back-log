@@ -1,12 +1,17 @@
 package dev.backlog.domain.post.infrastructure.persistence;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import dev.backlog.domain.hashtag.model.QHashtag;
 import dev.backlog.domain.post.model.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
@@ -16,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dev.backlog.domain.post.model.QPost.post;
+import static dev.backlog.domain.post.model.QPostHashtag.postHashtag;
+import static dev.backlog.domain.user.model.QUser.user;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -40,6 +47,62 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
             hasNext = true;
         }
         return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<Post> findByUserNicknameAndHashtag(String nickName, String hashtag, Pageable pageable) {
+        int limit = pageable.getPageSize() + 1;
+        List<Post> posts = jpaQueryFactory
+                .selectDistinct(post)
+                .from(post)
+                .leftJoin(post.user, user)
+                .leftJoin(postHashtag).on(postHashtag.post.id.eq(post.id))
+                .fetchJoin()
+                .where(
+                        isNicknameCondition(nickName),
+                        isHashtagCondition(hashtag)
+                )
+                .offset(pageable.getOffset())
+                .limit(limit)
+                .orderBy(getOrderSpecifier(pageable.getSort()).toArray(OrderSpecifier[]::new))
+                .fetch();
+
+        boolean hasNext = determineHasNext(posts, pageable.getPageSize());
+
+        return new SliceImpl<>(posts, pageable, hasNext);
+    }
+
+    private boolean determineHasNext(List<Post> posts, int pageSize) {
+        if (posts.size() > pageSize) {
+            posts.remove(pageSize);
+            return true;
+        }
+        return false;
+    }
+
+    private List<OrderSpecifier> getOrderSpecifier(Sort sort) {
+        return sort.stream()
+                .map(order -> {
+                    Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+                    String property = order.getProperty();
+                    PathBuilder orderByExpression = new PathBuilder<>(Post.class, "post");
+                    return new OrderSpecifier<>(direction, orderByExpression.get(property));
+                })
+                .toList();
+    }
+
+    private BooleanExpression isNicknameCondition(String nickname) {
+        if (nickname == null || nickname.isEmpty()) {
+            return null;
+        }
+        return post.user.nickname.eq(nickname);
+    }
+
+    private BooleanExpression isHashtagCondition(String hashtag) {
+        if (hashtag == null || hashtag.isEmpty()) {
+            return null;
+        }
+        return QHashtag.hashtag.name.eq(hashtag);
     }
 
     private List<Post> getContent(List<Post> postList) {
