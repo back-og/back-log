@@ -40,7 +40,7 @@ public class PostQueryDslRepositoryImpl implements PostQueryRepository {
                 .where(getDateCondition(timePeriod))
                 .orderBy(post.likes.size().desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1l)
+                .limit(pageable.getPageSize() + 1L)
                 .fetch();
 
         List<Post> content = getContent(postList);

@@ -372,7 +372,7 @@ class PostControllerTest extends ControllerTestConfig {
     }
 
     private PostSliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
-        return new PostSliceResponse<PostSummaryResponse>(
+        return new PostSliceResponse<>(
                 10,
                 false,
                 List.of(new PostSummaryResponse(
