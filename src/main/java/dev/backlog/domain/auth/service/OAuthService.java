@@ -2,6 +2,7 @@ package dev.backlog.domain.auth.service;
 
 import dev.backlog.domain.auth.AuthTokens;
 import dev.backlog.domain.auth.AuthTokensGenerator;
+import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import dev.backlog.domain.auth.model.oauth.client.OAuthMemberClientComposite;
@@ -20,6 +21,7 @@ public class OAuthService {
     private final OAuthMemberClientComposite oauthMemberClientComposite;
     private final UserJpaRepository userJpaRepository;
     private final AuthTokensGenerator authTokensGenerator;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public String getAuthCodeRequestUrl(OAuthProvider oAuthProvider) {
         return authCodeRequestUrlProviderComposite.provide(oAuthProvider);
@@ -47,6 +49,16 @@ public class OAuthService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해주세요."));
 
         return authTokensGenerator.generate(findUser.getId());
+    }
+
+    public AuthTokens refresh(String refreshToken) {
+        Long userId = jwtTokenProvider.extractUserId(refreshToken);
+
+        if (jwtTokenProvider.isExpiredRefreshToken(refreshToken)) {
+            return authTokensGenerator.generate(userId);
+        } else {
+            return authTokensGenerator.renewAccessToken(userId, refreshToken);
+        }
     }
 
 }
