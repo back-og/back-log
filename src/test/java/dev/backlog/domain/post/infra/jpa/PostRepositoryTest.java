@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class PostRepositoryTest extends RepositoryTest {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostJpaRepository postRepository;
 
     @Autowired
     private UserRepository userRepository;

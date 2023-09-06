@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
@@ -28,7 +28,7 @@ class PostHashtagRepositoryTest extends RepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostJpaRepository postRepository;
 
     @Autowired
     private HashtagRepository hashtagRepository;

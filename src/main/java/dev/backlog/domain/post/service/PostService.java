@@ -8,15 +8,15 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.infrastructure.persistence.PostRepository;
 import dev.backlog.domain.post.model.Post;
+import dev.backlog.domain.post.model.repository.PostQueryRepository;
+import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,6 +35,7 @@ public class PostService {
 
     private final PostHashtagService postHashtagService;
     private final PostRepository postRepository;
+    private final PostQueryRepository postQueryRepository;
     private final CommentRepository commentRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final UserRepository userRepository;
@@ -43,8 +44,7 @@ public class PostService {
 
     @Transactional
     public PostResponse findPostById(Long postId, Long userId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        Post post = postRepository.getById(postId);
         List<Comment> comments = commentRepository.findAllByPost(post);
 
         String userAndPostRedisKey = String.format(REDIS_KEY_PREFIX, userId, postId);
@@ -99,13 +99,13 @@ public class PostService {
     }
 
     public PostSliceResponse<PostSummaryResponse> findPostsInLatestOrder(Pageable pageable) {
-        Page<PostSummaryResponse> postSummaryResponses = postRepository.findAll(pageable)
+        Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAll(pageable)
                 .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
 
     public PostSliceResponse<PostSummaryResponse> findLikedPosts(String timePeriod, Pageable pageable) {
-        Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByTimePeriod(timePeriod, pageable)
+        Slice<PostSummaryResponse> postSummaryResponses = postQueryRepository.findLikedPostsByTimePeriod(timePeriod, pageable)
                 .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
     }
@@ -114,8 +114,7 @@ public class PostService {
     public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+        Post post = postRepository.getById(postId);
         updatePostByRequest(post, request);
         Series series = seriesRepository.findByUserAndName(user, request.series())
                 .orElse(null);
@@ -130,15 +129,14 @@ public class PostService {
     public void deletePost(Long postId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+        Post post = postRepository.getById(postId);
 
         post.verifyPostOwner(user);
         postRepository.delete(post);
     }
 
     private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, String hashtag, Pageable pageable) {
-        return postRepository.findByUserNicknameAndHashtag(nickname, hashtag, pageable)
+        return postQueryRepository.findByUserNicknameAndHashtag(nickname, hashtag, pageable)
                 .map(this::createPostSummaryResponse);
     }
 

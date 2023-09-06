@@ -1,7 +1,7 @@
 package dev.backlog.domain.like.infrastructure.persistence;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.post.infrastructure.persistence.PostRepository;
+import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
 import dev.backlog.domain.user.model.User;
@@ -23,7 +23,7 @@ class LikeRepositoryTest extends RepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostJpaRepository postRepository;
 
     @DisplayName("특정 게시물에 달린 좋아요 수를 조회할 수 있다.")
     @Test

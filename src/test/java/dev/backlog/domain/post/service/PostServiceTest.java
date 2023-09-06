@@ -11,8 +11,8 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.infrastructure.persistence.PostHashtagRepository;
-import dev.backlog.domain.post.infrastructure.persistence.PostRepository;
+import dev.backlog.domain.post.infra.jpa.PostHashtagRepository;
+import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
@@ -55,7 +55,7 @@ class PostServiceTest extends TestContainerConfig {
     private UserRepository userRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostJpaRepository postRepository;
 
     @Autowired
     private CommentRepository commentRepository;

@@ -1,4 +1,4 @@
-package dev.backlog.domain.post.infrastructure.persistence;
+package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.series.model.Series;
@@ -8,7 +8,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface PostRepository extends JpaRepository<Post, Long>, PostQueryRepository {
+public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
     @Query(""" 
             SELECT p

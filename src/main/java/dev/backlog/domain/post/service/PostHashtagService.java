@@ -2,7 +2,7 @@ package dev.backlog.domain.post.service;
 
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.post.infrastructure.persistence.PostHashtagRepository;
+import dev.backlog.domain.post.infra.jpa.PostHashtagRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import lombok.RequiredArgsConstructor;
