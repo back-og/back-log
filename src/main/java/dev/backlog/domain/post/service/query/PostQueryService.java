@@ -1,17 +1,17 @@
 package dev.backlog.domain.post.service.query;
 
-import dev.backlog.domain.comment.infrastructure.persistence.CommentRepository;
+import dev.backlog.domain.comment.infrastructure.persistence.CommentJpaRepository;
 import dev.backlog.domain.comment.model.Comment;
-import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
+import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
+import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,16 +32,16 @@ public class PostQueryService {
 
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
-    private final CommentRepository commentRepository;
+    private final CommentJpaRepository commentJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
-    private final UserRepository userRepository;
-    private final SeriesRepository seriesRepository;
-    private final LikeRepository likeRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final SeriesJpaRepository seriesJpaRepository;
+    private final LikeJpaRepository likeJpaRepository;
 
     @Transactional
     public PostResponse findPostById(Long postId, Long userId) {
         Post post = postRepository.getById(postId);
-        List<Comment> comments = commentRepository.findAllByPost(post);
+        List<Comment> comments = commentJpaRepository.findAllByPost(post);
 
         String userAndPostRedisKey = String.format(REDIS_KEY_PREFIX, userId, postId);
         if (Boolean.FALSE.equals(redisTemplate.hasKey(userAndPostRedisKey))) {
@@ -60,7 +60,7 @@ public class PostQueryService {
     }
 
     public PostSliceResponse<PostSummaryResponse> findLikedPostsByUser(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
+        User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByUserId(user.getId(), pageable)
@@ -69,9 +69,9 @@ public class PostQueryService {
     }
 
     public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(Long userId, String seriesName, Pageable pageable) {
-        User user = userRepository.findById(userId)
+        User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Series series = seriesRepository.findByUserAndName(user, seriesName)
+        Series series = seriesJpaRepository.findByUserAndName(user, seriesName)
                 .orElse(null);
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
@@ -103,11 +103,11 @@ public class PostQueryService {
     }
 
     private int countCommentsByPost(Post post) {
-        return commentRepository.countByPost(post);
+        return commentJpaRepository.countByPost(post);
     }
 
     private int countLikesByPost(Post post) {
-        return likeRepository.countByPost(post);
+        return likeJpaRepository.countByPost(post);
     }
 
 }

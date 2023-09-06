@@ -8,7 +8,7 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.service.PostCommandService;
+import dev.backlog.domain.post.service.PostService;
 import dev.backlog.domain.post.service.query.PostQueryService;
 import dev.backlog.domain.series.dto.SeriesResponse;
 import dev.backlog.domain.user.dto.Writer;
@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest extends ControllerTestConfig {
 
     @MockBean
-    private PostCommandService postCommandService;
+    private PostService postService;
 
     @MockBean
     private PostQueryService postQueryService;
@@ -67,7 +67,7 @@ class PostControllerTest extends ControllerTestConfig {
                 "경로"
         );
         when(jwtTokenProvider.extractUserId(jwtToken)).thenReturn(userId);
-        when(postCommandService.create(any(PostCreateRequest.class), any()))
+        when(postService.create(any(PostCreateRequest.class), any()))
                 .thenReturn(postId);
 
         mockMvc.perform(post("/api/posts")
@@ -294,7 +294,7 @@ class PostControllerTest extends ControllerTestConfig {
     void updatePostTest() throws Exception {
         final Long postId = 1L;
         PostUpdateRequest request = getPostUpdateRequest();
-        doNothing().when(postCommandService).updatePost(any(PostUpdateRequest.class), anyLong(), anyLong());
+        doNothing().when(postService).updatePost(any(PostUpdateRequest.class), anyLong(), anyLong());
 
         mockMvc.perform(put("/api/posts/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)

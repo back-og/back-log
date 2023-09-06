@@ -1,15 +1,16 @@
 package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
+import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
+import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
-import dev.backlog.domain.post.infra.PostRepositoryAdapter;
+import dev.backlog.domain.post.infra.PostRepositoryAdaptor;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
+import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,19 +36,19 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class PostQueryDslRepositoryImplTest extends RepositoryTest {
 
     @Autowired
-    PostRepositoryAdapter postRepository;
+    PostRepositoryAdaptor postRepository;
 
     @Autowired
     PostQueryRepository postQueryRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userJpaRepository;
 
     @Autowired
-    LikeRepository likeRepository;
+    LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    HashtagRepository hashtagRepository;
+    HashtagJpaRepository hashtagJpaRepository;
 
     @Autowired
     PostHashtagRepository postHashtagRepository;
@@ -73,7 +74,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
         //given
         User user1 = 유저1();
         User user2 = 유저1();
-        userRepository.saveAll(List.of(user1, user2));
+        userJpaRepository.saveAll(List.of(user1, user2));
 
         Post post1 = 게시물1(user1, null);
         Post post2 = 게시물1(user1, null);
@@ -82,7 +83,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
         Like like1 = 좋아요1(user1, post1);
         Like like2 = 좋아요1(user1, post2);
         Like like3 = 좋아요1(user2, post1);
-        likeRepository.saveAll(List.of(like1, like2, like3));
+        likeJpaRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 
@@ -102,7 +103,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     @DisplayName("닉네임을 통해 게시물을 조회할 수 있다.")
     @Test
     void findByNicknameTest() {
-        User user = userRepository.save(유저1);
+        User user = userJpaRepository.save(유저1);
         postRepository.saveAll(게시물_모음(user, null));
 
         int pageSize = 20;
@@ -116,8 +117,8 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     @DisplayName("해쉬태그를 통해 게시물을 조회할 수 있다.")
     @Test
     void findByHashtagTest() {
-        User user = userRepository.save(유저1);
-        Hashtag hashtag = hashtagRepository.save(해쉬태그);
+        User user = userJpaRepository.save(유저1);
+        Hashtag hashtag = hashtagJpaRepository.save(해쉬태그);
         List<Post> savedPosts = postRepository.saveAll(게시물_모음(user, null));
         List<PostHashtag> postHashtags = createPostHashtags(hashtag, savedPosts);
 
@@ -132,8 +133,8 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     @DisplayName("닉네임과 해쉬태그를 통해 게시물을 조회할 수 있다.")
     @Test
     void findByNicknameAndHashtagTest() {
-        User user = userRepository.save(유저1);
-        Hashtag hashtag = hashtagRepository.save(해쉬태그);
+        User user = userJpaRepository.save(유저1);
+        Hashtag hashtag = hashtagJpaRepository.save(해쉬태그);
         List<Post> savedPosts = postRepository.saveAll(게시물_모음(user, null));
         List<PostHashtag> postHashtags = createPostHashtags(hashtag, savedPosts);
 

@@ -1,11 +1,12 @@
 package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
+import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.post.model.repository.PostHashtagRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,19 +20,19 @@ import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PostHashtagRepositoryTest extends RepositoryTest {
+class PostHashtagJpaRepositoryTest extends RepositoryTest {
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private PostJpaRepository postRepository;
 
     @Autowired
-    private HashtagRepository hashtagRepository;
+    private HashtagJpaRepository hashtagJpaRepository;
 
     private User 유저1;
     private Post 게시물1;
@@ -39,9 +40,9 @@ class PostHashtagRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        유저1 = userRepository.save(유저1());
+        유저1 = userJpaRepository.save(유저1());
         게시물1 = postRepository.save(게시물1(유저1, null));
-        해쉬태그_모음 = hashtagRepository.saveAll(해쉬태그_모음());
+        해쉬태그_모음 = hashtagJpaRepository.saveAll(해쉬태그_모음());
     }
 
     @DisplayName("PostHashtag에서 Post를 찾아 PostHashtag를 삭제한다.")

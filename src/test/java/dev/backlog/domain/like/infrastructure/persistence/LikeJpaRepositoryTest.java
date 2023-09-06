@@ -3,7 +3,7 @@ package dev.backlog.domain.like.infrastructure.persistence;
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,13 +14,13 @@ import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.좋아요1;
 
-class LikeRepositoryTest extends RepositoryTest {
+class LikeJpaRepositoryTest extends RepositoryTest {
 
     @Autowired
-    private LikeRepository likeRepository;
+    private LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private PostJpaRepository postRepository;
@@ -29,14 +29,14 @@ class LikeRepositoryTest extends RepositoryTest {
     @Test
     void countByPost() {
         //given
-        User user1 = userRepository.save(유저1());
-        User user2 = userRepository.save(유저1());
+        User user1 = userJpaRepository.save(유저1());
+        User user2 = userJpaRepository.save(유저1());
         Post post = postRepository.save(게시물1(user1, null));
-        likeRepository.save(좋아요1(user1, post));
-        likeRepository.save(좋아요1(user2, post));
+        likeJpaRepository.save(좋아요1(user1, post));
+        likeJpaRepository.save(좋아요1(user2, post));
 
         //when
-        int likeCount = likeRepository.countByPost(post);
+        int likeCount = likeJpaRepository.countByPost(post);
 
         //then
         int expectedCount = 2;

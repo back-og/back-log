@@ -4,10 +4,10 @@ import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
+import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.dto.AuthInfo;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,17 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PostCommandService {
+public class PostService {
 
     private final PostHashtagService postHashtagService;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final SeriesRepository seriesRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final SeriesJpaRepository seriesJpaRepository;
 
     public Long create(PostCreateRequest request, AuthInfo authInfo) {
-        User user = userRepository.findById(authInfo.userId())
+        User user = userJpaRepository.findById(authInfo.userId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Series series = seriesRepository.findByUserAndName(user, request.series())
+        Series series = seriesJpaRepository.findByUserAndName(user, request.series())
                 .orElse(null);
         Post post = request.toEntity(series, user);
 
@@ -38,11 +38,11 @@ public class PostCommandService {
     }
 
     public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
-        User user = userRepository.findById(userId)
+        User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Post post = postRepository.getById(postId);
         updatePostByRequest(post, request);
-        Series series = seriesRepository.findByUserAndName(user, request.series())
+        Series series = seriesJpaRepository.findByUserAndName(user, request.series())
                 .orElse(null);
         post.updateSeries(series);
         postHashtagService.deleteAllByPost(post);
@@ -52,7 +52,7 @@ public class PostCommandService {
     }
 
     public void deletePost(Long postId, Long userId) {
-        User user = userRepository.findById(userId)
+        User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Post post = postRepository.getById(postId);
 

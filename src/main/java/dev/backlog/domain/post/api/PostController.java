@@ -6,7 +6,7 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.service.PostCommandService;
+import dev.backlog.domain.post.service.PostService;
 import dev.backlog.domain.post.service.query.PostQueryService;
 import dev.backlog.domain.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,14 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostCommandService postCommandService;
+    private final PostService postService;
     private final PostQueryService postQueryService;
 
     // TODO: 2023/09/06 userId에서 nickname으로 변경
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, AuthInfo authInfo) {
-        Long postId = postCommandService.create(request, authInfo);
+        Long postId = postService.create(request, authInfo);
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
     }
 
@@ -91,14 +91,14 @@ public class PostController {
     public ResponseEntity<Void> updatePost(@PathVariable Long postId,
                                            @RequestBody PostUpdateRequest request,
                                            Long userId) {
-        postCommandService.updatePost(request, postId, userId);
+        postService.updatePost(request, postId, userId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId,
                                            Long userId) {
-        postCommandService.deletePost(postId, userId);
+        postService.deletePost(postId, userId);
         return ResponseEntity.noContent().build();
     }
 

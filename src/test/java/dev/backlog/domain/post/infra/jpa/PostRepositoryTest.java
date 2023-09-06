@@ -1,12 +1,12 @@
 package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
+import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
+import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,13 +32,13 @@ class PostRepositoryTest extends RepositoryTest {
     private PostJpaRepository postRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    private SeriesRepository seriesRepository;
+    private SeriesJpaRepository seriesJpaRepository;
 
     private User 유저1;
     private List<Post> 게시물_모음;
@@ -51,22 +51,22 @@ class PostRepositoryTest extends RepositoryTest {
 
     @AfterEach
     void tearDown() {
-        likeRepository.deleteAll();
+        likeJpaRepository.deleteAll();
         postRepository.deleteAll();
-        seriesRepository.deleteAll();
-        userRepository.deleteAll();
+        seriesJpaRepository.deleteAll();
+        userJpaRepository.deleteAll();
     }
 
     @DisplayName("공개된 게시글 중에서 특정 사용자가 남의 글에 좋아요를 누른 글들을 조회할 수 있다.")
     @Test
     void findLikedPostsByUserId() {
         //given
-        User user = userRepository.save(유저1);
+        User user = userJpaRepository.save(유저1);
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
             Like 좋아요1 = 좋아요1(user, post);
-            likeRepository.save(좋아요1);
+            likeJpaRepository.save(좋아요1);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
@@ -85,8 +85,8 @@ class PostRepositoryTest extends RepositoryTest {
     @Test
     void findAllByUserAndSeries() {
         //given
-        User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
+        User user = userJpaRepository.save(유저1);
+        Series series = seriesJpaRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");

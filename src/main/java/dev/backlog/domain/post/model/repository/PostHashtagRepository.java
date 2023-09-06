@@ -1,17 +1,20 @@
-package dev.backlog.domain.post.infra.jpa;
+package dev.backlog.domain.post.model.repository;
 
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PostHashtagRepository extends JpaRepository<PostHashtag, Long> {
+public interface PostHashtagRepository {
+
+    List<PostHashtag> saveAll(Iterable<PostHashtag> postHashtags);
+
+    List<PostHashtag> findByPost(Post post);
 
     void deleteAllByPost(Post post);
 
-    List<PostHashtag> findByPost(Post post);
+    void deleteAll();
 
     boolean existsByHashtag(Hashtag hashtag);
 

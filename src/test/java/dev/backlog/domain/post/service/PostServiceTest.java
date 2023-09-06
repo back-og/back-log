@@ -1,18 +1,18 @@
 package dev.backlog.domain.post.service;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.comment.infrastructure.persistence.CommentRepository;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagRepository;
-import dev.backlog.domain.like.infrastructure.persistence.LikeRepository;
+import dev.backlog.domain.comment.infrastructure.persistence.CommentJpaRepository;
+import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
+import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.infra.jpa.PostHashtagRepository;
 import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesRepository;
+import dev.backlog.domain.post.model.repository.PostHashtagRepository;
+import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
-import dev.backlog.domain.user.infrastructure.persistence.UserRepository;
+import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -31,31 +31,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
-class PostCommandServiceTest extends TestContainerConfig {
+class PostServiceTest extends TestContainerConfig {
 
     @Autowired
-    private PostCommandService postCommandService;
+    private PostService postService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private PostJpaRepository postRepository;
 
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentJpaRepository commentJpaRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    private SeriesRepository seriesRepository;
+    private SeriesJpaRepository seriesJpaRepository;
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private HashtagRepository hashtagRepository;
+    private HashtagJpaRepository hashtagJpaRepository;
 
     private User 유저1;
     private Post 게시물1;
@@ -68,19 +68,19 @@ class PostCommandServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeRepository.deleteAll();
-        commentRepository.deleteAll();
+        likeJpaRepository.deleteAll();
+        commentJpaRepository.deleteAll();
         postHashtagRepository.deleteAll();
-        hashtagRepository.deleteAll();
+        hashtagJpaRepository.deleteAll();
         postRepository.deleteAll();
-        seriesRepository.deleteAll();
-        userRepository.deleteAll();
+        seriesJpaRepository.deleteAll();
+        userJpaRepository.deleteAll();
     }
 
     @DisplayName("포스트 생성요청과 유저의 아이디를 받아 게시물을 저장할 수 있다.")
     @Test
     void createTest() {
-        User user = userRepository.save(유저1);
+        User user = userJpaRepository.save(유저1);
 
         PostCreateRequest request = new PostCreateRequest(
                 null,
@@ -94,7 +94,7 @@ class PostCommandServiceTest extends TestContainerConfig {
         );
 
         AuthInfo authInfo = new AuthInfo(user.getId());
-        Long postId = postCommandService.create(request, authInfo);
+        Long postId = postService.create(request, authInfo);
 
         assertThat(postId).isNotNull();
     }
@@ -102,10 +102,10 @@ class PostCommandServiceTest extends TestContainerConfig {
     @DisplayName("게시물 업데이트의 대한 정보를 받아서 게시물을 업데이트한다.")
     @Test
     void updatePostTest() {
-        userRepository.save(유저1);
+        userJpaRepository.save(유저1);
         postRepository.save(게시물1);
         PostUpdateRequest request = getPostUpdateRequest();
-        postCommandService.updatePost(request, 게시물1.getId(), 유저1.getId());
+        postService.updatePost(request, 게시물1.getId(), 유저1.getId());
 
         Post 변경된_게시물 = postRepository.findById(게시물1.getId()).get();
         List<PostHashtag> postHashtags = postHashtagRepository.findByPost(변경된_게시물);
@@ -124,10 +124,10 @@ class PostCommandServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자는 게시물을 삭제할 수 있다.")
     @Test
     void deletePostTest() {
-        userRepository.save(유저1);
+        userJpaRepository.save(유저1);
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
-        postCommandService.deletePost(postId, 유저1.getId());
+        postService.deletePost(postId, 유저1.getId());
         boolean result = postRepository.findById(postId).isPresent();
 
         assertThat(result).isFalse();
@@ -136,11 +136,11 @@ class PostCommandServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자가 아니면 게시물을 삭제할 수 없다.")
     @Test
     void deletePostFailTest() {
-        userRepository.save(유저1);
+        userJpaRepository.save(유저1);
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
         Long userId = 유저1.getId();
-        Assertions.assertThatThrownBy(() -> postCommandService.deletePost(postId, userId + 1))
+        Assertions.assertThatThrownBy(() -> postService.deletePost(postId, userId + 1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
