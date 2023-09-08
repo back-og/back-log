@@ -46,7 +46,7 @@ public class OAuthService {
     public AuthTokens login(OAuthProvider oauthProvider, String authCode) {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(oauthProvider, authCode);
         User findUser = userJpaRepository.findByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해주세요."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해 주세요."));
 
         return authTokensGenerator.generate(findUser.getId());
     }
@@ -55,7 +55,7 @@ public class OAuthService {
         Long userId = jwtTokenProvider.extractUserId(refreshToken);
 
         if (jwtTokenProvider.isExpiredRefreshToken(refreshToken)) {
-            return authTokensGenerator.generate(userId);
+            throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.");
         } else {
             return authTokensGenerator.refreshAccessToken(userId, refreshToken);
         }
