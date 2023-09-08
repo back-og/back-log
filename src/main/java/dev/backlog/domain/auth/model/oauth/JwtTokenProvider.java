@@ -3,9 +3,12 @@ package dev.backlog.domain.auth.model.oauth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,7 +48,13 @@ public class JwtTokenProvider {
                     .parseClaimsJws(accessToken)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new IllegalArgumentException("만료된 토큰입니다.");
+            throw new IllegalArgumentException("JWT 토큰이 만료되었습니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new IllegalArgumentException("JWT 토큰의 형식이 적절하지 않습니다.");
+        } catch (MalformedJwtException e) {
+            throw new IllegalArgumentException("JWT 토큰이 올바르게 구성되지 않았거나, 적절하지 않게 수정되었습니다.");
+        } catch (SignatureException e) {
+            throw new IllegalArgumentException("JWT 토큰의 서명 검증에 실패하였습니다.");
         }
     }
 
