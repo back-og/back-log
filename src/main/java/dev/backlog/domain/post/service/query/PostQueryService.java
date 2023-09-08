@@ -42,10 +42,8 @@ public class PostQueryService {
         List<Comment> comments = commentJpaRepository.findAllByPost(post);
 
         if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, userId))) {
-            Long currentViewCount = post.getViewCount();
-            Long increasedViewCount = currentViewCount + 1;
             postCacheRepository.save(new ViewHistory(postId, userId));
-            post.updateViewCount(increasedViewCount);
+            post.increaseViewCount();
         }
         return PostResponse.from(post, comments);
     }
