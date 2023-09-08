@@ -151,7 +151,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         );
     }
 
-    @DisplayName("사용자와 시리즈 이름으로 게시글들을 과거순으로 조회할 수 있다.")
+    @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글들을 과거순으로 조회할 수 있다.")
     @Test
     void findPostsByUserAndSeries() {
         //given
@@ -162,7 +162,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsByUserAndSeries(user.getId(), series.getName(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
 
         //then
         assertAll(

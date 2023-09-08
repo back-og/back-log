@@ -35,8 +35,6 @@ public class PostController {
     private final PostService postService;
     private final PostQueryService postQueryService;
 
-    // TODO: 2023/09/06 userId에서 nickname으로 변경
-
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, AuthInfo authInfo) {
         Long postId = postService.create(request, authInfo);
@@ -45,9 +43,9 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
-                                                                                  Long userId,
+                                                                                  String nickname,
                                                                                   @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(userId, series, pageable);
+        PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
         return ResponseEntity.ok(seriesPosts);
     }
 

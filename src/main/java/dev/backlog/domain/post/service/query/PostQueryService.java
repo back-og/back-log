@@ -62,8 +62,8 @@ public class PostQueryService {
         return PostSliceResponse.from(postSummaryResponses);
     }
 
-    public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(Long userId, String seriesName, Pageable pageable) {
-        User user = userJpaRepository.findById(userId)
+    public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
+        User user = userJpaRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Series series = seriesJpaRepository.findByUserAndName(user, seriesName)
                 .orElse(null);

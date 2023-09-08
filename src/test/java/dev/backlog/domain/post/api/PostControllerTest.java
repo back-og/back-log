@@ -164,7 +164,7 @@ class PostControllerTest extends ControllerTestConfig {
                 );
     }
 
-    @DisplayName("사용자와 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
+    @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
     @Test
     void findSeriesPosts() throws Exception {
         //given
