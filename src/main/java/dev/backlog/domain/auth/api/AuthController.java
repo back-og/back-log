@@ -1,10 +1,10 @@
 package dev.backlog.domain.auth.api;
 
 import dev.backlog.domain.auth.AuthTokens;
-import dev.backlog.domain.auth.dto.RefreshTokenRequest;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.auth.service.OAuthService;
+import dev.backlog.domain.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,8 +45,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthTokens> refresh(@RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(oAuthService.refresh(request.refreshToken()));
+    public ResponseEntity<AuthTokens> refresh(AuthInfo authInfo) {
+        return ResponseEntity.ok(oAuthService.refresh(authInfo.userId(), authInfo.refreshToken()));
     }
 
 }
