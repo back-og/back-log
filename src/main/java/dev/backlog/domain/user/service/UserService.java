@@ -32,6 +32,13 @@ public class UserService {
         updateUserByRequest(user, request);
     }
 
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 찾을 수 없습니다."));
+        user.markUserAsDeleted();
+    }
+
     private void updateUserByRequest(User user, UserUpdateRequest request) {
         user.updateNickName(request.nickname());
         user.updateEmail(request.email());
