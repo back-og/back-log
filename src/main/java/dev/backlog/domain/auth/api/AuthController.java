@@ -1,6 +1,7 @@
 package dev.backlog.domain.auth.api;
 
 import dev.backlog.domain.auth.AuthTokens;
+import dev.backlog.domain.auth.dto.RefreshTokenRequest;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.auth.service.OAuthService;
@@ -44,8 +45,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthTokens> renew(@RequestParam String refreshToken) {
-        return ResponseEntity.ok(oAuthService.refresh(refreshToken));
+    public ResponseEntity<AuthTokens> renew(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(oAuthService.refresh(request.refreshToken()));
     }
 
 }
