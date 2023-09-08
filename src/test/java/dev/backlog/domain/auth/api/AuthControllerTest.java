@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.Schema;
 import dev.backlog.common.config.ControllerTestConfig;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.domain.auth.AuthTokens;
+import dev.backlog.domain.auth.dto.RefreshTokenRequest;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.auth.service.OAuthService;
@@ -155,6 +156,7 @@ class AuthControllerTest extends ControllerTestConfig {
     void updateAccessAndRefreshToken() throws Exception {
         AuthTokens authTokens = 토큰생성();
         String expiredRefreshToken = authTokens.refreshToken();
+        RefreshTokenRequest request = new RefreshTokenRequest(expiredRefreshToken);
         AuthTokens newAuthTokens = AuthTokens.of(
                 "newGeneratedAccessToken",
                 "newGeneratedRefreshToken",
@@ -165,16 +167,16 @@ class AuthControllerTest extends ControllerTestConfig {
 
         mockMvc.perform(post("/api/auth/v2/refresh-token")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(expiredRefreshToken)
-                        .param("refreshToken", expiredRefreshToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
-                .andDo(document("renew-token",
+                .andDo(document("renew-access-and-refresh-token",
                                 resourceDetails().tag("Auth").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                queryParameters(
-                                        parameterWithName("refreshToken").description("리프레시 토큰")
+                                requestFields(
+                                        fieldWithPath("refreshToken").description("리프레시 토큰")
                                 ),
                                 responseFields(
                                         fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
@@ -196,6 +198,7 @@ class AuthControllerTest extends ControllerTestConfig {
     void updateAccessToken() throws Exception {
         AuthTokens authTokens = 토큰생성();
         String refreshToken = authTokens.refreshToken();
+        RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
         AuthTokens newAuthTokens = AuthTokens.of(
                 "newGeneratedAccessToken",
                 refreshToken,
@@ -206,16 +209,16 @@ class AuthControllerTest extends ControllerTestConfig {
 
         mockMvc.perform(post("/api/auth/v2/refresh-token")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(refreshToken)
-                        .param("refreshToken", refreshToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
-                .andDo(document("renew-token",
+                .andDo(document("renew-access-token",
                                 resourceDetails().tag("Auth").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                queryParameters(
-                                        parameterWithName("refreshToken").description("리프레시 토큰")
+                                requestFields(
+                                        fieldWithPath("refreshToken").description("리프레시 토큰")
                                 ),
                                 responseFields(
                                         fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
