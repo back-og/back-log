@@ -7,6 +7,8 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.model.Post;
+import dev.backlog.domain.post.model.ViewHistory;
+import dev.backlog.domain.post.model.repository.PostCacheRepository;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
@@ -16,11 +18,9 @@ import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -28,14 +28,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PostQueryService {
 
-    private static final String REDIS_KEY_PREFIX = "user:%s:post:%s";
-
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
-    private final CommentJpaRepository commentJpaRepository;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final PostCacheRepository postCacheRepository;
     private final UserJpaRepository userJpaRepository;
     private final SeriesJpaRepository seriesJpaRepository;
+    private final CommentJpaRepository commentJpaRepository;
     private final LikeJpaRepository likeJpaRepository;
 
     @Transactional
@@ -43,13 +41,9 @@ public class PostQueryService {
         Post post = postRepository.getById(postId);
         List<Comment> comments = commentJpaRepository.findAllByPost(post);
 
-        String userAndPostRedisKey = String.format(REDIS_KEY_PREFIX, userId, postId);
-        if (Boolean.FALSE.equals(redisTemplate.hasKey(userAndPostRedisKey))) {
-            Long currentViewCount = post.getViewCount();
-            Long increasedViewCount = currentViewCount + 1;
-            redisTemplate.opsForValue().set(userAndPostRedisKey, String.valueOf(increasedViewCount));
-            redisTemplate.expire(userAndPostRedisKey, Duration.ofHours(3));
-            post.updateViewCount(increasedViewCount);
+        if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, userId))) {
+            postCacheRepository.save(new ViewHistory(postId, userId));
+            post.increaseViewCount();
         }
         return PostResponse.from(post, comments);
     }

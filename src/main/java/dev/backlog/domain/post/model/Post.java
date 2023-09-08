@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -90,17 +89,14 @@ public class Post extends BaseEntity {
         this.path = path;
     }
 
-    public void updateViewCount(Long viewCount) {
-        if (Objects.isNull(viewCount) || viewCount <= NEGATIVE_NUMBER) {
-            throw new IllegalArgumentException("잘못된 조회수입니다.");
-        }
-        this.viewCount = viewCount;
-    }
-
     public void verifyPostOwner(User user) {
         if (!this.user.equals(user)) {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+    }
+
+    public void increaseViewCount() {
+        this.viewCount = viewCount + 1;
     }
 
     public void updateTitle(String title) {
@@ -118,7 +114,6 @@ public class Post extends BaseEntity {
     public void updateIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
-
 
     public void updateThumbnailImage(String thumbnailImage) {
         this.thumbnailImage = thumbnailImage;

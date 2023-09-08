@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
 public class RepositoryTest {
 
     @TestConfiguration
-    public static class QueryDslTestConfig {
+    static class QueryDslTestConfig {
 
         @Bean
         public PostRepository postRepository(PostJpaRepository postJpaRepository) {
