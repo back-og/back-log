@@ -170,7 +170,7 @@ class AuthControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                 )
-                .andDo(document("renew-access-and-refresh-token",
+                .andDo(document("refresh-token",
                                 resourceDetails().tag("Auth").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
@@ -212,7 +212,7 @@ class AuthControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                 )
-                .andDo(document("renew-access-token",
+                .andDo(document("refresh-access-token",
                                 resourceDetails().tag("Auth").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),

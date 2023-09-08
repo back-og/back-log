@@ -57,7 +57,7 @@ public class OAuthService {
         if (jwtTokenProvider.isExpiredRefreshToken(refreshToken)) {
             return authTokensGenerator.generate(userId);
         } else {
-            return authTokensGenerator.renewAccessToken(userId, refreshToken);
+            return authTokensGenerator.refreshAccessToken(userId, refreshToken);
         }
     }
 

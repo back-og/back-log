@@ -140,7 +140,7 @@ class OAuthServiceTest {
 
         when(jwtTokenProvider.extractUserId(expiredRefreshToken)).thenReturn(userId);
         when(jwtTokenProvider.isExpiredRefreshToken(expiredRefreshToken)).thenReturn(false);
-        when(authTokensGenerator.renewAccessToken(userId, expiredRefreshToken)).thenReturn(newAuthTokens);
+        when(authTokensGenerator.refreshAccessToken(userId, expiredRefreshToken)).thenReturn(newAuthTokens);
 
         AuthTokens refreshAuthTokens = oAuthService.refresh(expiredRefreshToken);
 
