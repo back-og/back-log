@@ -33,16 +33,16 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
-        User user = userJpaRepository.findById(userId)
+    public void updatePost(PostUpdateRequest request, Long postId, AuthInfo authInfo) {
+        User user = userJpaRepository.findById(authInfo.userId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Post post = postRepository.getById(postId);
-        updatePostByRequest(post, request);
         Series series = seriesJpaRepository.findByUserAndName(user, request.series())
                 .orElse(null);
 
-        postHashtagService.associatePostWithHashtags(request.hashtags(), post);
+        updatePostByRequest(post, request);
         post.updateSeries(series);
+        postHashtagService.associatePostWithHashtags(request.hashtags(), post);
     }
 
     public void deletePost(Long postId, Long userId) {
