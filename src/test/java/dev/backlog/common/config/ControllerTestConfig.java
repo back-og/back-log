@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith({RestDocumentationExtension.class})
 public abstract class ControllerTestConfig {
 
-    protected final String jwtToken = "Bearer aaaaaaaa.bbbbbbb.ccccccc";
+    protected static final String TOKEN = "Bearer aaaaaaaa.bbbbbbb.ccccccc";
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 

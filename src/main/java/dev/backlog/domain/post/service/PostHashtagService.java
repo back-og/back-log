@@ -42,15 +42,15 @@ public class PostHashtagService {
         }
     }
 
+    private Hashtag findOrCreate(String hashtag) {
+        return hashtagJpaRepository.findByName(hashtag)
+                .orElseGet(() -> hashtagJpaRepository.save(new Hashtag(hashtag)));
+    }
+
     private List<Hashtag> findHashtags(Set<String> hashtags) {
         return hashtags.stream()
                 .map(this::findOrCreate)
                 .toList();
-    }
-
-    private Hashtag findOrCreate(String hashtag) {
-        return hashtagJpaRepository.findByName(hashtag)
-                .orElseGet(() -> hashtagJpaRepository.save(new Hashtag(hashtag)));
     }
 
 }
