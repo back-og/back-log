@@ -15,7 +15,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -123,7 +122,6 @@ class UserControllerTest extends ControllerTestConfig {
     @DisplayName("로그인 되어있는 자신의 프로필을 수정할 수 있다.")
     @Test
     void updateUser() throws Exception {
-        Long userId = 1000L;
         UserUpdateRequest request = new UserUpdateRequest(
                 "새닉네임",
                 "새이메일",
@@ -131,8 +129,6 @@ class UserControllerTest extends ControllerTestConfig {
                 "새소개",
                 "새블로그제목"
         );
-
-        doNothing().when(userService).updateProfile(request, userId);
 
         mockMvc.perform(put("/api/users/me")
                         .accept(MediaType.APPLICATION_JSON)
