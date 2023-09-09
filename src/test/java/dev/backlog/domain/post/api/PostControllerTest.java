@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -72,7 +71,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("post-create",
-                                resourceDetails().tag("게시물").description("게시물 상세 조회")
+                        resourceDetails().tag("게시물").description("게시물 생성 요청")
                                         .requestSchema(Schema.schema("PostCreateRequest")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
@@ -135,7 +134,6 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("comments[].writer.nickname").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
                                         fieldWithPath("comments[].content").type(JsonFieldType.STRING).description("댓글 본문"),
                                         fieldWithPath("comments[].createdAt").type(JsonFieldType.NULL).description("댓글 작성 시간")
-
                                 )
                         )
                 );
@@ -361,7 +359,7 @@ class PostControllerTest extends ControllerTestConfig {
                 "시리즈",
                 "변경된 제목",
                 "변경된 내용",
-                Set.of("변경된 해쉬태그"),
+                List.of("변경된 해쉬태그"),
                 "변경된 요약",
                 false,
                 "변경된 URL",

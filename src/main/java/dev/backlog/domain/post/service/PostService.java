@@ -24,17 +24,13 @@ public class PostService {
     private final SeriesJpaRepository seriesJpaRepository;
 
     public Long create(PostCreateRequest request, AuthInfo authInfo) {
-        User user = userJpaRepository.findById(authInfo.userId())
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Series series = seriesJpaRepository.findByUserAndName(user, request.series())
-                .orElse(null);
+        User user = findUserById(authInfo.userId());
+        Series series = findSeriesByUserAndName(user, request.series());
         Post post = request.toEntity(series, user);
 
-        Post savedPost = postRepository.save(post);
-        if (request.hashtags() != null) {
-            postHashtagService.save(request.hashtags(), post);
-        }
-        return savedPost.getId();
+        postHashtagService.associatePostWithHashtags(request.hashtags(), post);
+
+        return postRepository.save(post).getId();
     }
 
     public void updatePost(PostUpdateRequest request, Long postId, Long userId) {
@@ -44,11 +40,9 @@ public class PostService {
         updatePostByRequest(post, request);
         Series series = seriesJpaRepository.findByUserAndName(user, request.series())
                 .orElse(null);
+
+        postHashtagService.associatePostWithHashtags(request.hashtags(), post);
         post.updateSeries(series);
-        postHashtagService.deleteAllByPost(post);
-        if (request.hashtags() != null) {
-            postHashtagService.save(request.hashtags(), post);
-        }
     }
 
     public void deletePost(Long postId, Long userId) {
@@ -58,6 +52,16 @@ public class PostService {
 
         post.verifyPostOwner(user);
         postRepository.delete(post);
+    }
+
+    private User findUserById(Long userId) {
+        return userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+    }
+
+    private Series findSeriesByUserAndName(User user, String seriesName) {
+        return seriesJpaRepository.findByUserAndName(user, seriesName)
+                .orElse(null);
     }
 
     private void updatePostByRequest(Post post, PostUpdateRequest request) {

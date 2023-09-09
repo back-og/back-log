@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Set;
 
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
@@ -149,7 +148,7 @@ class PostServiceTest extends TestContainerConfig {
                 null,
                 "변경된 제목",
                 "변경된 내용",
-                Set.of("변경된 해쉬태그"),
+                List.of("변경된 해쉬태그"),
                 "변경된 요약",
                 false,
                 "변경된 URL",
