@@ -5,7 +5,7 @@ import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 
-import java.util.Set;
+import java.util.List;
 
 public class DtoFixture {
 
@@ -31,7 +31,7 @@ public class DtoFixture {
         return new PostCreateRequest(
                 "시리즈",
                 "제목", "내용",
-                Set.of("해쉬태그", "해쉬태그1"),
+                List.of("해쉬태그", "해쉬태그1"),
                 "요약",
                 true,
                 "썸네일",

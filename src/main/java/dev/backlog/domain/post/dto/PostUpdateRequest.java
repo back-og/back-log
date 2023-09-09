@@ -1,12 +1,12 @@
 package dev.backlog.domain.post.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public record PostUpdateRequest(
         String series,
         String title,
         String content,
-        Set<String> hashtags,
+        List<String> hashtags,
         String summary,
         boolean isPublic,
         String thumbnailImage,
