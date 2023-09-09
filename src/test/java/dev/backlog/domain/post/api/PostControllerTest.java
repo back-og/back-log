@@ -26,10 +26,8 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -309,14 +307,14 @@ class PostControllerTest extends ControllerTestConfig {
     @Test
     void updatePostTest() throws Exception {
         final Long postId = 1L;
-        PostUpdateRequest request = getPostUpdateRequest();
-        doNothing().when(postService).updatePost(any(PostUpdateRequest.class), anyLong(), anyLong());
+        final Long userId = 1L;
+        PostUpdateRequest request = DtoFixture.게시물수정요청();
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
         mockMvc.perform(put("/api/posts/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("AuthrizationCode", "asdasd")
+                        .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent())
                 .andDo(document("post-update",
                                 resourceDetails().tag("게시물").description("게시물 업데이트")
                                         .requestSchema(Schema.schema("PostUpdateRequest")),
@@ -331,7 +329,7 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("thumbnailImage").type(JsonFieldType.STRING).description("썸네일 URL"),
                                         fieldWithPath("path").type(JsonFieldType.STRING).description("게시물 경로"))
                         )
-                );
+                ).andExpect(status().isNoContent());
     }
 
     @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
@@ -352,19 +350,6 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.numberOfElements").value(postSliceResponse.numberOfElements()))
                 .andExpect(jsonPath("$.hasNext").value(false))
                 .andReturn();
-    }
-
-    private PostUpdateRequest getPostUpdateRequest() {
-        return new PostUpdateRequest(
-                "시리즈",
-                "변경된 제목",
-                "변경된 내용",
-                List.of("변경된 해쉬태그"),
-                "변경된 요약",
-                false,
-                "변경된 URL",
-                "변경된 경로"
-        );
     }
 
     private PostResponse getPostResponse(
