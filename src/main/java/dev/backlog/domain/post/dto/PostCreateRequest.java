@@ -4,13 +4,13 @@ import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.model.User;
 
-import java.util.Set;
+import java.util.List;
 
 public record PostCreateRequest(
         String series,
         String title,
         String content,
-        Set<String> hashtags,
+        List<String> hashtags,
         String summary,
         boolean isPublic,
         String thumbnailImage,
