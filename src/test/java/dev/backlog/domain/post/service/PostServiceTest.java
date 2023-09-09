@@ -102,14 +102,15 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 업데이트의 대한 정보를 받아서 게시물을 업데이트한다.")
     @Test
     void updatePostTest() {
-        userJpaRepository.save(유저1);
-        postRepository.save(게시물1);
+        User user = userJpaRepository.save(유저1);
+        Post post = postRepository.save(게시물1);
         PostUpdateRequest request = 게시물수정요청();
-        postService.updatePost(request, 게시물1.getId(), 유저1.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId());
 
-        Post 변경된_게시물 = postRepository.findById(게시물1.getId()).get();
+        postService.updatePost(request, post.getId(), authInfo);
+
+        Post 변경된_게시물 = postRepository.findById(post.getId()).get();
         List<PostHashtag> postHashtags = postHashtagRepository.findByPost(변경된_게시물);
-
         assertAll(
                 () -> assertThat(변경된_게시물.getTitle()).isEqualTo("변경된 제목"),
                 () -> assertThat(변경된_게시물.getContent()).isEqualTo("변경된 내용"),
