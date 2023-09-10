@@ -117,4 +117,9 @@ public class User {
         this.deletedDate = LocalDate.now();
     }
 
+    public void unmarkUserAsDeleted() {
+        this.isDeleted = false;
+        this.deletedDate = LocalDate.now();
+    }
+
 }
