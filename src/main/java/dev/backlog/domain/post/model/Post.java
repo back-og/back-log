@@ -4,6 +4,7 @@ import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.model.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,6 +46,9 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostHashtag> postHashtags = new ArrayList<>();
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -93,6 +97,15 @@ public class Post extends BaseEntity {
         if (!this.user.equals(user)) {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+    }
+
+    public void addAllPostHashtag(List<PostHashtag> postHashtags) {
+        this.postHashtags.clear();
+        this.postHashtags.addAll(postHashtags);
+    }
+
+    public void removeAllHashtag() {
+        this.postHashtags.clear();
     }
 
     public void increaseViewCount() {

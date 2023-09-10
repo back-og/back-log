@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Set;
 
+import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -104,7 +104,7 @@ class PostServiceTest extends TestContainerConfig {
     void updatePostTest() {
         userJpaRepository.save(유저1);
         postRepository.save(게시물1);
-        PostUpdateRequest request = getPostUpdateRequest();
+        PostUpdateRequest request = 게시물수정요청();
         postService.updatePost(request, 게시물1.getId(), 유저1.getId());
 
         Post 변경된_게시물 = postRepository.findById(게시물1.getId()).get();
@@ -142,19 +142,6 @@ class PostServiceTest extends TestContainerConfig {
         Long userId = 유저1.getId();
         Assertions.assertThatThrownBy(() -> postService.deletePost(postId, userId + 1))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    private PostUpdateRequest getPostUpdateRequest() {
-        return new PostUpdateRequest(
-                null,
-                "변경된 제목",
-                "변경된 내용",
-                Set.of("변경된 해쉬태그"),
-                "변경된 요약",
-                false,
-                "변경된 URL",
-                "변경된 경로"
-        );
     }
 
 }

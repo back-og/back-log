@@ -2,6 +2,7 @@ package dev.backlog.domain.post.api;
 
 import com.epages.restdocs.apispec.Schema;
 import dev.backlog.common.config.ControllerTestConfig;
+import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.domain.comment.dto.CommentResponse;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostResponse;
@@ -21,15 +22,18 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -57,23 +61,36 @@ class PostControllerTest extends ControllerTestConfig {
     void createTest() throws Exception {
         Long userId = 1L;
         Long postId = 2L;
-        PostCreateRequest request = new PostCreateRequest(
-                "series",
-                "제목", "내용",
-                null,
-                "요약",
-                true,
-                "썸네일",
-                "경로"
-        );
-        when(jwtTokenProvider.extractUserId(jwtToken)).thenReturn(userId);
-        when(postService.create(any(PostCreateRequest.class), any()))
+        PostCreateRequest request = DtoFixture.게시물생성요청();
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
+        when(postService.create(eq(request), any()))
                 .thenReturn(postId);
 
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", jwtToken)
+                        .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
+                .andDo(document("post-create",
+                        resourceDetails().tag("게시물").description("게시물 생성 요청")
+                                        .requestSchema(Schema.schema("PostCreateRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("series").type(JsonFieldType.STRING).description("시리즈"),
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+                                        fieldWithPath("hashtags").type(JsonFieldType.ARRAY).description("해시태그"),
+                                        fieldWithPath("summary").type(JsonFieldType.STRING).description("요약"),
+                                        fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("공개 여부"),
+                                        fieldWithPath("thumbnailImage").type(JsonFieldType.STRING).description("썸네일 URL"),
+                                        fieldWithPath("path").type(JsonFieldType.STRING).description("게시물 경로")
+                                ),
+                                responseHeaders(
+                                        headerWithName("Location").description("Created Post RedirectURL")
+                                )
+                        )
+                )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/posts/" + postId));
     }
@@ -117,7 +134,6 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("comments[].writer.nickname").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
                                         fieldWithPath("comments[].content").type(JsonFieldType.STRING).description("댓글 본문"),
                                         fieldWithPath("comments[].createdAt").type(JsonFieldType.NULL).description("댓글 작성 시간")
-
                                 )
                         )
                 );
@@ -343,7 +359,7 @@ class PostControllerTest extends ControllerTestConfig {
                 "시리즈",
                 "변경된 제목",
                 "변경된 내용",
-                Set.of("변경된 해쉬태그"),
+                List.of("변경된 해쉬태그"),
                 "변경된 요약",
                 false,
                 "변경된 URL",

@@ -4,48 +4,36 @@ import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepositor
 import dev.backlog.domain.hashtag.model.Hashtag;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
-import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toCollection;
 
 @Service
 @RequiredArgsConstructor
 public class PostHashtagService {
 
-    private final PostHashtagRepository postHashtagRepository;
     private final HashtagJpaRepository hashtagJpaRepository;
 
-    public void save(Set<String> names, Post post) {
-        List<Hashtag> hashtags = findHashtags(names);
-        List<PostHashtag> postHashtags = hashtags.stream()
-                .map(hashtag -> new PostHashtag(hashtag, post))
-                .toList();
-
-        postHashtagRepository.saveAll(postHashtags);
-    }
-
-    public void deleteAllByPost(Post post) {
-        List<PostHashtag> postHashtags = postHashtagRepository.findByPost(post);
-
-        List<Hashtag> hashtags = postHashtags.stream()
-                .map(PostHashtag::getHashtag)
-                .toList();
-
-        postHashtagRepository.deleteAllByPost(post);
-        for (Hashtag hashtag : hashtags) {
-            if (!postHashtagRepository.existsByHashtag(hashtag)) {
-                hashtagJpaRepository.delete(hashtag);
-            }
+    public void associatePostWithHashtags(List<String> names, Post post) {
+        if (names == null || names.isEmpty()) {
+            post.removeAllHashtag();
+            return;
         }
+        Set<String> hashtags = removeDuplicates(names);
+        List<PostHashtag> postHashtags = hashtags.stream()
+                .map(name -> new PostHashtag(findOrCreate(name), post))
+                .toList();
+        post.addAllPostHashtag(postHashtags);
     }
 
-    private List<Hashtag> findHashtags(Set<String> hashtags) {
-        return hashtags.stream()
-                .map(this::findOrCreate)
-                .toList();
+    private Set<String> removeDuplicates(List<String> names) {
+        return names.stream()
+                .collect(toCollection(LinkedHashSet::new));
     }
 
     private Hashtag findOrCreate(String hashtag) {
