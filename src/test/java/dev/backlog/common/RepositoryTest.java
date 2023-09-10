@@ -11,17 +11,20 @@ import dev.backlog.domain.post.infra.jpa.query.PostQueryDslRepositoryImpl;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
+import dev.backlog.domain.series.infra.SeriesRepositoryAdaptor;
+import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
-@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTest.QueryDslTestConfig.class})
+@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTest.RepositoryAdaptorTestConfig.class})
 public class RepositoryTest {
 
     @TestConfiguration
-    static class QueryDslTestConfig {
+    static class RepositoryAdaptorTestConfig {
 
         @Bean
         public PostRepository postRepository(PostJpaRepository postJpaRepository) {
@@ -36,6 +39,11 @@ public class RepositoryTest {
         @Bean
         public PostHashtagRepository postHashtagRepository(PostHashtagJpaRepository postHashtagJpaRepository) {
             return new PostHashtagRepositoryAdaptor(postHashtagJpaRepository);
+        }
+
+        @Bean
+        public SeriesRepository seriesRepository(SeriesJpaRepository seriesJpaRepository) {
+            return new SeriesRepositoryAdaptor(seriesJpaRepository);
         }
 
     }

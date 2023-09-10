@@ -111,30 +111,30 @@ class PostControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN))
                 .andExpect(status().isOk())
                 .andDo(document("post-find",
-                        resourceDetails().tag("게시물").description("게시물 상세 조회")
-                                .responseSchema(Schema.schema("PostResponse")),
-                        pathParameters(parameterWithName("postId").description("게시물 식별자")),
-                        responseFields(
-                                fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
-                                fieldWithPath("series").type(JsonFieldType.OBJECT).description("시리즈"),
-                                fieldWithPath("series.seriesId").type(JsonFieldType.NUMBER).description("시리즈 번호"),
-                                fieldWithPath("series.seriesName").type(JsonFieldType.STRING).description("시리즈 이름"),
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
-                                fieldWithPath("viewCount").type(JsonFieldType.NUMBER).description("게시글 조회수"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 본문"),
-                                fieldWithPath("summary").type(JsonFieldType.STRING).description("게시글 요약"),
-                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("게시글 공개 여부"),
-                                fieldWithPath("path").type(JsonFieldType.STRING).description("게시글 저장 경로"),
-                                fieldWithPath("createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
-                                fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("댓글"),
-                                fieldWithPath("comments[].commentId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
-                                fieldWithPath("comments[].writer").type(JsonFieldType.OBJECT).description("댓글 작성자"),
-                                fieldWithPath("comments[].writer.userId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
-                                fieldWithPath("comments[].writer.nickname").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
-                                fieldWithPath("comments[].content").type(JsonFieldType.STRING).description("댓글 본문"),
-                                fieldWithPath("comments[].createdAt").type(JsonFieldType.NULL).description("댓글 작성 시간")
-                        )
+                                resourceDetails().tag("게시물").description("게시물 상세 조회")
+                                        .responseSchema(Schema.schema("PostResponse")),
+                                pathParameters(parameterWithName("postId").description("게시물 식별자")),
+                                responseFields(
+                                        fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
+                                        fieldWithPath("series").type(JsonFieldType.OBJECT).description("시리즈"),
+                                        fieldWithPath("series.seriesId").type(JsonFieldType.NUMBER).description("시리즈 번호"),
+                                        fieldWithPath("series.seriesName").type(JsonFieldType.STRING).description("시리즈 이름"),
+                                        fieldWithPath("userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
+                                        fieldWithPath("viewCount").type(JsonFieldType.NUMBER).description("게시글 조회수"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 본문"),
+                                        fieldWithPath("summary").type(JsonFieldType.STRING).description("게시글 요약"),
+                                        fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("게시글 공개 여부"),
+                                        fieldWithPath("path").type(JsonFieldType.STRING).description("게시글 저장 경로"),
+                                        fieldWithPath("createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("댓글"),
+                                        fieldWithPath("comments[].commentId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
+                                        fieldWithPath("comments[].writer").type(JsonFieldType.OBJECT).description("댓글 작성자"),
+                                        fieldWithPath("comments[].writer.userId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
+                                        fieldWithPath("comments[].writer.nickname").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
+                                        fieldWithPath("comments[].content").type(JsonFieldType.STRING).description("댓글 본문"),
+                                        fieldWithPath("comments[].createdAt").type(JsonFieldType.NULL).description("댓글 작성 시간")
+                                )
                         )
                 );
     }

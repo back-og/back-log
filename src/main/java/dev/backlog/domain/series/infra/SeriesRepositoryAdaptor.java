@@ -14,6 +14,11 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     private final SeriesJpaRepository seriesJpaRepository;
 
     @Override
+    public Series save(Series series) {
+        return seriesJpaRepository.save(series);
+    }
+
+    @Override
     public Series getByUserAndName(User user, String name) {
         return seriesJpaRepository.findByUserAndName(user, name)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
