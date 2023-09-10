@@ -49,6 +49,7 @@ public class OAuthService {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(oauthProvider, authCode);
         User findUser = userRepository.getByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider());
 
+        checkUserIsDeleted(findUser);
         return authTokensGenerator.generate(findUser.getId());
     }
 
