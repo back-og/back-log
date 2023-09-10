@@ -51,11 +51,11 @@ public class OAuthService {
         return authTokensGenerator.generate(findUser.getId());
     }
 
-    public AuthTokens refresh(Long userId, String token) {
+    public AuthTokens renew(Long userId, String token) {
         if (jwtTokenProvider.isExpiredRefreshToken(token)) {
             throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.");
         } else {
-            return authTokensGenerator.refreshAccessToken(userId, token);
+            return authTokensGenerator.refreshJwtToken(userId, token);
         }
     }
 

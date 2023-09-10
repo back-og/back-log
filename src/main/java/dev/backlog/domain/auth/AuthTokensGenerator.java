@@ -40,7 +40,7 @@ public class AuthTokensGenerator {
                 (accessTokenExpireTime / 1000L));
     }
 
-    public AuthTokens refreshAccessToken(Long userId, String refreshToken) {
+    public AuthTokens refreshJwtToken(Long userId, String refreshToken) {
         long now = (new Date()).getTime();
         Date accessTokenExpiredAt = new Date(now + accessTokenExpireTime);
 

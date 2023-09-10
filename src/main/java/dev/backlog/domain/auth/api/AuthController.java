@@ -44,9 +44,9 @@ public class AuthController {
         return ResponseEntity.ok(oAuthService.login(oAuthProvider, code));
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<AuthTokens> refresh(AuthInfo authInfo) {
-        return ResponseEntity.ok(oAuthService.refresh(authInfo.userId(), authInfo.refreshToken()));
+    @PostMapping("/renew-token")
+    public ResponseEntity<AuthTokens> renew(AuthInfo authInfo) {
+        return ResponseEntity.ok(oAuthService.renew(authInfo.userId(), authInfo.refreshToken()));
     }
 
 }
