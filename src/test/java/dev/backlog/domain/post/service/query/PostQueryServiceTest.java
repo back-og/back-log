@@ -14,6 +14,7 @@ import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.AfterEach;
@@ -131,6 +132,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void findLikedPostsByUser() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
@@ -141,7 +143,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPostsByUser(user.getId(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPostsByUser(authInfo, pageRequest);
 
         //then
         assertAll(

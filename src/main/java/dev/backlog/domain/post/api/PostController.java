@@ -50,9 +50,9 @@ public class PostController {
     }
 
     @GetMapping("/like")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(AuthInfo authInfo,
                                                                                  @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(userId, pageable);
+        PostSliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(authInfo, pageable);
         return ResponseEntity.ok(likedPosts);
     }
 

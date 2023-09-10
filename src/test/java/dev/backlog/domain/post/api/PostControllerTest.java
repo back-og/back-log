@@ -26,7 +26,6 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -69,7 +68,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("post-create",
-                        resourceDetails().tag("게시물").description("게시물 생성 요청")
+                                resourceDetails().tag("게시물").description("게시물 생성 요청")
                                         .requestSchema(Schema.schema("PostCreateRequest")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
@@ -144,6 +143,8 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
@@ -151,7 +152,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc")
-                        .header("AuthorizationCode", "tmp"))
+                        .header("Authorization", TOKEN))
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-like",
                                 resourceDetails().tag("게시물").description("좋아요 누른 게시물 조회")
