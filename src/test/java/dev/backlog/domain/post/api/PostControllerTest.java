@@ -141,7 +141,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("사용자가 좋아요를 누른 게시글 목록을 최신 순서로 반환한다.")
     @Test
-    void findLikedPosts() throws Exception {
+    void findLikedPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -184,7 +184,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
     @Test
-    void findSeriesPosts() throws Exception {
+    void findSeriesPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -226,7 +226,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("게시물 목록을 최신 순서로 조회한다.")
     @Test
-    void findRecentPosts() throws Exception {
+    void findRecentPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -267,7 +267,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("좋아요 많이 받은 순서로 게시물을 조회한다.")
     @Test
-    void findTrendPosts() throws Exception {
+    void findTrendPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
