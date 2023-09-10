@@ -7,7 +7,7 @@ import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
 import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.post.model.ViewHistory;
+import dev.backlog.domain.post.model.UserViewInfo;
 import dev.backlog.domain.post.model.repository.PostCacheRepository;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
@@ -42,7 +42,7 @@ public class PostQueryService {
         List<Comment> comments = commentJpaRepository.findAllByPost(post);
 
         if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, userId))) {
-            postCacheRepository.save(new ViewHistory(postId, userId));
+            postCacheRepository.save(new UserViewInfo(postId, userId));
             post.increaseViewCount();
         }
         return PostResponse.from(post, comments);
