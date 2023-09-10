@@ -11,8 +11,8 @@ import dev.backlog.domain.post.model.UserViewInfo;
 import dev.backlog.domain.post.model.repository.PostCacheRepository;
 import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
@@ -33,14 +33,14 @@ public class PostQueryService {
     private final PostQueryRepository postQueryRepository;
     private final PostCacheRepository postCacheRepository;
     private final UserJpaRepository userJpaRepository;
-    private final SeriesJpaRepository seriesJpaRepository;
-    private final CommentJpaRepository commentJpaRepository;
-    private final LikeJpaRepository likeJpaRepository;
+    private final SeriesRepository seriesRepository;
+    private final CommentJpaRepository commentRepository;
+    private final LikeJpaRepository likeRepository;
 
     @Transactional
     public PostResponse findPostById(Long postId, AuthInfo authInfo) {
         Post post = postRepository.getById(postId);
-        List<Comment> comments = commentJpaRepository.findAllByPost(post);
+        List<Comment> comments = commentRepository.findAllByPost(post);
 
         if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, authInfo.userId()))) {
             postCacheRepository.save(new UserViewInfo(postId, authInfo.userId()));
@@ -66,9 +66,7 @@ public class PostQueryService {
     public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
         User user = userJpaRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-        Series series = seriesJpaRepository.findByUserAndName(user, seriesName)
-                .orElse(null);
-
+        Series series = seriesRepository.getByUserAndName(user, seriesName);
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
                 .map(this::createPostSummaryResponse);
         return PostSliceResponse.from(postSummaryResponses);
@@ -98,11 +96,11 @@ public class PostQueryService {
     }
 
     private int countCommentsByPost(Post post) {
-        return commentJpaRepository.countByPost(post);
+        return commentRepository.countByPost(post);
     }
 
     private int countLikesByPost(Post post) {
-        return likeJpaRepository.countByPost(post);
+        return likeRepository.countByPost(post);
     }
 
 }

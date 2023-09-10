@@ -46,6 +46,11 @@ public class PostRepositoryAdaptor implements PostRepository {
     }
 
     @Override
+    public void deleteAll() {
+        postJpaRepository.deleteAll();
+    }
+
+    @Override
     public Slice<Post> findLikedPostsByUserId(Long userId, Pageable pageable) {
         return postJpaRepository.findLikedPostsByUserId(userId, pageable);
     }

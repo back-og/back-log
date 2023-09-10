@@ -1,4 +1,4 @@
-package dev.backlog.domain.series.infrastructure.persistence;
+package dev.backlog.domain.series.infra.jpa;
 
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.model.User;

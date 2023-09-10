@@ -6,11 +6,11 @@ import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepositor
 import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
+import dev.backlog.domain.post.model.repository.PostRepository;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
@@ -23,11 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
@@ -40,7 +42,7 @@ class PostServiceTest extends TestContainerConfig {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private PostJpaRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
     private CommentJpaRepository commentJpaRepository;
@@ -49,7 +51,7 @@ class PostServiceTest extends TestContainerConfig {
     private LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    private SeriesJpaRepository seriesJpaRepository;
+    private SeriesRepository seriesRepository;
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;
@@ -73,7 +75,7 @@ class PostServiceTest extends TestContainerConfig {
         postHashtagRepository.deleteAll();
         hashtagJpaRepository.deleteAll();
         postRepository.deleteAll();
-        seriesJpaRepository.deleteAll();
+        seriesRepository.deleteAll();
         userJpaRepository.deleteAll();
     }
 
@@ -109,7 +111,7 @@ class PostServiceTest extends TestContainerConfig {
 
         postService.updatePost(request, post.getId(), authInfo);
 
-        Post 변경된_게시물 = postRepository.findById(post.getId()).get();
+        Post 변경된_게시물 = postRepository.getById(post.getId());
         List<PostHashtag> postHashtags = postHashtagRepository.findByPost(변경된_게시물);
         assertAll(
                 () -> assertThat(변경된_게시물.getTitle()).isEqualTo("변경된 제목"),
@@ -129,9 +131,8 @@ class PostServiceTest extends TestContainerConfig {
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
         postService.deletePost(postId, 유저1.getId());
-        boolean result = postRepository.findById(postId).isPresent();
-
-        assertThat(result).isFalse();
+        assertThatThrownBy(() -> postRepository.getById(postId))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("게시물 작성자가 아니면 게시물을 삭제할 수 없다.")
