@@ -90,8 +90,8 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<Void> updatePost(@PathVariable Long postId,
                                            @RequestBody PostUpdateRequest request,
-                                           Long userId) {
-        postService.updatePost(request, postId, userId);
+                                           AuthInfo authInfo) {
+        postService.updatePost(request, postId, authInfo);
         return ResponseEntity.noContent().build();
     }
 

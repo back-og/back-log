@@ -42,7 +42,7 @@ public class DtoFixture {
 
     public static PostUpdateRequest 게시물수정요청() {
         return new PostUpdateRequest(
-                null,
+                "변경된 시리즈",
                 "변경된 제목",
                 "변경된 내용",
                 List.of("변경된 해쉬태그"),
