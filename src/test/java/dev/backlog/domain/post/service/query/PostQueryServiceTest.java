@@ -93,14 +93,15 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
     @Test
-    void findPostById() {
+    void findPostByIdTest() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
         commentJpaRepository.saveAll(댓글_모음);
 
         //when
-        PostResponse postResponse = postQueryService.findPostById(post.getId(), user.getId());
+        PostResponse postResponse = postQueryService.findPostById(post.getId(), authInfo);
 
         //then
         assertThat(postResponse.postId()).isEqualTo(post.getId());
@@ -111,12 +112,13 @@ class PostQueryServiceTest extends TestContainerConfig {
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
         commentJpaRepository.saveAll(댓글_모음);
 
         //when
-        PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), user.getId());
-        PostResponse secondSamePostResponse = postQueryService.findPostById(post.getId(), user.getId());
+        PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
+        PostResponse secondSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
 
         //then
         long increasedViewCount = 1L;

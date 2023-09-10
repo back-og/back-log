@@ -38,12 +38,12 @@ public class PostQueryService {
     private final LikeJpaRepository likeJpaRepository;
 
     @Transactional
-    public PostResponse findPostById(Long postId, Long userId) {
+    public PostResponse findPostById(Long postId, AuthInfo authInfo) {
         Post post = postRepository.getById(postId);
         List<Comment> comments = commentJpaRepository.findAllByPost(post);
 
-        if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, userId))) {
-            postCacheRepository.save(new UserViewInfo(postId, userId));
+        if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, authInfo.userId()))) {
+            postCacheRepository.save(new UserViewInfo(postId, authInfo.userId()));
             post.increaseViewCount();
         }
         return PostResponse.from(post, comments);

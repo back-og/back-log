@@ -70,8 +70,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, Long userId) {
-        PostResponse postResponse = postQueryService.findPostById(postId, userId);
+    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, AuthInfo authInfo) {
+        PostResponse postResponse = postQueryService.findPostById(postId, authInfo);
         return ResponseEntity.ok(postResponse);
     }
 
