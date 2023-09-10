@@ -93,7 +93,7 @@ class PostServiceTest extends TestContainerConfig {
                 "/path"
         );
 
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Long postId = postService.create(request, authInfo);
 
         assertThat(postId).isNotNull();

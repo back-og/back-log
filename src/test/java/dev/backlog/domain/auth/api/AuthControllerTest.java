@@ -4,7 +4,6 @@ import com.epages.restdocs.apispec.Schema;
 import dev.backlog.common.config.ControllerTestConfig;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.domain.auth.AuthTokens;
-import dev.backlog.domain.auth.dto.RefreshTokenRequest;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.auth.service.OAuthService;
@@ -20,6 +19,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static dev.backlog.common.fixture.DtoFixture.토큰생성;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -151,75 +151,30 @@ class AuthControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.expiresIn").value(1000L));
     }
 
-    @DisplayName("리프레시 토큰이 만료되었을 경우 액세스 토큰과 리프레시 토큰을 모두 갱신한다.")
-    @Test
-    void updateAccessAndRefreshToken() throws Exception {
-        AuthTokens authTokens = 토큰생성();
-        String expiredRefreshToken = authTokens.refreshToken();
-        RefreshTokenRequest request = new RefreshTokenRequest(expiredRefreshToken);
-        AuthTokens newAuthTokens = AuthTokens.of(
-                "newGeneratedAccessToken",
-                "newGeneratedRefreshToken",
-                "Bearer ",
-                1000L);
-
-        when(oAuthService.refresh(expiredRefreshToken)).thenReturn(newAuthTokens);
-
-        mockMvc.perform(post("/api/auth/v2/refresh-token")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                )
-                .andDo(document("refresh-token",
-                                resourceDetails().tag("Auth").description("토큰 갱신")
-                                        .responseSchema(Schema.schema("AuthTokens")),
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("refreshToken").description("리프레시 토큰")
-                                ),
-                                responseFields(
-                                        fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
-                                        fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("리프레시 토큰"),
-                                        fieldWithPath("grantType").type(JsonFieldType.STRING).description("Bearer 타입"),
-                                        fieldWithPath("expiresIn").type(JsonFieldType.NUMBER).description("토큰 만료 시간(초)")
-                                )
-                        )
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value("newGeneratedAccessToken"))
-                .andExpect(jsonPath("$.refreshToken").value("newGeneratedRefreshToken"))
-                .andExpect(jsonPath("$.grantType").value("Bearer "))
-                .andExpect(jsonPath("$.expiresIn").value(1000L));
-    }
-
     @DisplayName("리프레시 토큰이 만료되지 않았을 경우 리프레시 토큰으로 액세스 토큰을 갱신한다.")
     @Test
     void updateAccessToken() throws Exception {
-        AuthTokens authTokens = 토큰생성();
-        String refreshToken = authTokens.refreshToken();
-        RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
+        Long userId = 1000L;
+        String token = "토큰";
+        String refreshToken = "refreshToken";
         AuthTokens newAuthTokens = AuthTokens.of(
                 "newGeneratedAccessToken",
                 refreshToken,
                 "Bearer ",
                 1000L);
 
-        when(oAuthService.refresh(refreshToken)).thenReturn(newAuthTokens);
+        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+        when(oAuthService.renew(anyLong(), any())).thenReturn(newAuthTokens);
 
-        mockMvc.perform(post("/api/auth/v2/refresh-token")
-                        .accept(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/auth/v2/renew-token")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
                 )
-                .andDo(document("refresh-access-token",
+                .andDo(document("renew-token",
                                 resourceDetails().tag("Auth").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("refreshToken").description("리프레시 토큰")
-                                ),
                                 responseFields(
                                         fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
                                         fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("리프레시 토큰"),
@@ -230,9 +185,10 @@ class AuthControllerTest extends ControllerTestConfig {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("newGeneratedAccessToken"))
-                .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
                 .andExpect(jsonPath("$.grantType").value("Bearer "))
-                .andExpect(jsonPath("$.expiresIn").value(1000L));
+                .andExpect(jsonPath("$.expiresIn").value(1000L)
+                );
     }
 
 }

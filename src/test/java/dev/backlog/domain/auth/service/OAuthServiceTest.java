@@ -101,30 +101,6 @@ class OAuthServiceTest {
         );
     }
 
-
-    @DisplayName("액세스 토큰과 리프레시 토큰이 모두 만료되었을 경우 액세스 토큰과 리프레시 토큰을 모두 갱신한다.")
-    @Test
-    void updateAccessAndRefreshTokenTest() {
-        Long userId = 1000L;
-        AuthTokens authTokens = 토큰생성();
-        String expiredRefreshToken = authTokens.refreshToken();
-
-        AuthTokens newAuthTokens = AuthTokens.of(
-                "newGeneratedAccessToken",
-                "newGeneratedRefreshToken",
-                "Bearer ",
-                1000L);
-
-        when(jwtTokenProvider.extractUserId(expiredRefreshToken)).thenReturn(userId);
-        when(jwtTokenProvider.isExpiredRefreshToken(expiredRefreshToken)).thenReturn(true); // 리프레시가 만료됐으면
-        when(authTokensGenerator.generate(userId)).thenReturn(newAuthTokens);
-
-        AuthTokens refreshAuthTokens = oAuthService.refresh(expiredRefreshToken);
-
-        assertThat(refreshAuthTokens.accessToken()).isNotEqualTo(authTokens.accessToken());
-        assertThat(refreshAuthTokens.refreshToken()).isNotEqualTo(authTokens.refreshToken());
-    }
-
     @DisplayName("액세스 토큰이 만료되었고 리프레시 토큰이 만료되지 않았을 경우 리프레시 토큰으로 액세스 토큰을 갱신한다.")
     @Test
     void updateAccessTokenTest() {
@@ -138,11 +114,10 @@ class OAuthServiceTest {
                 "Bearer ",
                 3600L);
 
-        when(jwtTokenProvider.extractUserId(expiredRefreshToken)).thenReturn(userId);
         when(jwtTokenProvider.isExpiredRefreshToken(expiredRefreshToken)).thenReturn(false);
-        when(authTokensGenerator.refreshAccessToken(userId, expiredRefreshToken)).thenReturn(newAuthTokens);
+        when(authTokensGenerator.refreshJwtToken(userId, expiredRefreshToken)).thenReturn(newAuthTokens);
 
-        AuthTokens refreshAuthTokens = oAuthService.refresh(expiredRefreshToken);
+        AuthTokens refreshAuthTokens = oAuthService.renew(userId, expiredRefreshToken);
 
         assertThat(refreshAuthTokens.accessToken()).isNotEqualTo(authTokens.accessToken());
         assertThat(refreshAuthTokens.refreshToken()).isEqualTo(expiredRefreshToken);
