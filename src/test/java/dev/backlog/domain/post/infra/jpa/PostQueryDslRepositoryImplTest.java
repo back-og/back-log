@@ -67,7 +67,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     @DisplayName("오늘, 이번 주, 이번 달, 올해 필터링을 통해 좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"today, week, month, year, default"})
-    void findLikedPostsByTimePeriod(String timePeriod) {
+    void findLikedPostsByTimePeriodTest(String timePeriod) {
         //given
         User user1 = 유저1();
         User user2 = 유저1();

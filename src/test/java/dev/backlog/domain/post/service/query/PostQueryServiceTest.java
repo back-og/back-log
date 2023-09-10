@@ -131,7 +131,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("사용자가 좋아요를 누른 글들을 최신 순으로 조회할 수 있다.")
     @Test
-    void findLikedPostsByUser() {
+    void findLikedPostsByUserTest() {
         //given
         User user = userJpaRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId());
@@ -157,7 +157,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글들을 과거순으로 조회할 수 있다.")
     @Test
-    void findPostsByUserAndSeries() {
+    void findPostsByUserAndSeriesTest() {
         //given
         User user = userJpaRepository.save(유저1);
         Series series = seriesJpaRepository.save(시리즈1(user));
@@ -178,7 +178,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("최신 순서로 등록된 게시물 목록을 조회할 수 있다.")
     @Test
-    void findPostsInLatestOrder() {
+    void findPostsInLatestOrderTest() {
         //given
         userJpaRepository.save(유저1);
         postRepository.saveAll(게시물_모음);
@@ -199,7 +199,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @DisplayName("좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"today, week, month, year, default"})
-    void findLikedPosts(String timePeriod) {
+    void findLikedPostsTest(String timePeriod) {
         //given
         User user1 = 유저1();
         User user2 = 유저1();

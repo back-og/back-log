@@ -59,7 +59,7 @@ class PostRepositoryTest extends RepositoryTest {
 
     @DisplayName("공개된 게시글 중에서 특정 사용자가 남의 글에 좋아요를 누른 글들을 조회할 수 있다.")
     @Test
-    void findLikedPostsByUserId() {
+    void findLikedPostsByUserIdTest() {
         //given
         User user = userJpaRepository.save(유저1);
 
@@ -83,7 +83,7 @@ class PostRepositoryTest extends RepositoryTest {
 
     @DisplayName("사용자와 시리즈 이름으로 게시글들을 조회할 수 있다.")
     @Test
-    void findAllByUserAndSeries() {
+    void findAllByUserAndSeriesTest() {
         //given
         User user = userJpaRepository.save(유저1);
         Series series = seriesJpaRepository.save(시리즈1(user));

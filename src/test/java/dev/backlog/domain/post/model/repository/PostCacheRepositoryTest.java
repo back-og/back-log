@@ -17,7 +17,7 @@ class PostCacheRepositoryTest extends TestContainerConfig {
 
     @DisplayName("조회 내역을 저장할 수 있다.")
     @Test
-    void save() {
+    void saveTest() {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -32,7 +32,7 @@ class PostCacheRepositoryTest extends TestContainerConfig {
 
     @DisplayName("게시글 번호와 유저 아이디로 조회 내역 여부를 판단할 수 있다.")
     @Test
-    void existsByPostIdAndUserId() {
+    void existsByPostIdAndUserIdTest() {
         //given
         final long postId = 1l;
         final long userId = 1l;
