@@ -1,5 +1,6 @@
 package dev.backlog.domain.user.infrastructure;
 
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.user.infrastructure.jpa.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static dev.backlog.domain.user.exception.UserErrorCode.USER_NOT_FOUNT;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,7 +31,9 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getById(Long userId) {
         return userJpaRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 사용자는 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(
+                        USER_NOT_FOUNT,
+                        String.format(USER_NOT_FOUNT.getMessage(), userId)));
     }
 
     @Override
@@ -40,7 +45,9 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getByNickname(String nickname) {
         return userJpaRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(
+                        USER_NOT_FOUNT,
+                        String.format(USER_NOT_FOUNT.getMessage(), nickname)));
     }
 
     @Override

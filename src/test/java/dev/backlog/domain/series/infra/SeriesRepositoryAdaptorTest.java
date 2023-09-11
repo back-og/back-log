@@ -1,10 +1,10 @@
 package dev.backlog.domain.series.infra;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +15,20 @@ import static dev.backlog.common.fixture.EntityFixture.시리즈1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SeriesRepositoryAdaptorTest extends RepositoryTest {
+class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
 
     @Autowired
     private SeriesRepository seriesRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @DisplayName("시리즈를 생성할 수 있다.")
     @Test
     void saveTest() {
         //given
         User user = 유저1();
-        userJpaRepository.save(user);
+        userRepository.save(user);
         Series series = 시리즈1(user);
 
         //when
@@ -43,7 +43,7 @@ class SeriesRepositoryAdaptorTest extends RepositoryTest {
     void getByUserAndNameTest() {
         //given
         User user = 유저1();
-        userJpaRepository.save(user);
+        userRepository.save(user);
         Series series = 시리즈1(user);
         Series savedSeries = seriesRepository.save(series);
 
@@ -59,7 +59,7 @@ class SeriesRepositoryAdaptorTest extends RepositoryTest {
     void deleteAllTest() {
         //given
         User user = 유저1();
-        userJpaRepository.save(user);
+        userRepository.save(user);
         Series series = 시리즈1(user);
         seriesRepository.save(series);
 
