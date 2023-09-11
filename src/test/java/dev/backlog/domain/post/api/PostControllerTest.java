@@ -69,7 +69,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("post-create",
-                                resourceDetails().tag("게시물").description("게시물 생성 요청")
+                                resourceDetails().tag("게시물").description("게시물 생성 요청"
                                         .requestSchema(Schema.schema("PostCreateRequest")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
