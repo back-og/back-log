@@ -1,4 +1,4 @@
-package dev.backlog.domain.user.infrastructure.persistence;
+package dev.backlog.domain.user.infrastructure.jpa;
 
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.user.model.User;

@@ -1,13 +1,13 @@
 package dev.backlog.domain.post.model.repository;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,13 +26,13 @@ import static dev.backlog.common.fixture.EntityFixture.좋아요1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class PostRepositoryTest extends RepositoryTest {
+class PostRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     private PostRepository postRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private LikeRepository likeRepository;
@@ -54,14 +54,14 @@ class PostRepositoryTest extends RepositoryTest {
         likeRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
-        userJpaRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DisplayName("공개된 게시글 중에서 특정 사용자가 남의 글에 좋아요를 누른 글들을 조회할 수 있다.")
     @Test
     void findLikedPostsByUserIdTest() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
@@ -85,7 +85,7 @@ class PostRepositoryTest extends RepositoryTest {
     @Test
     void findAllByUserAndSeriesTest() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         Series series = seriesRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 

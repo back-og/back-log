@@ -1,11 +1,11 @@
 package dev.backlog.domain.comment.model.repository;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostRepository;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CommentRepositoryTest extends RepositoryTest {
+class CommentRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     private CommentRepository commentRepository;
@@ -26,13 +26,13 @@ class CommentRepositoryTest extends RepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @DisplayName("모든 댓글을 저장할 수 있다.")
     @Test
     void saveAllTest() {
         //given
-        User user = userJpaRepository.save(유저1());
+        User user = userRepository.save(유저1());
         Post post = postRepository.save(게시물1(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
 
@@ -47,7 +47,7 @@ class CommentRepositoryTest extends RepositoryTest {
     @Test
     void findAllByPostTest() {
         //given
-        User user = userJpaRepository.save(유저1());
+        User user = userRepository.save(유저1());
         Post post = postRepository.save(게시물1(user, null));
         commentRepository.saveAll(List.of(댓글1(user, post), 댓글1(user, post)));
 
@@ -63,7 +63,7 @@ class CommentRepositoryTest extends RepositoryTest {
     @Test
     void countByPostTest() {
         //given
-        User user = userJpaRepository.save(유저1());
+        User user = userRepository.save(유저1());
         Post post = postRepository.save(게시물1(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
         commentRepository.saveAll(comments);
@@ -79,7 +79,7 @@ class CommentRepositoryTest extends RepositoryTest {
     @Test
     void deleteAllTest() {
         //given
-        User user = userJpaRepository.save(유저1());
+        User user = userRepository.save(유저1());
         Post post = postRepository.save(게시물1(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
         commentRepository.saveAll(comments);

@@ -6,6 +6,9 @@ import dev.backlog.common.config.QueryDslConfig;
 import dev.backlog.domain.comment.infra.CommentRepositoryAdaptor;
 import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
+import dev.backlog.domain.hashtag.infrastructure.HashtagRepositoryAdapter;
+import dev.backlog.domain.hashtag.infrastructure.jpa.HashtagJpaRepository;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.infra.LikeRepositoryAdaptor;
 import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.repository.LikeRepository;
@@ -20,14 +23,17 @@ import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.infra.SeriesRepositoryAdaptor;
 import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
+import dev.backlog.domain.user.infrastructure.UserRepositoryAdapter;
+import dev.backlog.domain.user.infrastructure.jpa.UserJpaRepository;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
-@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTest.RepositoryAdaptorTestConfig.class})
-public class RepositoryTest {
+@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTestConfig.RepositoryAdaptorTestConfig.class})
+public class RepositoryTestConfig {
 
     @TestConfiguration
     static class RepositoryAdaptorTestConfig {
@@ -60,6 +66,16 @@ public class RepositoryTest {
         @Bean
         public LikeRepository likeRepository(LikeJpaRepository likeJpaRepository) {
             return new LikeRepositoryAdaptor(likeJpaRepository);
+        }
+
+        @Bean
+        public HashtagRepository hashtagRepository(HashtagJpaRepository hashtagJpaRepository) {
+            return new HashtagRepositoryAdapter(hashtagJpaRepository);
+        }
+
+        @Bean
+        public UserRepository userRepository(UserJpaRepository userJpaRepository) {
+            return new UserRepositoryAdapter(userJpaRepository);
         }
 
     }

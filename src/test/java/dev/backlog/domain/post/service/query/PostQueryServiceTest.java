@@ -3,7 +3,7 @@ package dev.backlog.domain.post.service.query;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostResponse;
@@ -15,8 +15,8 @@ import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     private PostQueryService postQueryService;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PostRepository postRepository;
@@ -65,7 +65,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private HashtagJpaRepository hashtagJpaRepository;
+    private HashtagRepository hashtagRepository;
 
     private User 유저1;
     private Post 게시물1;
@@ -85,17 +85,17 @@ class PostQueryServiceTest extends TestContainerConfig {
         likeRepository.deleteAll();
         commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
-        hashtagJpaRepository.deleteAll();
+        hashtagRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
-        userJpaRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
     @Test
     void findPostByIdTest() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Post post = postRepository.save(게시물1);
         commentRepository.saveAll(댓글_모음);
@@ -111,7 +111,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Post post = postRepository.save(게시물1);
         commentRepository.saveAll(댓글_모음);
@@ -133,7 +133,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findLikedPostsByUserTest() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
@@ -159,7 +159,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findPostsByUserAndSeriesTest() {
         //given
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         Series series = seriesRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 
@@ -180,7 +180,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findPostsInLatestOrderTest() {
         //given
-        userJpaRepository.save(유저1);
+        userRepository.save(유저1);
         postRepository.saveAll(게시물_모음);
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
@@ -203,7 +203,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         //given
         User user1 = 유저1();
         User user2 = 유저1();
-        userJpaRepository.saveAll(List.of(user1, user2));
+        userRepository.saveAll(List.of(user1, user2));
 
         Post post1 = 게시물1(user1, null);
         Post post2 = 게시물1(user1, null);
@@ -231,7 +231,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @DisplayName("사용자 닉네임으로 게시물리스트를 조회해 요약 리스트로 반환한다.")
     @Test
     void searchByUserNicknameTest() {
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         postRepository.saveAll(게시물_모음);
 
         int pageSize = 20;
