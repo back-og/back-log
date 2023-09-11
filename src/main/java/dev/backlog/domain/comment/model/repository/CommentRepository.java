@@ -13,4 +13,6 @@ public interface CommentRepository {
 
     int countByPost(Post post);
 
+    void deleteAll();
+
 }

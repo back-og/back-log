@@ -1,9 +1,9 @@
 package dev.backlog.domain.post.service;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
+import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
-import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
 import dev.backlog.domain.post.model.Post;
@@ -45,10 +45,10 @@ class PostServiceTest extends TestContainerConfig {
     private PostRepository postRepository;
 
     @Autowired
-    private CommentJpaRepository commentJpaRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private LikeJpaRepository likeJpaRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
     private SeriesRepository seriesRepository;
@@ -70,8 +70,8 @@ class PostServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeJpaRepository.deleteAll();
-        commentJpaRepository.deleteAll();
+        likeRepository.deleteAll();
+        commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
         hashtagJpaRepository.deleteAll();
         postRepository.deleteAll();

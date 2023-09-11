@@ -28,6 +28,21 @@ class CommentRepositoryTest extends RepositoryTest {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
+    @DisplayName("모든 댓글을 저장할 수 있다.")
+    @Test
+    void saveAllTest() {
+        //given
+        User user = userJpaRepository.save(유저1());
+        Post post = postRepository.save(게시물1(user, null));
+        List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
+
+        //when
+        List<Comment> savedComments = commentRepository.saveAll(comments);
+
+        //then
+        assertThat(savedComments).containsAll(comments);
+    }
+
     @DisplayName("특정 게시글에 달린 댓글 목록을 조회할 수 있다.")
     @Test
     void findAllByPostTest() {
@@ -58,6 +73,23 @@ class CommentRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(count).isEqualTo(comments.size());
+    }
+
+    @DisplayName("모든 댓글을 삭제할 수 있다.")
+    @Test
+    void deleteAllTest() {
+        //given
+        User user = userJpaRepository.save(유저1());
+        Post post = postRepository.save(게시물1(user, null));
+        List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
+        commentRepository.saveAll(comments);
+
+        //when
+        commentRepository.deleteAll();
+
+        //then
+        List<Comment> foundComments = commentRepository.findAllByPost(post);
+        assertThat(foundComments).isEmpty();
     }
 
 }

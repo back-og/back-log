@@ -30,4 +30,9 @@ public class CommentRepositoryAdaptor implements CommentRepository {
         return commentJpaRepository.countByPost(post);
     }
 
+    @Override
+    public void deleteAll() {
+        commentJpaRepository.deleteAll();
+    }
+
 }

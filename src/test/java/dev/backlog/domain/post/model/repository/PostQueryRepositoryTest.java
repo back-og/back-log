@@ -1,15 +1,12 @@
-package dev.backlog.domain.post.infra.jpa;
+package dev.backlog.domain.post.model.repository;
 
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
-import dev.backlog.domain.post.infra.PostRepositoryAdaptor;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
-import dev.backlog.domain.post.model.repository.PostHashtagRepository;
-import dev.backlog.domain.post.model.repository.PostQueryRepository;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +30,10 @@ import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class PostQueryDslRepositoryImplTest extends RepositoryTest {
+class PostQueryRepositoryTest extends RepositoryTest {
 
     @Autowired
-    PostRepositoryAdaptor postRepository;
+    PostRepository postRepository;
 
     @Autowired
     PostQueryRepository postQueryRepository;
@@ -45,7 +42,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     UserJpaRepository userJpaRepository;
 
     @Autowired
-    LikeJpaRepository likeJpaRepository;
+    LikeRepository likeRepository;
 
     @Autowired
     HashtagJpaRepository hashtagJpaRepository;
@@ -54,13 +51,11 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
     PostHashtagRepository postHashtagRepository;
 
     private User 유저1;
-    private List<Post> 게시물_모음;
     private Hashtag 해쉬태그;
 
     @BeforeEach
     void setUp() {
         유저1 = 유저1();
-        게시물_모음 = 게시물_모음(유저1, null);
         해쉬태그 = 해쉬태그_모음().get(0);
     }
 
@@ -80,7 +75,7 @@ class PostQueryDslRepositoryImplTest extends RepositoryTest {
         Like like1 = 좋아요1(user1, post1);
         Like like2 = 좋아요1(user1, post2);
         Like like3 = 좋아요1(user2, post1);
-        likeJpaRepository.saveAll(List.of(like1, like2, like3));
+        likeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 

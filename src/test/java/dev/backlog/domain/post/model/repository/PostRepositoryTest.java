@@ -1,11 +1,11 @@
-package dev.backlog.domain.post.infra.jpa;
+package dev.backlog.domain.post.model.repository;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.AfterEach;
@@ -29,16 +29,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class PostRepositoryTest extends RepositoryTest {
 
     @Autowired
-    private PostJpaRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
     private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private LikeJpaRepository likeJpaRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
-    private SeriesJpaRepository seriesJpaRepository;
+    private SeriesRepository seriesRepository;
 
     private User 유저1;
     private List<Post> 게시물_모음;
@@ -51,9 +51,9 @@ class PostRepositoryTest extends RepositoryTest {
 
     @AfterEach
     void tearDown() {
-        likeJpaRepository.deleteAll();
+        likeRepository.deleteAll();
         postRepository.deleteAll();
-        seriesJpaRepository.deleteAll();
+        seriesRepository.deleteAll();
         userJpaRepository.deleteAll();
     }
 
@@ -66,7 +66,7 @@ class PostRepositoryTest extends RepositoryTest {
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
             Like 좋아요1 = 좋아요1(user, post);
-            likeJpaRepository.save(좋아요1);
+            likeRepository.save(좋아요1);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
@@ -86,7 +86,7 @@ class PostRepositoryTest extends RepositoryTest {
     void findAllByUserAndSeriesTest() {
         //given
         User user = userJpaRepository.save(유저1);
-        Series series = seriesJpaRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
@@ -99,6 +99,31 @@ class PostRepositoryTest extends RepositoryTest {
                 () -> assertThat(postSlice.hasNext()).isFalse(),
                 () -> assertThat(postSlice.getNumberOfElements()).isEqualTo(postSlice.getContent().size())
         );
+    }
+
+    // TODO: 2023/09/11 테스트 코드 작성
+    @Test
+    void save() {
+    }
+
+    @Test
+    void saveAll() {
+    }
+
+    @Test
+    void findAll() {
+    }
+
+    @Test
+    void getById() {
+    }
+
+    @Test
+    void delete() {
+    }
+
+    @Test
+    void deleteAll() {
     }
 
 }

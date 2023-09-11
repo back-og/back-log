@@ -1,19 +1,19 @@
 package dev.backlog.domain.post.service.query;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.comment.model.Comment;
+import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
-import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
-import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
-import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
+import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
@@ -50,16 +50,16 @@ class PostQueryServiceTest extends TestContainerConfig {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private PostJpaRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    private CommentJpaRepository commentJpaRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private LikeJpaRepository likeJpaRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
-    private SeriesJpaRepository seriesJpaRepository;
+    private SeriesRepository seriesRepository;
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;
@@ -82,12 +82,12 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeJpaRepository.deleteAll();
-        commentJpaRepository.deleteAll();
+        likeRepository.deleteAll();
+        commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
         hashtagJpaRepository.deleteAll();
         postRepository.deleteAll();
-        seriesJpaRepository.deleteAll();
+        seriesRepository.deleteAll();
         userJpaRepository.deleteAll();
     }
 
@@ -98,7 +98,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         User user = userJpaRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
-        commentJpaRepository.saveAll(댓글_모음);
+        commentRepository.saveAll(댓글_모음);
 
         //when
         PostResponse postResponse = postQueryService.findPostById(post.getId(), authInfo);
@@ -114,7 +114,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         User user = userJpaRepository.save(유저1);
         AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
-        commentJpaRepository.saveAll(댓글_모음);
+        commentRepository.saveAll(댓글_모음);
 
         //when
         PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
@@ -139,7 +139,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
             Like like = 좋아요1(user, post);
-            likeJpaRepository.save(like);
+            likeRepository.save(like);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
@@ -160,7 +160,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void findPostsByUserAndSeriesTest() {
         //given
         User user = userJpaRepository.save(유저1);
-        Series series = seriesJpaRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
@@ -212,7 +212,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         Like like1 = 좋아요1(user1, post1);
         Like like2 = 좋아요1(user1, post2);
         Like like3 = 좋아요1(user2, post1);
-        likeJpaRepository.saveAll(List.of(like1, like2, like3));
+        likeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 
