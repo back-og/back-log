@@ -5,6 +5,7 @@ import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
+import dev.backlog.domain.series.dto.SeriesCreateRequest;
 
 import java.util.List;
 
@@ -50,6 +51,12 @@ public class DtoFixture {
                 false,
                 "변경된 URL",
                 "변경된 경로"
+        );
+    }
+
+    public static SeriesCreateRequest 시리즈생성요청() {
+        return new SeriesCreateRequest(
+                "시리즈 이름"
         );
     }
 

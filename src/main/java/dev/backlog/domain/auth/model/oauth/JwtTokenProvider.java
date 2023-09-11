@@ -38,6 +38,18 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
+    public boolean isExpiredRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
@@ -53,18 +65,6 @@ public class JwtTokenProvider {
             throw new IllegalArgumentException("JWT 토큰이 올바르게 구성되지 않았거나, 적절하지 않게 수정되었습니다.");
         } catch (SignatureException e) {
             throw new IllegalArgumentException("JWT 토큰의 서명 검증에 실패하였습니다.");
-        }
-    }
-
-    public boolean isExpiredRefreshToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return false;
-        } catch (Exception e) {
-            return true;
         }
     }
 
