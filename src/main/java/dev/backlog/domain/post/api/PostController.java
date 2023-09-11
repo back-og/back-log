@@ -42,8 +42,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
-                                                                                  String nickname,
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
+                                                                                  String series,
                                                                                   @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
         PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
         return ResponseEntity.ok(seriesPosts);
@@ -86,8 +86,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId,
-                                           @RequestBody PostUpdateRequest request,
+    public ResponseEntity<Void> updatePost(@RequestBody PostUpdateRequest request,
+                                           @PathVariable Long postId,
                                            AuthInfo authInfo) {
         postService.updatePost(request, postId, authInfo);
         return ResponseEntity.noContent().build();
