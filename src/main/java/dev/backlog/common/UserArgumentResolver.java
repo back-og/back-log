@@ -23,7 +23,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public AuthInfo resolveArgument(MethodParameter parampeter, ModelAndViewContainer mavContainer,
+    public AuthInfo resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                     NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String authHeader = httpServletRequest.getHeader("Authorization");
@@ -32,10 +32,9 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
             String token = authHeader.substring(7);
             Long userId = jwtTokenProvider.extractUserId(token);
 
-            return new AuthInfo(userId);
+            return new AuthInfo(userId, token);
         }
         throw new IllegalArgumentException("잘못된 권한 헤더입니다.");
     }
 
 }
-

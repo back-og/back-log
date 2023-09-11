@@ -1,5 +1,7 @@
 package dev.backlog.domain.post.service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
@@ -22,8 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
@@ -95,7 +95,7 @@ class PostServiceTest extends TestContainerConfig {
                 "/path"
         );
 
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Long postId = postService.create(request, authInfo);
 
         assertThat(postId).isNotNull();
@@ -107,7 +107,7 @@ class PostServiceTest extends TestContainerConfig {
         User user = userJpaRepository.save(유저1);
         Post post = postRepository.save(게시물1);
         PostUpdateRequest request = 게시물수정요청();
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
         postService.updatePost(request, post.getId(), authInfo);
 

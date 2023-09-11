@@ -4,6 +4,7 @@ import dev.backlog.domain.auth.AuthTokens;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.auth.service.OAuthService;
+import dev.backlog.domain.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,11 @@ public class AuthController {
     @GetMapping("/login/{oAuthProvider}")
     public ResponseEntity<AuthTokens> login(@PathVariable OAuthProvider oAuthProvider, @RequestParam String code) {
         return ResponseEntity.ok(oAuthService.login(oAuthProvider, code));
+    }
+
+    @PostMapping("/renew-token")
+    public ResponseEntity<AuthTokens> renew(AuthInfo authInfo) {
+        return ResponseEntity.ok(oAuthService.renew(authInfo.userId(), authInfo.refreshToken()));
     }
 
 }

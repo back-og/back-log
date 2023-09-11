@@ -96,7 +96,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void findPostByIdTest() {
         //given
         User user = userJpaRepository.save(유저1);
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Post post = postRepository.save(게시물1);
         commentRepository.saveAll(댓글_모음);
 
@@ -112,7 +112,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
         User user = userJpaRepository.save(유저1);
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Post post = postRepository.save(게시물1);
         commentRepository.saveAll(댓글_모음);
 
@@ -134,7 +134,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void findLikedPostsByUserTest() {
         //given
         User user = userJpaRepository.save(유저1);
-        AuthInfo authInfo = new AuthInfo(user.getId());
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {

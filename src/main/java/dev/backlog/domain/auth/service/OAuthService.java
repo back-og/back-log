@@ -2,6 +2,7 @@ package dev.backlog.domain.auth.service;
 
 import dev.backlog.domain.auth.AuthTokens;
 import dev.backlog.domain.auth.AuthTokensGenerator;
+import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
 import dev.backlog.domain.auth.model.oauth.OAuthProvider;
 import dev.backlog.domain.auth.model.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import dev.backlog.domain.auth.model.oauth.client.OAuthMemberClientComposite;
@@ -20,6 +21,7 @@ public class OAuthService {
     private final OAuthMemberClientComposite oauthMemberClientComposite;
     private final UserJpaRepository userJpaRepository;
     private final AuthTokensGenerator authTokensGenerator;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public String getAuthCodeRequestUrl(OAuthProvider oAuthProvider) {
         return authCodeRequestUrlProviderComposite.provide(oAuthProvider);
@@ -44,9 +46,17 @@ public class OAuthService {
     public AuthTokens login(OAuthProvider oauthProvider, String authCode) {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(oauthProvider, authCode);
         User findUser = userJpaRepository.findByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해주세요."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해 주세요."));
 
         return authTokensGenerator.generate(findUser.getId());
+    }
+
+    public AuthTokens renew(Long userId, String token) {
+        if (jwtTokenProvider.isExpiredRefreshToken(token)) {
+            throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.");
+        } else {
+            return authTokensGenerator.refreshJwtToken(userId, token);
+        }
     }
 
 }

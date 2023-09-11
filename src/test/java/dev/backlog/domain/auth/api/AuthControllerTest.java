@@ -17,12 +17,15 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static dev.backlog.common.fixture.DtoFixture.토큰생성;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -72,9 +75,8 @@ class AuthControllerTest extends ControllerTestConfig {
     @DisplayName("올바른 로그인 타입과 인증 코드, 추가 정보를 받아 회원가입에 성공한다.")
     @Test
     void signupTest() throws Exception {
-
         SignupRequest signupRequest = DtoFixture.회원가입정보();
-        AuthTokens expectedTokens = DtoFixture.토큰생성();
+        AuthTokens expectedTokens = 토큰생성();
 
         when(oAuthService.signup(signupRequest)).thenReturn(expectedTokens);
 
@@ -114,8 +116,7 @@ class AuthControllerTest extends ControllerTestConfig {
     @DisplayName("올바른 로그인 타입과 인증 코드를 받아 로그인에 성공한다.")
     @Test
     void loginTest() throws Exception {
-
-        AuthTokens expectedTokens = DtoFixture.토큰생성();
+        AuthTokens expectedTokens = 토큰생성();
 
         when(oAuthService.login(any(), any())).thenReturn(expectedTokens);
 
@@ -148,6 +149,46 @@ class AuthControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
                 .andExpect(jsonPath("$.grantType").value("Bearer "))
                 .andExpect(jsonPath("$.expiresIn").value(1000L));
+    }
+
+    @DisplayName("리프레시 토큰이 만료되지 않았을 경우 리프레시 토큰으로 액세스 토큰을 갱신한다.")
+    @Test
+    void updateAccessToken() throws Exception {
+        Long userId = 1000L;
+        String token = "토큰";
+        String refreshToken = "refreshToken";
+        AuthTokens newAuthTokens = AuthTokens.of(
+                "newGeneratedAccessToken",
+                refreshToken,
+                "Bearer ",
+                1000L);
+
+        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+        when(oAuthService.renew(anyLong(), any())).thenReturn(newAuthTokens);
+
+        mockMvc.perform(post("/api/auth/v2/renew-token")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(document("renew-token",
+                                resourceDetails().tag("Auth").description("토큰 갱신")
+                                        .responseSchema(Schema.schema("AuthTokens")),
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                responseFields(
+                                        fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
+                                        fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("리프레시 토큰"),
+                                        fieldWithPath("grantType").type(JsonFieldType.STRING).description("Bearer 타입"),
+                                        fieldWithPath("expiresIn").type(JsonFieldType.NUMBER).description("토큰 만료 시간(초)")
+                                )
+                        )
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("newGeneratedAccessToken"))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
+                .andExpect(jsonPath("$.grantType").value("Bearer "))
+                .andExpect(jsonPath("$.expiresIn").value(1000L)
+                );
     }
 
 }
