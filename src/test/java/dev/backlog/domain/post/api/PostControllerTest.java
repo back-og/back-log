@@ -69,7 +69,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("post-create",
-                        resourceDetails().tag("게시물").description("게시물 생성 요청")
+                                resourceDetails().tag("게시물").description("게시물 생성 요청")
                                         .requestSchema(Schema.schema("PostCreateRequest")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
@@ -95,18 +95,20 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
     @Test
-    void findPost() throws Exception {
+    void findPostTest() throws Exception {
         //given
         final long postId = 1l;
         final long seriesId = 1l;
         final long userId = 1l;
         final long commentId = 1l;
         PostResponse postResponse = getPostResponse(postId, seriesId, userId, commentId);
+
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(postQueryService.findPostById(any(), any())).thenReturn(postResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/{postId}", postId)
-                        .header("AuthorizationCode", "tmp"))
+                        .header("Authorization", TOKEN))
                 .andExpect(status().isOk())
                 .andDo(document("post-find",
                                 resourceDetails().tag("게시물").description("게시물 상세 조회")
@@ -139,11 +141,13 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("사용자가 좋아요를 누른 게시글 목록을 최신 순서로 반환한다.")
     @Test
-    void findLikedPosts() throws Exception {
+    void findLikedPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
         PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
 
         //when, then
@@ -151,7 +155,7 @@ class PostControllerTest extends ControllerTestConfig {
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc")
-                        .header("AuthorizationCode", "tmp"))
+                        .header("Authorization", TOKEN))
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-like",
                                 resourceDetails().tag("게시물").description("좋아요 누른 게시물 조회")
@@ -178,9 +182,9 @@ class PostControllerTest extends ControllerTestConfig {
                 );
     }
 
-    @DisplayName("사용자와 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
+    @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
     @Test
-    void findSeriesPosts() throws Exception {
+    void findSeriesPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -222,7 +226,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("게시물 목록을 최신 순서로 조회한다.")
     @Test
-    void findRecentPosts() throws Exception {
+    void findRecentPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;
@@ -263,7 +267,7 @@ class PostControllerTest extends ControllerTestConfig {
 
     @DisplayName("좋아요 많이 받은 순서로 게시물을 조회한다.")
     @Test
-    void findTrendPosts() throws Exception {
+    void findTrendPostsTest() throws Exception {
         //given
         final long postId = 1l;
         final long userId = 1l;

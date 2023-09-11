@@ -35,8 +35,6 @@ public class PostController {
     private final PostService postService;
     private final PostQueryService postQueryService;
 
-    // TODO: 2023/09/06 userId에서 nickname으로 변경
-
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, AuthInfo authInfo) {
         Long postId = postService.create(request, authInfo);
@@ -44,17 +42,17 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String series,
-                                                                                  Long userId,
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
+                                                                                  String series,
                                                                                   @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(userId, series, pageable);
+        PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
         return ResponseEntity.ok(seriesPosts);
     }
 
     @GetMapping("/like")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(Long userId,
+    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(AuthInfo authInfo,
                                                                                  @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(userId, pageable);
+        PostSliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(authInfo, pageable);
         return ResponseEntity.ok(likedPosts);
     }
 
@@ -72,8 +70,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, Long userId) {
-        PostResponse postResponse = postQueryService.findPostById(postId, userId);
+    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, AuthInfo authInfo) {
+        PostResponse postResponse = postQueryService.findPostById(postId, authInfo);
         return ResponseEntity.ok(postResponse);
     }
 
@@ -88,8 +86,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId,
-                                           @RequestBody PostUpdateRequest request,
+    public ResponseEntity<Void> updatePost(@RequestBody PostUpdateRequest request,
+                                           @PathVariable Long postId,
                                            AuthInfo authInfo) {
         postService.updatePost(request, postId, authInfo);
         return ResponseEntity.noContent().build();

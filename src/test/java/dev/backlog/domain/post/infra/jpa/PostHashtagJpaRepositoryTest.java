@@ -20,6 +20,7 @@ import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO: 2023/09/11 테스트 경로 수정 및 분리
 class PostHashtagJpaRepositoryTest extends RepositoryTest {
 
     @Autowired

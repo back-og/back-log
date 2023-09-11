@@ -6,8 +6,8 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
-@RedisHash(value = "viewHistory", timeToLive = 10800)
-public class ViewHistory {
+@RedisHash(value = "userViewInfo", timeToLive = 10800)
+public class UserViewInfo {
 
     @Id
     private Long id;
@@ -16,7 +16,7 @@ public class ViewHistory {
     @Indexed
     private Long userId;
 
-    public ViewHistory(Long postId, Long userId) {
+    public UserViewInfo(Long postId, Long userId) {
         this.postId = postId;
         this.userId = userId;
     }

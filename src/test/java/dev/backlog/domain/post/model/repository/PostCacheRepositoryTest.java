@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.model.repository;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.post.model.ViewHistory;
+import dev.backlog.domain.post.model.UserViewInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +17,26 @@ class PostCacheRepositoryTest extends TestContainerConfig {
 
     @DisplayName("조회 내역을 저장할 수 있다.")
     @Test
-    void save() {
+    void saveTest() {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        ViewHistory viewHistory = new ViewHistory(postId, userId);
+        UserViewInfo userViewInfo = new UserViewInfo(postId, userId);
 
         //when
-        ViewHistory savedViewHistory = postCacheRepository.save(viewHistory);
+        UserViewInfo savedUserViewInfo = postCacheRepository.save(userViewInfo);
 
         //then
-        assertThat(viewHistory).isEqualTo(savedViewHistory);
+        assertThat(userViewInfo).isEqualTo(savedUserViewInfo);
     }
 
     @DisplayName("게시글 번호와 유저 아이디로 조회 내역 여부를 판단할 수 있다.")
     @Test
-    void existsByPostIdAndUserId() {
+    void existsByPostIdAndUserIdTest() {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        postCacheRepository.save(new ViewHistory(postId, userId));
+        postCacheRepository.save(new UserViewInfo(postId, userId));
 
         //when
         Boolean exists = postCacheRepository.existsByPostIdAndUserId(postId, userId);

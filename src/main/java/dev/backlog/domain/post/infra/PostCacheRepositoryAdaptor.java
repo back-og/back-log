@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.infra;
 
 import dev.backlog.domain.post.infra.redis.PostRedisRepository;
-import dev.backlog.domain.post.model.ViewHistory;
+import dev.backlog.domain.post.model.UserViewInfo;
 import dev.backlog.domain.post.model.repository.PostCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,8 +18,8 @@ public class PostCacheRepositoryAdaptor implements PostCacheRepository {
     }
 
     @Override
-    public ViewHistory save(ViewHistory viewHistory) {
-        return postRedisRepository.save(viewHistory);
+    public UserViewInfo save(UserViewInfo userViewInfo) {
+        return postRedisRepository.save(userViewInfo);
     }
 
 }

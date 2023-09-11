@@ -20,6 +20,8 @@ public interface PostRepository {
 
     void delete(Post post);
 
+    void deleteAll();
+
     Slice<Post> findLikedPostsByUserId(Long userId, Pageable pageable);
 
     Slice<Post> findAllByUserAndSeries(User user, Series series, Pageable pageable);

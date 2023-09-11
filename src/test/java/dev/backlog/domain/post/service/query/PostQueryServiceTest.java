@@ -1,19 +1,20 @@
 package dev.backlog.domain.post.service.query;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.comment.infrastructure.persistence.CommentJpaRepository;
 import dev.backlog.domain.comment.model.Comment;
+import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
-import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
 import dev.backlog.domain.post.dto.PostSummaryResponse;
-import dev.backlog.domain.post.infra.jpa.PostJpaRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
+import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.model.Series;
+import dev.backlog.domain.series.model.repository.SeriesRepository;
+import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import org.junit.jupiter.api.AfterEach;
@@ -49,16 +50,16 @@ class PostQueryServiceTest extends TestContainerConfig {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private PostJpaRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    private CommentJpaRepository commentJpaRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private LikeJpaRepository likeJpaRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
-    private SeriesJpaRepository seriesJpaRepository;
+    private SeriesRepository seriesRepository;
 
     @Autowired
     private PostHashtagRepository postHashtagRepository;
@@ -81,25 +82,26 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeJpaRepository.deleteAll();
-        commentJpaRepository.deleteAll();
+        likeRepository.deleteAll();
+        commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
         hashtagJpaRepository.deleteAll();
         postRepository.deleteAll();
-        seriesJpaRepository.deleteAll();
+        seriesRepository.deleteAll();
         userJpaRepository.deleteAll();
     }
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
     @Test
-    void findPostById() {
+    void findPostByIdTest() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
-        commentJpaRepository.saveAll(댓글_모음);
+        commentRepository.saveAll(댓글_모음);
 
         //when
-        PostResponse postResponse = postQueryService.findPostById(post.getId(), user.getId());
+        PostResponse postResponse = postQueryService.findPostById(post.getId(), authInfo);
 
         //then
         assertThat(postResponse.postId()).isEqualTo(post.getId());
@@ -110,12 +112,13 @@ class PostQueryServiceTest extends TestContainerConfig {
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
         Post post = postRepository.save(게시물1);
-        commentJpaRepository.saveAll(댓글_모음);
+        commentRepository.saveAll(댓글_모음);
 
         //when
-        PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), user.getId());
-        PostResponse secondSamePostResponse = postQueryService.findPostById(post.getId(), user.getId());
+        PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
+        PostResponse secondSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
 
         //then
         long increasedViewCount = 1L;
@@ -128,20 +131,21 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("사용자가 좋아요를 누른 글들을 최신 순으로 조회할 수 있다.")
     @Test
-    void findLikedPostsByUser() {
+    void findLikedPostsByUserTest() {
         //given
         User user = userJpaRepository.save(유저1);
+        AuthInfo authInfo = new AuthInfo(user.getId());
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
             Like like = 좋아요1(user, post);
-            likeJpaRepository.save(like);
+            likeRepository.save(like);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPostsByUser(user.getId(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPostsByUser(authInfo, pageRequest);
 
         //then
         assertAll(
@@ -151,18 +155,18 @@ class PostQueryServiceTest extends TestContainerConfig {
         );
     }
 
-    @DisplayName("사용자와 시리즈 이름으로 게시글들을 과거순으로 조회할 수 있다.")
+    @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글들을 과거순으로 조회할 수 있다.")
     @Test
-    void findPostsByUserAndSeries() {
+    void findPostsByUserAndSeriesTest() {
         //given
         User user = userJpaRepository.save(유저1);
-        Series series = seriesJpaRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈1(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsByUserAndSeries(user.getId(), series.getName(), pageRequest);
+        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
 
         //then
         assertAll(
@@ -174,7 +178,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @DisplayName("최신 순서로 등록된 게시물 목록을 조회할 수 있다.")
     @Test
-    void findPostsInLatestOrder() {
+    void findPostsInLatestOrderTest() {
         //given
         userJpaRepository.save(유저1);
         postRepository.saveAll(게시물_모음);
@@ -195,7 +199,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @DisplayName("좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
     @ParameterizedTest
     @ValueSource(strings = {"today, week, month, year, default"})
-    void findLikedPosts(String timePeriod) {
+    void findLikedPostsTest(String timePeriod) {
         //given
         User user1 = 유저1();
         User user2 = 유저1();
@@ -208,7 +212,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         Like like1 = 좋아요1(user1, post1);
         Like like2 = 좋아요1(user1, post2);
         Like like3 = 좋아요1(user2, post1);
-        likeJpaRepository.saveAll(List.of(like1, like2, like3));
+        likeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 

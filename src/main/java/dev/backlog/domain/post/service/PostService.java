@@ -4,7 +4,7 @@ import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostRepository;
-import dev.backlog.domain.series.infrastructure.persistence.SeriesJpaRepository;
+import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
