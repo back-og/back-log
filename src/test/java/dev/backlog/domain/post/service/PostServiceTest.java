@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.service;
 
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.domain.comment.infrastructure.persistence.CommentJpaRepository;
+import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.post.dto.PostCreateRequest;

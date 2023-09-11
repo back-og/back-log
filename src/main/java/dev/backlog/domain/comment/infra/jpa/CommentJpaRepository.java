@@ -1,4 +1,4 @@
-package dev.backlog.domain.comment.infrastructure.persistence;
+package dev.backlog.domain.comment.infra.jpa;
 
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.post.model.Post;

@@ -3,6 +3,9 @@ package dev.backlog.common;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.backlog.common.config.JpaConfig;
 import dev.backlog.common.config.QueryDslConfig;
+import dev.backlog.domain.comment.infra.CommentRepositoryAdaptor;
+import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
+import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.post.infra.PostHashtagRepositoryAdaptor;
 import dev.backlog.domain.post.infra.PostRepositoryAdaptor;
 import dev.backlog.domain.post.infra.jpa.PostHashtagJpaRepository;
@@ -44,6 +47,11 @@ public class RepositoryTest {
         @Bean
         public SeriesRepository seriesRepository(SeriesJpaRepository seriesJpaRepository) {
             return new SeriesRepositoryAdaptor(seriesJpaRepository);
+        }
+
+        @Bean
+        public CommentRepository commentRepository(CommentJpaRepository commentJpaRepository) {
+            return new CommentRepositoryAdaptor(commentJpaRepository);
         }
 
     }

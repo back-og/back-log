@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.service.query;
 
-import dev.backlog.domain.comment.infrastructure.persistence.CommentJpaRepository;
 import dev.backlog.domain.comment.model.Comment;
+import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;
@@ -34,7 +34,7 @@ public class PostQueryService {
     private final PostCacheRepository postCacheRepository;
     private final UserJpaRepository userJpaRepository;
     private final SeriesRepository seriesRepository;
-    private final CommentJpaRepository commentRepository;
+    private final CommentRepository commentRepository;
     private final LikeJpaRepository likeRepository;
 
     @Transactional
