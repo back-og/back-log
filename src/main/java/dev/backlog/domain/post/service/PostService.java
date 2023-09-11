@@ -44,8 +44,8 @@ public class PostService {
         postHashtagService.associatePostWithHashtags(request.hashtags(), post);
     }
 
-    public void deletePost(Long postId, Long userId) {
-        User user = userRepository.getById(userId);
+    public void deletePost(Long postId, AuthInfo authInfo) {
+        User user = userRepository.getById(authInfo.userId());
         Post post = postRepository.getById(postId);
 
         post.verifyPostOwner(user);
