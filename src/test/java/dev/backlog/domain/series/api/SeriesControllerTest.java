@@ -16,7 +16,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -35,9 +34,10 @@ class SeriesControllerTest extends ControllerTestConfig {
     @Test
     void createTest() throws Exception {
         Long userId = 1L;
+        Long seriesId = 1L;
         SeriesCreateRequest seriesCreateRequest = DtoFixture.시리즈생성요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
-        doNothing().when(seriesService).create(eq(seriesCreateRequest), any());
+        when(seriesService.create(eq(seriesCreateRequest), any())).thenReturn(seriesId);
 
         mockMvc.perform(post("/api/series/v1")
                         .contentType(MediaType.APPLICATION_JSON)
