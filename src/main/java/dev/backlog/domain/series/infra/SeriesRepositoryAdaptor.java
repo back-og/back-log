@@ -7,6 +7,8 @@ import dev.backlog.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class SeriesRepositoryAdaptor implements SeriesRepository {
@@ -27,6 +29,11 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     @Override
     public void deleteAll() {
         seriesJpaRepository.deleteAll();
+    }
+
+    @Override
+    public List<Series> findAll() {
+        return seriesJpaRepository.findAll();
     }
 
 }
