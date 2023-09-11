@@ -1,6 +1,6 @@
 package dev.backlog.domain.series.model.repository;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
@@ -14,7 +14,7 @@ import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class SeriesRepositoryTest extends RepositoryTest {
+class SeriesRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     private SeriesRepository seriesRepository;

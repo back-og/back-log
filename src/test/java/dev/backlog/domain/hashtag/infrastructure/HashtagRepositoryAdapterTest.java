@@ -1,17 +1,18 @@
-package dev.backlog.domain.hashtag.infrastructure.persistence;
+package dev.backlog.domain.hashtag.infrastructure;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.hashtag.model.Hashtag;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HashtagJpaRepositoryTest extends RepositoryTest {
+class HashtagRepositoryAdapterTest extends RepositoryTestConfig {
 
     @Autowired
-    private HashtagJpaRepository hashtagJpaRepository;
+    private HashtagRepository hashtagRepository;
 
     @DisplayName("해쉬태그의 이름으로 해쉬태그를 찾을 수 있다.")
     @Test
@@ -19,8 +20,8 @@ class HashtagJpaRepositoryTest extends RepositoryTest {
         String 해쉬태그 = "해쉬태그";
         Hashtag hashtag = new Hashtag(해쉬태그);
 
-        Hashtag savedHashtag = hashtagJpaRepository.save(hashtag);
-        Hashtag foundHashtag = hashtagJpaRepository.findByName(해쉬태그).get();
+        Hashtag savedHashtag = hashtagRepository.save(hashtag);
+        Hashtag foundHashtag = hashtagRepository.findByName(해쉬태그).get();
 
         assertThat(foundHashtag).isEqualTo(savedHashtag);
     }

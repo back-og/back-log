@@ -6,6 +6,9 @@ import dev.backlog.common.config.QueryDslConfig;
 import dev.backlog.domain.comment.infra.CommentRepositoryAdaptor;
 import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
+import dev.backlog.domain.hashtag.infrastructure.HashtagRepositoryAdapter;
+import dev.backlog.domain.hashtag.infrastructure.jpa.HashtagJpaRepository;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.infra.LikeRepositoryAdaptor;
 import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.repository.LikeRepository;
@@ -26,8 +29,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
-@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTest.RepositoryAdaptorTestConfig.class})
-public class RepositoryTest {
+@Import(value = {QueryDslConfig.class, JpaConfig.class, RepositoryTestConfig.RepositoryAdaptorTestConfig.class})
+public class RepositoryTestConfig {
 
     @TestConfiguration
     static class RepositoryAdaptorTestConfig {
@@ -60,6 +63,11 @@ public class RepositoryTest {
         @Bean
         public LikeRepository likeRepository(LikeJpaRepository likeJpaRepository) {
             return new LikeRepositoryAdaptor(likeJpaRepository);
+        }
+
+        @Bean
+        public HashtagRepository hashtagRepository(HashtagJpaRepository hashtagJpaRepository) {
+            return new HashtagRepositoryAdapter(hashtagJpaRepository);
         }
 
     }

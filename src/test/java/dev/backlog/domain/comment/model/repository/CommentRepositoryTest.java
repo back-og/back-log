@@ -1,6 +1,6 @@
 package dev.backlog.domain.comment.model.repository;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.repository.PostRepository;
@@ -17,7 +17,7 @@ import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CommentRepositoryTest extends RepositoryTest {
+class CommentRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     private CommentRepository commentRepository;

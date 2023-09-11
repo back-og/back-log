@@ -1,6 +1,6 @@
 package dev.backlog.domain.post.model.repository;
 
-import dev.backlog.common.RepositoryTest;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.model.Post;
@@ -26,7 +26,7 @@ import static dev.backlog.common.fixture.EntityFixture.좋아요1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class PostRepositoryTest extends RepositoryTest {
+class PostRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     private PostRepository postRepository;

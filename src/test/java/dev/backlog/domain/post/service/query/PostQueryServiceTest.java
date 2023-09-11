@@ -3,7 +3,7 @@ package dev.backlog.domain.post.service.query;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostResponse;
@@ -65,7 +65,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private HashtagJpaRepository hashtagJpaRepository;
+    private HashtagRepository hashtagRepository;
 
     private User 유저1;
     private Post 게시물1;
@@ -85,7 +85,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         likeRepository.deleteAll();
         commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
-        hashtagJpaRepository.deleteAll();
+        hashtagRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
         userJpaRepository.deleteAll();

@@ -1,8 +1,8 @@
 package dev.backlog.domain.post.model.repository;
 
-import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
+import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.hashtag.model.Hashtag;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.model.Post;
@@ -30,7 +30,7 @@ import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class PostQueryRepositoryTest extends RepositoryTest {
+class PostQueryRepositoryTest extends RepositoryTestConfig {
 
     @Autowired
     PostRepository postRepository;
@@ -45,7 +45,7 @@ class PostQueryRepositoryTest extends RepositoryTest {
     LikeRepository likeRepository;
 
     @Autowired
-    HashtagJpaRepository hashtagJpaRepository;
+    HashtagRepository hashtagRepository;
 
     @Autowired
     PostHashtagRepository postHashtagRepository;
@@ -110,7 +110,7 @@ class PostQueryRepositoryTest extends RepositoryTest {
     @Test
     void findByHashtagTest() {
         User user = userJpaRepository.save(유저1);
-        Hashtag hashtag = hashtagJpaRepository.save(해쉬태그);
+        Hashtag hashtag = hashtagRepository.save(해쉬태그);
         List<Post> savedPosts = postRepository.saveAll(게시물_모음(user, null));
         List<PostHashtag> postHashtags = createPostHashtags(hashtag, savedPosts);
 
@@ -126,7 +126,7 @@ class PostQueryRepositoryTest extends RepositoryTest {
     @Test
     void findByNicknameAndHashtagTest() {
         User user = userJpaRepository.save(유저1);
-        Hashtag hashtag = hashtagJpaRepository.save(해쉬태그);
+        Hashtag hashtag = hashtagRepository.save(해쉬태그);
         List<Post> savedPosts = postRepository.saveAll(게시물_모음(user, null));
         List<PostHashtag> postHashtags = createPostHashtags(hashtag, savedPosts);
 

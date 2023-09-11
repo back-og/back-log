@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.dto.PostCreateRequest;
 import dev.backlog.domain.post.dto.PostUpdateRequest;
@@ -57,7 +57,7 @@ class PostServiceTest extends TestContainerConfig {
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private HashtagJpaRepository hashtagJpaRepository;
+    private HashtagRepository hashtagRepository;
 
     private User 유저1;
     private Post 게시물1;
@@ -73,7 +73,7 @@ class PostServiceTest extends TestContainerConfig {
         likeRepository.deleteAll();
         commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
-        hashtagJpaRepository.deleteAll();
+        hashtagRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
         userJpaRepository.deleteAll();

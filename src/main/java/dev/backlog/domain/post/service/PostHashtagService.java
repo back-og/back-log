@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.service;
 
-import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
+import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toCollection;
 @RequiredArgsConstructor
 public class PostHashtagService {
 
-    private final HashtagJpaRepository hashtagJpaRepository;
+    private final HashtagRepository hashtagRepository;
 
     public void associatePostWithHashtags(List<String> names, Post post) {
         if (names == null || names.isEmpty()) {
@@ -37,8 +37,8 @@ public class PostHashtagService {
     }
 
     private Hashtag findOrCreate(String hashtag) {
-        return hashtagJpaRepository.findByName(hashtag)
-                .orElseGet(() -> hashtagJpaRepository.save(new Hashtag(hashtag)));
+        return hashtagRepository.findByName(hashtag)
+                .orElseGet(() -> hashtagRepository.save(new Hashtag(hashtag)));
     }
 
 }
