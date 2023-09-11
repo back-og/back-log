@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
-    U004("유저를 찾을 수 없음"),
+    USER_NOT_FOUNT("U004", "유저를 찾을 수 없음 userId = %s"),
     ;
 
+    private final String errorCode;
     private final String message;
 
 }
