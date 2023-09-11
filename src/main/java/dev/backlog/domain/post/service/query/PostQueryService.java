@@ -14,8 +14,8 @@ import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.model.Series;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -32,7 +32,7 @@ public class PostQueryService {
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
     private final PostCacheRepository postCacheRepository;
-    private final UserJpaRepository userJpaRepository;
+    private final UserRepository userRepository;
     private final SeriesRepository seriesRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
@@ -55,8 +55,7 @@ public class PostQueryService {
     }
 
     public PostSliceResponse<PostSummaryResponse> findLikedPostsByUser(AuthInfo authInfo, Pageable pageable) {
-        User user = userJpaRepository.findById(authInfo.userId())
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        User user = userRepository.getById(authInfo.userId());
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByUserId(user.getId(), pageable)
                 .map(this::createPostSummaryResponse);
@@ -64,8 +63,7 @@ public class PostQueryService {
     }
 
     public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
-        User user = userJpaRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        User user = userRepository.getByNickname(nickname);
         Series series = seriesRepository.getByUserAndName(user, seriesName);
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
                 .map(this::createPostSummaryResponse);

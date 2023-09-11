@@ -6,8 +6,8 @@ import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.post.model.PostHashtag;
 import dev.backlog.domain.post.model.repository.PostHashtagRepository;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class PostHashtagJpaRepositoryTest extends RepositoryTestConfig {
     private PostHashtagRepository postHashtagRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PostJpaRepository postRepository;
@@ -41,7 +41,7 @@ class PostHashtagJpaRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = userJpaRepository.save(유저1());
+        유저1 = userRepository.save(유저1());
         게시물1 = postRepository.save(게시물1(유저1, null));
         해쉬태그_모음 = hashtagRepository.saveAll(해쉬태그_모음());
     }

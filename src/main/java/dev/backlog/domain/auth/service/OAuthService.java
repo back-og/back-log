@@ -8,8 +8,8 @@ import dev.backlog.domain.auth.model.oauth.authcode.AuthCodeRequestUrlProviderCo
 import dev.backlog.domain.auth.model.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class OAuthService {
 
     private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
     private final OAuthMemberClientComposite oauthMemberClientComposite;
-    private final UserJpaRepository userJpaRepository;
+    private final UserRepository userRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -38,15 +38,14 @@ public class OAuthService {
                 .introduction(request.introduction())
                 .blogTitle(request.blogTitle())
                 .build();
-        User newUser = userJpaRepository.save(user);
+        User newUser = userRepository.save(user);
 
         return authTokensGenerator.generate(newUser.getId());
     }
 
     public AuthTokens login(OAuthProvider oauthProvider, String authCode) {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(oauthProvider, authCode);
-        User findUser = userJpaRepository.findByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해 주세요."));
+        User findUser = userRepository.getByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider());
 
         return authTokensGenerator.generate(findUser.getId());
     }

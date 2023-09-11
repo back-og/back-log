@@ -23,6 +23,9 @@ import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.infra.SeriesRepositoryAdaptor;
 import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
+import dev.backlog.domain.user.infrastructure.UserRepositoryAdapter;
+import dev.backlog.domain.user.infrastructure.jpa.UserJpaRepository;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -68,6 +71,11 @@ public class RepositoryTestConfig {
         @Bean
         public HashtagRepository hashtagRepository(HashtagJpaRepository hashtagJpaRepository) {
             return new HashtagRepositoryAdapter(hashtagJpaRepository);
+        }
+
+        @Bean
+        public UserRepository hashtagRepository(UserJpaRepository userJpaRepository) {
+            return new UserRepositoryAdapter(userJpaRepository);
         }
 
     }

@@ -12,6 +12,7 @@ import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
 import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class OAuthServiceTest {
     private OAuthService oAuthService;
 
     @Mock
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Mock
     private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
@@ -67,7 +68,7 @@ class OAuthServiceTest {
         OAuthInfoResponse response = createOAuthInfoResponse(newUser);
 
         when(oAuthMemberClientComposite.fetch(signupRequest.oAuthProvider(), signupRequest.authCode())).thenReturn(response);
-        when(userJpaRepository.save(any())).thenReturn(newUser);
+        when(userRepository.save(any())).thenReturn(newUser);
         when(authTokensGenerator.generate(newUser.getId())).thenReturn(authToken);
 
         AuthTokens authTokens = oAuthService.signup(signupRequest);
@@ -88,7 +89,7 @@ class OAuthServiceTest {
         AuthTokens expectedToken = 토큰생성();
 
         when(oAuthMemberClientComposite.fetch(any(), any())).thenReturn(response);
-        when(userJpaRepository.findByOauthProviderIdAndOauthProvider(user.getOauthProviderId(), user.getOauthProvider())).thenReturn(Optional.of(user));
+        when(userRepository.getByOauthProviderIdAndOauthProvider(user.getOauthProviderId(), user.getOauthProvider())).thenReturn(user);
         when(authTokensGenerator.generate(user.getId())).thenReturn(expectedToken);
 
         AuthTokens authTokens = oAuthService.login(OAuthProvider.KAKAO, "authCode");

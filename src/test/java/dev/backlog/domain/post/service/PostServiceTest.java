@@ -14,8 +14,8 @@ import dev.backlog.domain.post.model.repository.PostHashtagRepository;
 import dev.backlog.domain.post.model.repository.PostRepository;
 import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ class PostServiceTest extends TestContainerConfig {
     private PostService postService;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PostRepository postRepository;
@@ -76,13 +76,13 @@ class PostServiceTest extends TestContainerConfig {
         hashtagRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
-        userJpaRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DisplayName("포스트 생성요청과 유저의 아이디를 받아 게시물을 저장할 수 있다.")
     @Test
     void createTest() {
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
 
         PostCreateRequest request = new PostCreateRequest(
                 null,
@@ -104,7 +104,7 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 업데이트의 대한 정보를 받아서 게시물을 업데이트한다.")
     @Test
     void updatePostTest() {
-        User user = userJpaRepository.save(유저1);
+        User user = userRepository.save(유저1);
         Post post = postRepository.save(게시물1);
         PostUpdateRequest request = 게시물수정요청();
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
@@ -127,7 +127,7 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자는 게시물을 삭제할 수 있다.")
     @Test
     void deletePostTest() {
-        userJpaRepository.save(유저1);
+        userRepository.save(유저1);
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
         postService.deletePost(postId, 유저1.getId());
@@ -138,7 +138,7 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자가 아니면 게시물을 삭제할 수 없다.")
     @Test
     void deletePostFailTest() {
-        userJpaRepository.save(유저1);
+        userRepository.save(유저1);
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
         Long userId = 유저1.getId();

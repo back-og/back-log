@@ -2,8 +2,8 @@ package dev.backlog.domain.series.model.repository;
 
 import dev.backlog.common.RepositoryTestConfig;
 import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
+import dev.backlog.domain.user.model.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,13 @@ class SeriesRepositoryTest extends RepositoryTestConfig {
     private SeriesRepository seriesRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepository userRepository;
 
     @DisplayName("유저와 시리즈의 이름으로 시리즈를 조회할 수 있다.")
     @Test
     void getByUserAndNameTest() {
         //given
-        User savedUser = userJpaRepository.save(유저1());
+        User savedUser = userRepository.save(유저1());
         Series savedSeries = seriesRepository.save(시리즈1(savedUser));
 
         //when
@@ -40,7 +40,7 @@ class SeriesRepositoryTest extends RepositoryTestConfig {
     @Test
     void deleteAllTest() {
         //given
-        User savedUser = userJpaRepository.save(유저1());
+        User savedUser = userRepository.save(유저1());
         Series savedSeries = seriesRepository.save(시리즈1(savedUser));
 
         //when
