@@ -74,7 +74,7 @@ public class RepositoryTestConfig {
         }
 
         @Bean
-        public UserRepository hashtagRepository(UserJpaRepository userJpaRepository) {
+        public UserRepository userRepository(UserJpaRepository userJpaRepository) {
             return new UserRepositoryAdapter(userJpaRepository);
         }
 

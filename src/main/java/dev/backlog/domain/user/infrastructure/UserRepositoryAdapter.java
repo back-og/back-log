@@ -28,7 +28,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getById(Long userId) {
         return userJpaRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("해당 사용자는 찾을 수 없습니다."));
     }
 
     @Override

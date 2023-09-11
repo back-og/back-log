@@ -10,7 +10,6 @@ import dev.backlog.domain.auth.model.oauth.authcode.AuthCodeRequestUrlProviderCo
 import dev.backlog.domain.auth.model.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.domain.auth.model.oauth.dto.OAuthInfoResponse;
 import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
-import dev.backlog.domain.user.infrastructure.persistence.UserJpaRepository;
 import dev.backlog.domain.user.model.User;
 import dev.backlog.domain.user.model.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static dev.backlog.common.fixture.DtoFixture.토큰생성;
 import static org.assertj.core.api.Assertions.assertThat;

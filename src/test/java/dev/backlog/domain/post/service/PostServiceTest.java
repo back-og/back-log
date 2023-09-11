@@ -1,7 +1,5 @@
 package dev.backlog.domain.post.service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
 import dev.backlog.domain.hashtag.model.repository.HashtagRepository;
@@ -16,7 +14,6 @@ import dev.backlog.domain.series.model.repository.SeriesRepository;
 import dev.backlog.domain.user.dto.AuthInfo;
 import dev.backlog.domain.user.model.User;
 import dev.backlog.domain.user.model.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
@@ -142,8 +141,8 @@ class PostServiceTest extends TestContainerConfig {
         postRepository.save(게시물1);
         Long postId = 게시물1.getId();
         Long userId = 유저1.getId();
-        Assertions.assertThatThrownBy(() -> postService.deletePost(postId, userId + 1))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.deletePost(postId, userId + 1))
+                .isInstanceOf(RuntimeException.class);
     }
 
 }
