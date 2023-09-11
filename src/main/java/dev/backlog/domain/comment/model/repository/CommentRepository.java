@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentRepository {
 
-    void saveAll(Iterable<Comment> comments);
+    List<Comment> saveAll(Iterable<Comment> comments);
 
     List<Comment> findAllByPost(Post post);
 

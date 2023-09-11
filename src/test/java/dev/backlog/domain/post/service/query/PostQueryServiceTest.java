@@ -4,7 +4,7 @@ import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.comment.model.Comment;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
-import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
+import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.post.dto.PostResponse;
 import dev.backlog.domain.post.dto.PostSliceResponse;

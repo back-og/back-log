@@ -3,7 +3,7 @@ package dev.backlog.domain.post.infra.jpa;
 import dev.backlog.common.RepositoryTest;
 import dev.backlog.domain.hashtag.infrastructure.persistence.HashtagJpaRepository;
 import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
+import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.post.infra.PostRepositoryAdaptor;
 import dev.backlog.domain.post.model.Post;

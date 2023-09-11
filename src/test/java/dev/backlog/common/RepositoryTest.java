@@ -6,6 +6,9 @@ import dev.backlog.common.config.QueryDslConfig;
 import dev.backlog.domain.comment.infra.CommentRepositoryAdaptor;
 import dev.backlog.domain.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.domain.comment.model.repository.CommentRepository;
+import dev.backlog.domain.like.infra.LikeRepositoryAdaptor;
+import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
+import dev.backlog.domain.like.model.repository.LikeRepository;
 import dev.backlog.domain.post.infra.PostHashtagRepositoryAdaptor;
 import dev.backlog.domain.post.infra.PostRepositoryAdaptor;
 import dev.backlog.domain.post.infra.jpa.PostHashtagJpaRepository;
@@ -52,6 +55,11 @@ public class RepositoryTest {
         @Bean
         public CommentRepository commentRepository(CommentJpaRepository commentJpaRepository) {
             return new CommentRepositoryAdaptor(commentJpaRepository);
+        }
+
+        @Bean
+        public LikeRepository likeRepository(LikeJpaRepository likeJpaRepository) {
+            return new LikeRepositoryAdaptor(likeJpaRepository);
         }
 
     }

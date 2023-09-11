@@ -1,7 +1,7 @@
 package dev.backlog.domain.post.infra.jpa;
 
 import dev.backlog.common.RepositoryTest;
-import dev.backlog.domain.like.infrastructure.persistence.LikeJpaRepository;
+import dev.backlog.domain.like.infra.jpa.LikeJpaRepository;
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.post.model.Post;
 import dev.backlog.domain.series.infra.jpa.SeriesJpaRepository;

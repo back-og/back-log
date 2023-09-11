@@ -1,4 +1,4 @@
-package dev.backlog.domain.like.infrastructure.persistence;
+package dev.backlog.domain.like.infra.jpa;
 
 import dev.backlog.domain.like.model.Like;
 import dev.backlog.domain.post.model.Post;

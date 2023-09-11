@@ -16,8 +16,8 @@ public class CommentRepositoryAdaptor implements CommentRepository {
     private final CommentJpaRepository commentJpaRepository;
 
     @Override
-    public void saveAll(Iterable<Comment> comments) {
-        commentJpaRepository.saveAll(comments);
+    public List<Comment> saveAll(Iterable<Comment> comments) {
+        return commentJpaRepository.saveAll(comments);
     }
 
     @Override
