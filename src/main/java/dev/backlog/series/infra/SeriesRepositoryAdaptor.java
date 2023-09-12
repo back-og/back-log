@@ -16,7 +16,7 @@ import java.util.List;
 public class SeriesRepositoryAdaptor implements SeriesRepository {
 
     private static final String USER_AND_SERIES_NOT_FOUND_MESSAGE = "유저 아이디(%s)와 시리즈 이름(%s)에 대한 시리즈가 없음";
-    private static final String SERIES_AND_USER_NOT_FOUND_MESSAGE = "시리즈 아이디(%s)와 유저 아이디(%s)에 대한 시리즈가 없음";
+    private static final String SERIES_NOT_FOUND_MESSAGE = "시리즈 아이디(%s)에 대한 시리즈가 없음";
 
     private final SeriesJpaRepository seriesJpaRepository;
 
@@ -26,9 +26,19 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     }
 
     @Override
+    public Series getById(Long seriesId) {
+        return seriesJpaRepository.findById(seriesId)
+                .orElseThrow(() -> new NotFoundException(
+                        SeriesErrorCode.SERIES_NOT_FOUNT,
+                        String.format(SERIES_NOT_FOUND_MESSAGE, seriesId)));
+    }
+
+    @Override
     public Series getByUserAndName(User user, String name) {
         return seriesJpaRepository.findByUserAndName(user, name)
-                .orElseThrow(() -> new NotFoundException(SeriesErrorCode.SERIES_NOT_FOUNT, String.format(USER_AND_SERIES_NOT_FOUND_MESSAGE, user.getId(), name)));
+                .orElseThrow(() -> new NotFoundException(
+                        SeriesErrorCode.SERIES_NOT_FOUNT,
+                        String.format(USER_AND_SERIES_NOT_FOUND_MESSAGE, user.getId(), name)));
     }
 
     @Override
@@ -42,9 +52,8 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     }
 
     @Override
-    public Series getByIdAndUser(Long seriesId, User user) {
-        return seriesJpaRepository.findByIdAndUser(seriesId, user)
-                .orElseThrow(() -> new NotFoundException(SeriesErrorCode.SERIES_NOT_FOUNT, String.format(SERIES_AND_USER_NOT_FOUND_MESSAGE, seriesId, user.getId())));
+    public void delete(Series series) {
+        seriesJpaRepository.delete(series);
     }
 
 }
