@@ -1,6 +1,7 @@
 package dev.backlog.series.domain.repository;
 
 import dev.backlog.common.RepositoryTestConfig;
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
@@ -49,7 +50,7 @@ class SeriesRepositoryTest extends RepositoryTestConfig {
         //then
         String seriesName = savedSeries.getName();
         Assertions.assertThatThrownBy(() -> seriesRepository.getByUserAndName(savedUser, seriesName))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class);
 
     }
 
