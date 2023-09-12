@@ -36,7 +36,7 @@ public class PostLike {
     private Post post;
 
     @Builder
-    private PostLike(User user, Post post) {
+    public PostLike(User user, Post post) {
         this.user = user;
         this.post = post;
     }
