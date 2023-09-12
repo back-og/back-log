@@ -1,8 +1,5 @@
 package dev.backlog.auth.service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Objects;
 import dev.backlog.auth.AuthTokens;
 import dev.backlog.auth.AuthTokensGenerator;
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
@@ -15,6 +12,10 @@ import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
