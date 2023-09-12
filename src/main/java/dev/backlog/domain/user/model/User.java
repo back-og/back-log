@@ -14,12 +14,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
 @Getter
+@Where(clause = "is_deleted = false")
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
@@ -54,6 +56,9 @@ public class User {
     @Column(nullable = false)
     private LocalDate deletedDate;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @Builder
     private User(
             OAuthProvider oauthProvider,
@@ -71,7 +76,8 @@ public class User {
         this.profileImage = profileImage;
         this.introduction = introduction;
         this.blogTitle = blogTitle;
-        this.deletedDate = LocalDate.MAX;
+        this.deletedDate = LocalDate.of(9999,12,31);
+        this.isDeleted = Boolean.FALSE;
     }
 
     @Override
@@ -104,6 +110,16 @@ public class User {
 
     public void updateBlogTitle(String blogTitle) {
         this.blogTitle = blogTitle;
+    }
+
+    public void markUserAsDeleted() {
+        this.isDeleted = true;
+        this.deletedDate = LocalDate.now();
+    }
+
+    public void unmarkUserAsDeleted() {
+        this.isDeleted = false;
+        this.deletedDate = LocalDate.of(9999,12,31);
     }
 
 }

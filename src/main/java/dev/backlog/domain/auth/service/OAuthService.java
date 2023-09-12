@@ -1,5 +1,8 @@
 package dev.backlog.domain.auth.service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Objects;
 import dev.backlog.domain.auth.AuthTokens;
 import dev.backlog.domain.auth.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
@@ -47,6 +50,7 @@ public class OAuthService {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(oauthProvider, authCode);
         User findUser = userRepository.getByOauthProviderIdAndOauthProvider(String.valueOf(response.oAuthProviderId()), response.oAuthProvider());
 
+        checkUserIsDeleted(findUser);
         return authTokensGenerator.generate(findUser.getId());
     }
 
@@ -55,6 +59,17 @@ public class OAuthService {
             throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.");
         } else {
             return authTokensGenerator.refreshJwtToken(userId, token);
+        }
+    }
+
+    private void checkUserIsDeleted(User findUser) {
+        if (findUser.isDeleted() && (!Objects.equals(findUser.getDeletedDate(), LocalDate.of(9999, 12, 31)))) {
+            Period between = Period.between(findUser.getDeletedDate(), LocalDate.now());
+            if (between.getDays() >= 30) {
+                userRepository.delete(findUser);
+                throw new IllegalArgumentException("탈퇴한 지 30일이 지난 사용자입니다. 다시 회원 가입해 주세요.");
+            }
+            findUser.unmarkUserAsDeleted();
         }
     }
 

@@ -32,6 +32,12 @@ public class UserService {
         updateUserByRequest(user, request);
     }
 
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.getById(userId);
+        user.markUserAsDeleted();
+    }
+
     private void updateUserByRequest(User user, UserUpdateRequest request) {
         user.updateNickName(request.nickname());
         user.updateEmail(request.email());

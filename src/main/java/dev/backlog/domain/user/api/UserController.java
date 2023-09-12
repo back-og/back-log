@@ -7,6 +7,7 @@ import dev.backlog.domain.user.dto.UserUpdateRequest;
 import dev.backlog.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,6 +37,13 @@ public class UserController {
         userService.updateProfile(request, userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteUser(AuthInfo authInfo) {
+        userService.deleteUser(authInfo.userId());
+
+        return ResponseEntity.ok().build();
     }
 
 }

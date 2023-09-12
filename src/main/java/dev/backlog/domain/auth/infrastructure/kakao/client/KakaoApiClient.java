@@ -17,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoApiClient {
 
-    private static final String REQUEST_TOKEN_URL = "https://kauth.kakao.com//oauth/token";
+    private static final String REQUEST_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String REQUEST_INFO_URL = "https://kapi.kakao.com/v2/user/me";
     private static final String GRANT_TYPE = "authorization_code";
-    private static final String BEARER_TYPE = "Bearer";
+    private static final String BEARER_TYPE = "Bearer ";
 
     private final RestTemplate restTemplate;
     private final KakaoProperties kakaoProperties;
