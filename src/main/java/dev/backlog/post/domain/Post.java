@@ -1,7 +1,7 @@
 package dev.backlog.post.domain;
 
 import dev.backlog.common.entity.BaseEntity;
-import dev.backlog.like.domain.Like;
+import dev.backlog.like.domain.PostLike;
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -45,7 +45,7 @@ public class Post extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private List<PostLike> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostHashtag> postHashtags = new ArrayList<>();

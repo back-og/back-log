@@ -2,6 +2,7 @@ package dev.backlog.post.service.query;
 
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
+import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.repository.LikeRepository;
 import dev.backlog.post.domain.Post;
@@ -35,7 +36,7 @@ public class PostQueryService {
     private final UserRepository userRepository;
     private final SeriesRepository seriesRepository;
     private final CommentRepository commentRepository;
-    private final LikeRepository likeRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public PostResponse findPostById(Long postId, AuthInfo authInfo) {
@@ -98,7 +99,7 @@ public class PostQueryService {
     }
 
     private int countLikesByPost(Post post) {
-        return likeRepository.countByPost(post);
+        return postLikeRepository.countByPost(post);
     }
 
 }
