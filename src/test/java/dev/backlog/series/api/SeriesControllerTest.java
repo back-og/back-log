@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -80,6 +81,24 @@ class SeriesControllerTest extends ControllerTestConfig {
                                 pathParameters(parameterWithName("seriesId").description("시리즈 식별자")),
                                 requestFields(
                                         fieldWithPath("seriesName").type(JsonFieldType.STRING).description("시리즈 이름")
+                                )
+                        )
+                ).andExpect(status().isNoContent());
+    }
+
+    @DisplayName("시리즈를 삭제할 수 있다.")
+    @Test
+    void deleteSeriesTest() throws Exception {
+        final Long seriesId = 1L;
+        final Long userId = 1L;
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
+
+        mockMvc.perform(delete("/api/series/v1/{seriesId}", seriesId)
+                        .header("Authorization", TOKEN)
+                )
+                .andDo(document("series-delete",
+                                resourceDetails().tag("시리즈").description("시리즈 삭제 요청"),
+                                pathParameters(parameterWithName("seriesId").description("시리즈 식별자")
                                 )
                         )
                 ).andExpect(status().isNoContent());

@@ -9,12 +9,14 @@ public interface SeriesRepository {
 
     Series save(Series series);
 
-    Series getByUserAndName(User user, String name);
+    Series getById(Long seriesId);
 
-    void deleteAll();
+    Series getByUserAndName(User user, String name);
 
     List<Series> findAll();
 
-    Series getByIdAndUser(Long seriesId, User user);
+    void delete(Series series);
+
+    void deleteAll();
 
 }
