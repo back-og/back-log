@@ -65,7 +65,7 @@ public class OAuthService {
     }
 
     private void checkDuplicateUser(OAuthInfoResponse response) {
-        if (userRepository.findByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider()).isPresent()) {
+        if (userRepository.existsByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider())) {
             throw new IllegalArgumentException("이미 회원 가입된 사용자입니다.");
         }
     }

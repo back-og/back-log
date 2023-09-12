@@ -26,8 +26,8 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider) {
-        return userJpaRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
+    public boolean existsByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider) {
+        return userJpaRepository.existsByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
     }
 
     @Override

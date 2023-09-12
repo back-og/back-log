@@ -12,4 +12,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByNickname(String nickname);
 
+    boolean existsByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider);
+
 }
