@@ -1,5 +1,6 @@
 package dev.backlog.series.service;
 
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static dev.backlog.common.fixture.EntityFixture.시리즈1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class SeriesServiceTest {
@@ -59,8 +61,26 @@ class SeriesServiceTest {
         seriesService.updateSeries(authInfo, series.getId(), seriesUpdateRequest);
 
         //then
-        Series updatedSeries = seriesRepository.getByIdAndUser(series.getId(), user);
+        Series updatedSeries = seriesRepository.getById(series.getId());
         assertThat(updatedSeries.getName()).isEqualTo(seriesUpdateRequest.seriesName());
+    }
+
+    @DisplayName("시리즈를 삭제할 수 있다.")
+    @Test
+    void deleteSeriesTest() {
+        //given
+        User user = 유저1();
+        userRepository.save(user);
+        AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
+        Series series = seriesRepository.save(시리즈1(user));
+
+        //when
+        seriesService.deleteSeries(authInfo, series.getId());
+
+        //then
+        Long seriesId = series.getId();
+        assertThatThrownBy(() -> seriesRepository.getById(seriesId))
+                .isInstanceOf(NotFoundException.class);
     }
 
 }
