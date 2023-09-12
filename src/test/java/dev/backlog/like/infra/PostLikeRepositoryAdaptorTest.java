@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
@@ -110,6 +111,18 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
 
         //then
         assertThat(foundPostLikes).containsAll(savedPostLikes);
+    }
+
+    @DisplayName("유저와 게시물ID로 PostLike를 조회할 수 있다.")
+    @Test
+    void findByUserAndPostIdTest() {
+        User user = userRepository.save(유저1());
+        Post post = postRepository.save(게시물1(user, null));
+        postLikeRepository.save(new PostLike(user, post));
+
+        Optional<PostLike> postLike = postLikeRepository.findByUserAndPostId(user, post.getId());
+
+        assertThat(postLike.isPresent()).isTrue();
     }
 
 }
