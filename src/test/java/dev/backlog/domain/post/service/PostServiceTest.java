@@ -126,10 +126,11 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자는 게시물을 삭제할 수 있다.")
     @Test
     void deletePostTest() {
-        userRepository.save(유저1);
-        postRepository.save(게시물1);
-        Long postId = 게시물1.getId();
-        postService.deletePost(postId, 유저1.getId());
+        User user = userRepository.save(유저1);
+        Post post = postRepository.save(게시물1);
+        Long postId = post.getId();
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
+        postService.deletePost(postId, authInfo);
         assertThatThrownBy(() -> postRepository.getById(postId))
                 .isInstanceOf(NoSuchElementException.class);
     }
@@ -137,11 +138,10 @@ class PostServiceTest extends TestContainerConfig {
     @DisplayName("게시물 작성자가 아니면 게시물을 삭제할 수 없다.")
     @Test
     void deletePostFailTest() {
-        userRepository.save(유저1);
-        postRepository.save(게시물1);
-        Long postId = 게시물1.getId();
-        Long userId = 유저1.getId();
-        assertThatThrownBy(() -> postService.deletePost(postId, userId + 1))
+        User user = userRepository.save(유저1);
+        Post post = postRepository.save(게시물1);
+        Long postId = post.getId();
+        assertThatThrownBy(() -> postService.deletePost(postId, new AuthInfo(user.getId() + 1, "토")))
                 .isInstanceOf(RuntimeException.class);
     }
 
