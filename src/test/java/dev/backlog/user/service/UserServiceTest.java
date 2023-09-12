@@ -56,7 +56,7 @@ class UserServiceTest {
                 () -> assertThat(myProfile.profileImage()).isEqualTo(유저1.getProfileImage()),
                 () -> assertThat(myProfile.blogTitle()).isEqualTo(유저1.getBlogTitle()),
                 () -> assertThat(myProfile.introduction()).isEqualTo(유저1.getIntroduction()),
-                () -> assertThat(myProfile.email()).isEqualTo(String.valueOf(유저1.getEmail()))
+                () -> assertThat(myProfile.email()).isEqualTo(유저1.getEmail())
         );
     }
 
