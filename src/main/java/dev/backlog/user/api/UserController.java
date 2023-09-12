@@ -33,8 +33,8 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateProfile(@RequestBody UserUpdateRequest request, Long userId) {
-        userService.updateProfile(request, userId);
+    public ResponseEntity<Void> updateProfile(@RequestBody UserUpdateRequest request, AuthInfo authInfo) {
+        userService.updateProfile(request, authInfo.userId());
 
         return ResponseEntity.noContent().build();
     }
