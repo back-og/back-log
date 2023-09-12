@@ -55,4 +55,9 @@ public class UserRepositoryAdapter implements UserRepository {
         userJpaRepository.deleteAll();
     }
 
+    @Override
+    public void delete(User findUser) {
+        userJpaRepository.delete(findUser);
+    }
+
 }
