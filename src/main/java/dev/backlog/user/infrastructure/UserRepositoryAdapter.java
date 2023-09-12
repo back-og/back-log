@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static dev.backlog.user.exception.UserErrorCode.USER_NOT_FOUNT;
 
@@ -21,6 +22,11 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User save(User user) {
         return userJpaRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider) {
+        return userJpaRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider);
     }
 
     @Override

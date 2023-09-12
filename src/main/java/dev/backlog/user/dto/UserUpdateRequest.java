@@ -8,4 +8,3 @@ public record UserUpdateRequest(
         String blogTitle
 ) {
 }
-

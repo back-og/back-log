@@ -2,6 +2,7 @@ package dev.backlog.user.api;
 
 import com.epages.restdocs.apispec.Schema;
 import dev.backlog.common.config.ControllerTestConfig;
+import dev.backlog.user.domain.Email;
 import dev.backlog.user.dto.UserDetailsResponse;
 import dev.backlog.user.dto.UserResponse;
 import dev.backlog.user.dto.UserUpdateRequest;
@@ -86,7 +87,7 @@ class UserControllerTest extends ControllerTestConfig {
                 "소개",
                 "프로필이미지",
                 "블로그제목",
-                "이메일"
+                new Email("이메일")
         );
 
         when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
@@ -106,7 +107,7 @@ class UserControllerTest extends ControllerTestConfig {
                                         fieldWithPath("introduction").type(JsonFieldType.STRING).description("소개"),
                                         fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
                                         fieldWithPath("blogTitle").type(JsonFieldType.STRING).description("블로그 제목"),
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
+                                        fieldWithPath("email.email").type(JsonFieldType.STRING).description("이메일")
                                 )
                         )
                 )
@@ -115,13 +116,15 @@ class UserControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.introduction").value("소개"))
                 .andExpect(jsonPath("$.profileImage").value("프로필이미지"))
                 .andExpect(jsonPath("$.blogTitle").value("블로그제목"))
-                .andExpect(jsonPath("$.email").value("이메일")
+                .andExpect(jsonPath("$.email.email").value("이메일")
                 );
     }
 
     @DisplayName("로그인 되어있는 자신의 프로필을 수정할 수 있다.")
     @Test
     void updateUser() throws Exception {
+        Long userId = 1000L;
+        String token = "토큰";
         UserUpdateRequest request = new UserUpdateRequest(
                 "새닉네임",
                 "새이메일",
@@ -130,8 +133,10 @@ class UserControllerTest extends ControllerTestConfig {
                 "새블로그제목"
         );
 
+        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+
         mockMvc.perform(put("/api/users/me")
-                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                 )
@@ -139,7 +144,6 @@ class UserControllerTest extends ControllerTestConfig {
                                 resourceDetails().tag("User").description("사용자 정보 수정")
                                         .requestSchema(Schema.schema("UserUpdateRequest")),
                                 preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
                                 requestFields(
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                         fieldWithPath("introduction").type(JsonFieldType.STRING).description("소개"),
