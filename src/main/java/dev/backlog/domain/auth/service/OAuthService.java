@@ -2,6 +2,7 @@ package dev.backlog.domain.auth.service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Objects;
 import dev.backlog.domain.auth.AuthTokens;
 import dev.backlog.domain.auth.AuthTokensGenerator;
 import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
@@ -62,10 +63,10 @@ public class OAuthService {
     }
 
     private void checkUserIsDeleted(User findUser) {
-        if (findUser.isDeleted() && findUser.getDeletedDate() != LocalDate.MAX) {
+        if (findUser.isDeleted() && (!Objects.equals(findUser.getDeletedDate(), LocalDate.of(9999, 12, 31)))) {
             Period between = Period.between(findUser.getDeletedDate(), LocalDate.now());
             if (between.getDays() >= 30) {
-                userJpaRepository.delete(findUser);
+                userRepository.delete(findUser);
                 throw new IllegalArgumentException("탈퇴한 지 30일이 지난 사용자입니다. 다시 회원 가입해 주세요.");
             }
             findUser.unmarkUserAsDeleted();

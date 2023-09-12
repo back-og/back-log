@@ -76,7 +76,7 @@ public class User {
         this.profileImage = profileImage;
         this.introduction = introduction;
         this.blogTitle = blogTitle;
-        this.deletedDate = LocalDate.MAX;
+        this.deletedDate = LocalDate.of(9999,12,31);
         this.isDeleted = Boolean.FALSE;
     }
 
@@ -119,7 +119,7 @@ public class User {
 
     public void unmarkUserAsDeleted() {
         this.isDeleted = false;
-        this.deletedDate = LocalDate.now();
+        this.deletedDate = LocalDate.of(9999,12,31);
     }
 
 }
