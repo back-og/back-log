@@ -47,7 +47,7 @@ public class KakaoApiClient {
     public KakaoMemberResponse fetchMember(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        httpHeaders.set("Authorization", BEARER_TYPE + accessToken);
+        httpHeaders.set("Authorization", accessToken);
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
 
