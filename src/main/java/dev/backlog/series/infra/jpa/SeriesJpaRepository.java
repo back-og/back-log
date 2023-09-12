@@ -10,4 +10,6 @@ public interface SeriesJpaRepository extends JpaRepository<Series, Long> {
 
     Optional<Series> findByUserAndName(User user, String name);
 
+    Optional<Series> findByIdAndUser(Long id, User user);
+
 }
