@@ -1,18 +1,18 @@
 package dev.backlog.common.fixture;
 
-import dev.backlog.domain.comment.model.Comment;
-import dev.backlog.domain.hashtag.model.Hashtag;
-import dev.backlog.domain.like.model.Like;
-import dev.backlog.domain.post.model.Post;
-import dev.backlog.domain.series.model.Series;
-import dev.backlog.domain.user.model.Email;
-import dev.backlog.domain.user.model.User;
+import dev.backlog.comment.domain.Comment;
+import dev.backlog.like.domain.Like;
+import dev.backlog.post.domain.Hashtag;
+import dev.backlog.post.domain.Post;
+import dev.backlog.series.domain.Series;
+import dev.backlog.user.domain.Email;
+import dev.backlog.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static dev.backlog.domain.auth.model.oauth.OAuthProvider.KAKAO;
+import static dev.backlog.auth.domain.oauth.OAuthProvider.KAKAO;
 
 public class EntityFixture {
 

@@ -1,7 +1,7 @@
 package dev.backlog.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
+import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;

@@ -1,11 +1,11 @@
 package dev.backlog.common.fixture;
 
-import dev.backlog.domain.auth.AuthTokens;
-import dev.backlog.domain.auth.model.oauth.OAuthProvider;
-import dev.backlog.domain.auth.model.oauth.dto.SignupRequest;
-import dev.backlog.domain.post.dto.PostCreateRequest;
-import dev.backlog.domain.post.dto.PostUpdateRequest;
-import dev.backlog.domain.series.dto.SeriesCreateRequest;
+import dev.backlog.auth.AuthTokens;
+import dev.backlog.auth.domain.oauth.OAuthProvider;
+import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.post.dto.PostCreateRequest;
+import dev.backlog.post.dto.PostUpdateRequest;
+import dev.backlog.series.dto.SeriesCreateRequest;
 
 import java.util.List;
 

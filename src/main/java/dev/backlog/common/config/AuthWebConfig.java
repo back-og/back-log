@@ -1,8 +1,8 @@
 package dev.backlog.common.config;
 
+import dev.backlog.auth.domain.oauth.JwtTokenProvider;
+import dev.backlog.auth.domain.oauth.converter.OAuthProviderConverter;
 import dev.backlog.common.UserArgumentResolver;
-import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
-import dev.backlog.domain.auth.model.oauth.converter.OAuthProviderConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

@@ -1,7 +1,7 @@
 package dev.backlog.common;
 
-import dev.backlog.domain.auth.model.oauth.JwtTokenProvider;
-import dev.backlog.domain.user.dto.AuthInfo;
+import dev.backlog.auth.domain.oauth.JwtTokenProvider;
+import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
