@@ -1,5 +1,8 @@
 package dev.backlog.auth.service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Objects;
 import dev.backlog.auth.AuthTokens;
 import dev.backlog.auth.AuthTokensGenerator;
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
@@ -8,14 +11,16 @@ import dev.backlog.auth.domain.oauth.authcode.AuthCodeRequestUrlProviderComposit
 import dev.backlog.auth.domain.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.auth.domain.oauth.dto.OAuthInfoResponse;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Objects;
+import static dev.backlog.auth.exception.AuthErrorCode.ALREADY_REGISTERED;
+import static dev.backlog.auth.exception.AuthErrorCode.AUTHENTICATION_FAILED;
+import static dev.backlog.auth.exception.AuthErrorCode.DELETED_USER;
+import static dev.backlog.auth.exception.AuthErrorMessage.EXPIRED_REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +64,8 @@ public class OAuthService {
 
     public AuthTokens renew(Long userId, String token) {
         if (jwtTokenProvider.isExpiredRefreshToken(token)) {
-            throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED, EXPIRED_REFRESH_TOKEN);
         } else {
             return authTokensGenerator.refreshJwtToken(userId, token);
         }
@@ -67,7 +73,8 @@ public class OAuthService {
 
     private void checkDuplicateUser(OAuthInfoResponse response) {
         if (userRepository.findByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider()).isPresent()) {
-            throw new IllegalArgumentException("이미 회원 가입된 사용자입니다.");
+            throw new InvalidAuthException(
+                    ALREADY_REGISTERED, ALREADY_REGISTERED.getMessage());
         }
     }
 
@@ -76,7 +83,8 @@ public class OAuthService {
             Period between = Period.between(findUser.getDeletedDate(), LocalDate.now());
             if (between.getDays() >= 30) {
                 userRepository.delete(findUser);
-                throw new IllegalArgumentException("탈퇴한 지 30일이 지난 사용자입니다. 다시 회원 가입해 주세요.");
+                throw new InvalidAuthException(
+                        DELETED_USER, DELETED_USER.getMessage());
             }
             findUser.unmarkUserAsDeleted();
         }
