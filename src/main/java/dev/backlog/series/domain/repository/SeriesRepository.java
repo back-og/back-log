@@ -14,4 +14,7 @@ public interface SeriesRepository {
     void deleteAll();
 
     List<Series> findAll();
+
+    Series getByIdAndUser(Long seriesId, User user);
+
 }

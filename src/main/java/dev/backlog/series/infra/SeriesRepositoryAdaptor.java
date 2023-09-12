@@ -1,7 +1,9 @@
 package dev.backlog.series.infra;
 
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
+import dev.backlog.series.exception.SeriesErrorCode;
 import dev.backlog.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeriesRepositoryAdaptor implements SeriesRepository {
 
+    private static final String USER_AND_SERIES_NOT_FOUND_MESSAGE = "유저 아이디(%s)와 시리즈 이름(%s)에 대한 시리즈가 없음";
+    private static final String SERIES_AND_USER_NOT_FOUND_MESSAGE = "시리즈 아이디(%s)와 유저 아이디(%s)에 대한 시리즈가 없음";
+
     private final SeriesJpaRepository seriesJpaRepository;
 
     @Override
@@ -23,7 +28,7 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     @Override
     public Series getByUserAndName(User user, String name) {
         return seriesJpaRepository.findByUserAndName(user, name)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(SeriesErrorCode.SERIES_NOT_FOUNT, String.format(USER_AND_SERIES_NOT_FOUND_MESSAGE, user.getId(), name)));
     }
 
     @Override
@@ -34,6 +39,12 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     @Override
     public List<Series> findAll() {
         return seriesJpaRepository.findAll();
+    }
+
+    @Override
+    public Series getByIdAndUser(Long seriesId, User user) {
+        return seriesJpaRepository.findByIdAndUser(seriesId, user)
+                .orElseThrow(() -> new NotFoundException(SeriesErrorCode.SERIES_NOT_FOUNT, String.format(SERIES_AND_USER_NOT_FOUND_MESSAGE, seriesId, user.getId())));
     }
 
 }
