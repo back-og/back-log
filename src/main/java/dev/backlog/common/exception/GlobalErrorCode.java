@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum GlobalErrorCode implements ErrorCode {
-    VALIDATION_ERROR("G000", "잘못된 요청"),
+
+    VALIDATION_ERROR("G000", "유효하지 않은 입력입니다."),
     ;
 
     private final String code;
