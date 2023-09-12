@@ -37,9 +37,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getById(Long userId) {
         return userJpaRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(
-                        USER_NOT_FOUNT,
-                        String.format(USER_NOT_FOUNT.getMessage(), userId)));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUNT, String.format(USER_NOT_FOUNT.getMessage(), userId)));
     }
 
     @Override
@@ -51,9 +49,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getByNickname(String nickname) {
         return userJpaRepository.findByNickname(nickname)
-                .orElseThrow(() -> new NotFoundException(
-                        USER_NOT_FOUNT,
-                        String.format(USER_NOT_FOUNT.getMessage(), nickname)));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUNT, nickname));
     }
 
     @Override
