@@ -38,6 +38,12 @@ public class Series {
         this.name = name;
     }
 
+    public void verifySeriesOwner(User user) {
+        if (!this.user.equals(user)) {
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+    }
+
     public void updateName(String name) {
         this.name = name;
     }

@@ -27,8 +27,16 @@ public class SeriesService {
 
     public void updateSeries(AuthInfo authInfo, Long seriesId, SeriesUpdateRequest seriesUpdateRequest) {
         User user = userRepository.getById(authInfo.userId());
-        Series series = seriesRepository.getByIdAndUser(seriesId, user);
+        Series series = seriesRepository.getById(seriesId);
+        series.verifySeriesOwner(user);
         series.updateName(seriesUpdateRequest.seriesName());
+    }
+
+    public void deleteSeries(AuthInfo authInfo, Long seriesId) {
+        User user = userRepository.getById(authInfo.userId());
+        Series series = seriesRepository.getById(seriesId);
+        series.verifySeriesOwner(user);
+        seriesRepository.delete(series);
     }
 
 }
