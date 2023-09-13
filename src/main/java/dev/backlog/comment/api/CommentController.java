@@ -19,7 +19,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("{postId}")
+    @PostMapping("/{postId}")
     public ResponseEntity<Void> create(
             @RequestBody CreateCommentRequest request,
             AuthInfo authInfo,
