@@ -159,7 +159,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-like",
                                 resourceDetails().tag("게시물").description("좋아요 누른 게시물 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
@@ -200,7 +200,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-series",
                                 resourceDetails().tag("게시물").description("시리즈별 게시물 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("series").description("시리즈 이름"),
                                         parameterWithName("page").description("현재 페이지"),
@@ -242,7 +242,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-recent",
                                 resourceDetails().tag("게시물").description("게시물 최근 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
@@ -284,7 +284,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-trend",
                                 resourceDetails().tag("게시물").description("게시물 트렌딩 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("timePeriod").description("today, week, month, year 필터링 조건"),
                                         parameterWithName("page").description("현재 페이지"),
