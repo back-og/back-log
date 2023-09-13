@@ -72,7 +72,7 @@ public class OAuthService {
     }
 
     private void checkDuplicateUser(OAuthInfoResponse response) {
-        if (userRepository.findByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider()).isPresent()) {
+        if (userRepository.existByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider())) {
             throw new InvalidAuthException(
                     ALREADY_REGISTERED, ALREADY_REGISTERED.getMessage());
         }

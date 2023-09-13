@@ -4,13 +4,12 @@ import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.user.domain.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserRepository {
 
     User save(User user);
 
-    Optional<User> findByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider);
+    boolean existByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider);
 
     User getById(Long userId);
 
