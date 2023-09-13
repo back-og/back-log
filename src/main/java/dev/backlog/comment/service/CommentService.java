@@ -3,6 +3,7 @@ package dev.backlog.comment.service;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CreateCommentRequest;
+import dev.backlog.comment.dto.UpdateCommentRequest;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -27,6 +28,21 @@ public class CommentService {
         Comment comment = request.toEntity(findUser, findPost);
 
         return commentRepository.save(comment).getId();
+    }
+
+    public void update(UpdateCommentRequest request, AuthInfo authInfo, Long commentId) {
+        validateWriter(authInfo.userId(), commentId);
+
+        Comment comment = commentRepository.getById(commentId);
+        comment.updateContent(request.content());
+    }
+
+    private void validateWriter(Long userId, Long commentId) {
+        Comment comment = commentRepository.getById(commentId);
+        Long writerId = comment.getWriter().getId();
+        if (!writerId.equals(userId)) {
+            throw new IllegalArgumentException("해당 댓글을 수정할 수 없습니다.");
+        }
     }
 
 }
