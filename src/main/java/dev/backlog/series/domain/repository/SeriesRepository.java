@@ -2,6 +2,8 @@ package dev.backlog.series.domain.repository;
 
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -15,8 +17,9 @@ public interface SeriesRepository {
 
     List<Series> findAll();
 
+    Slice<Series> findAllByUser(User user, Pageable pageable);
+
     void delete(Series series);
 
     void deleteAll();
-
 }

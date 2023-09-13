@@ -7,6 +7,8 @@ import dev.backlog.series.exception.SeriesErrorCode;
 import dev.backlog.series.infra.jpa.SeriesJpaRepository;
 import dev.backlog.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,6 +46,11 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     @Override
     public void deleteAll() {
         seriesJpaRepository.deleteAll();
+    }
+
+    @Override
+    public Slice<Series> findAllByUser(User user, Pageable pageable) {
+        return seriesJpaRepository.findAllByUser(user, pageable);
     }
 
     @Override
