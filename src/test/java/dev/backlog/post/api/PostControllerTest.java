@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -339,8 +340,6 @@ class PostControllerTest extends ControllerTestConfig {
     @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
     @Test
     void searchByUserNicknameTest() throws Exception {
-        // Arrange
-        String nickname = "testUser";
         final long postId = 1l;
         final long userId = 1l;
         SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
@@ -354,6 +353,24 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.numberOfElements").value(sliceResponse.numberOfElements()))
                 .andExpect(jsonPath("$.hasNext").value(false))
                 .andReturn();
+    }
+
+    @DisplayName("게시물 삭제 요청이 들어오면 삭제 후 204 상태코드를 반환한다.")
+    @Test
+    void deletePostTest() throws Exception {
+        long postId = 1L;
+
+        mockMvc.perform(delete("/api/posts/{postId}", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", TOKEN))
+                .andDo(document("post-delete",
+                                resourceDetails().tag("게시물").description("게시물 업데이트"),
+                                pathParameters(
+                                        parameterWithName("postId").description("게시물 식별자")
+                                )
+                        )
+                )
+                .andExpect(status().isNoContent());
     }
 
     private PostResponse getPostResponse(
