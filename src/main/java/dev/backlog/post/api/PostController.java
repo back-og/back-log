@@ -82,7 +82,7 @@ public class PostController {
             @RequestParam(required = false) String hashtag,
             @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable
     ) {
-        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByUserNickname(nickname, hashtag, pageable);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByNicknameAndHashtag(nickname, hashtag, pageable);
         return ResponseEntity.ok(sliceResponse);
     }
 
