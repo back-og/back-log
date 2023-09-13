@@ -6,14 +6,11 @@ import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.common.dto.SliceResponse;
-import dev.backlog.like.domain.Like;
-import dev.backlog.like.domain.repository.LikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.HashtagRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -212,10 +209,10 @@ class PostQueryServiceTest extends TestContainerConfig {
         Post post2 = 게시물1(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
-        Like like1 = 좋아요1(user1, post1);
-        Like like2 = 좋아요1(user1, post2);
-        Like like3 = 좋아요1(user2, post1);
-        likeRepository.saveAll(List.of(like1, like2, like3));
+        PostLike like1 = 좋아요1(user1, post1);
+        PostLike like2 = 좋아요1(user1, post2);
+        PostLike like3 = 좋아요1(user2, post1);
+        postLikeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 

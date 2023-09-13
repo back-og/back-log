@@ -75,6 +75,14 @@ public class EntityFixture {
                 .build();
     }
 
+    public static List<Series> 시리즈_모음(User user) {
+        List<Series> series = new ArrayList<>();
+        for (int index = 0; index < 10; index++) {
+            series.add(시리즈1(user));
+        }
+        return series;
+    }
+
     public static PostLike 좋아요1(User user, Post post) {
         return PostLike.builder()
                 .post(post)
