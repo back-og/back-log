@@ -11,6 +11,8 @@ public interface SeriesRepository {
 
     Series save(Series series);
 
+    List<Series> saveAll(Iterable<Series> series);
+
     Series getById(Long seriesId);
 
     Series getByUserAndName(User user, String name);

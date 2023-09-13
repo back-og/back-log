@@ -28,6 +28,11 @@ public class SeriesRepositoryAdaptor implements SeriesRepository {
     }
 
     @Override
+    public List<Series> saveAll(Iterable<Series> series) {
+        return seriesJpaRepository.saveAll(series);
+    }
+
+    @Override
     public Series getById(Long seriesId) {
         return seriesJpaRepository.findById(seriesId)
                 .orElseThrow(() -> new NotFoundException(
