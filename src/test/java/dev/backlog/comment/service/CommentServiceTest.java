@@ -3,6 +3,7 @@ package dev.backlog.comment.service;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CreateCommentRequest;
+import dev.backlog.comment.dto.UpdateCommentRequest;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -34,7 +35,6 @@ class CommentServiceTest {
 
     @Autowired
     private PostRepository postRepository;
-
 
     private User 유저1;
     private Post 게시물1;
@@ -68,6 +68,23 @@ class CommentServiceTest {
 
         assertThat(findComment.getPost().getId()).isEqualTo(게시물1.getId());
         assertThat(findComment.getWriter().getId()).isEqualTo(유저1.getId());
+    }
+
+    @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 수정할 수 있다.")
+    @Test
+    void updateCommentTest() {
+        String updateCommentContent = "수정한 댓글립니다다다다다";
+        User user = userRepository.save(유저1);
+        postRepository.save(게시물1);
+        Comment comment = commentRepository.save(댓글1);
+
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
+
+        UpdateCommentRequest request = new UpdateCommentRequest(updateCommentContent);
+        commentService.update(request, authInfo, comment.getId());
+        Comment findComment = commentRepository.getById(comment.getId());
+
+        assertThat(updateCommentContent).isEqualTo(findComment.getContent());
     }
 
 }
