@@ -41,7 +41,7 @@ public class PostController {
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
     }
 
-    @GetMapping
+    @GetMapping("/series")
     public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
                                                                               String series,
                                                                               @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {

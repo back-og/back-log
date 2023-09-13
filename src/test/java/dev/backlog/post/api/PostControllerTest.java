@@ -192,7 +192,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts")
+        mockMvc.perform(get("/api/posts/series")
                         .param("series", "시리즈")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
