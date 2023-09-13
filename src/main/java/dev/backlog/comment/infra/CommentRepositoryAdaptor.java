@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 @RequiredArgsConstructor
@@ -16,8 +17,19 @@ public class CommentRepositoryAdaptor implements CommentRepository {
     private final CommentJpaRepository commentJpaRepository;
 
     @Override
+    public Comment save(Comment comment) {
+        return commentJpaRepository.save(comment);
+    }
+
+    @Override
     public List<Comment> saveAll(Iterable<Comment> comments) {
         return commentJpaRepository.saveAll(comments);
+    }
+
+    @Override
+    public Comment getById(Long commentId) {
+        return commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("해당 게시물을 찾을 수 없습니다."));
     }
 
     @Override

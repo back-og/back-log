@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface CommentRepository {
 
+    Comment save(Comment comment);
+
     List<Comment> saveAll(Iterable<Comment> comments);
+
+    Comment getById(Long commentId);
 
     List<Comment> findAllByPost(Post post);
 
