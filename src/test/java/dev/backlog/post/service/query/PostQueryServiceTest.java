@@ -3,6 +3,7 @@ package dev.backlog.post.service.query;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.config.TestContainerConfig;
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.Like;
 import dev.backlog.like.domain.repository.LikeRepository;
 import dev.backlog.post.domain.Post;
@@ -10,7 +11,6 @@ import dev.backlog.post.domain.repository.HashtagRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -145,13 +145,13 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPostsByUser(authInfo, pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findLikedPostsByUser(authInfo, pageRequest);
 
         //then
         assertAll(
-                () -> assertThat(postSliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt).reversed()),
-                () -> assertThat(postSliceResponse.hasNext()).isFalse(),
-                () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size())
+                () -> assertThat(sliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt).reversed()),
+                () -> assertThat(sliceResponse.hasNext()).isFalse(),
+                () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size())
         );
     }
 
@@ -166,13 +166,13 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
 
         //then
         assertAll(
-                () -> assertThat(postSliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt)),
-                () -> assertThat(postSliceResponse.hasNext()).isFalse(),
-                () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size())
+                () -> assertThat(sliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt)),
+                () -> assertThat(sliceResponse.hasNext()).isFalse(),
+                () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size())
         );
     }
 
@@ -186,13 +186,13 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findPostsInLatestOrder(pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsInLatestOrder(pageRequest);
 
         //then
         assertAll(
-                () -> assertThat(postSliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt).reversed()),
-                () -> assertThat(postSliceResponse.hasNext()).isFalse(),
-                () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size())
+                () -> assertThat(sliceResponse.data()).isSortedAccordingTo(Comparator.comparing(PostSummaryResponse::createdAt).reversed()),
+                () -> assertThat(sliceResponse.hasNext()).isFalse(),
+                () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size())
         );
     }
 
@@ -217,14 +217,14 @@ class PostQueryServiceTest extends TestContainerConfig {
         PageRequest pageRequest = PageRequest.of(0, 30);
 
         //when
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.findLikedPosts(timePeriod, pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findLikedPosts(timePeriod, pageRequest);
 
         //then
         assertAll(
-                () -> assertThat(postSliceResponse.hasNext()).isFalse(),
-                () -> assertThat(postSliceResponse.numberOfElements()).isEqualTo(postSliceResponse.data().size()),
-                () -> assertThat(postSliceResponse.data().get(0).postId()).isEqualTo(post1.getId()),
-                () -> assertThat(postSliceResponse.data().get(1).postId()).isEqualTo(post2.getId())
+                () -> assertThat(sliceResponse.hasNext()).isFalse(),
+                () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size()),
+                () -> assertThat(sliceResponse.data().get(0).postId()).isEqualTo(post1.getId()),
+                () -> assertThat(sliceResponse.data().get(1).postId()).isEqualTo(post2.getId())
         );
     }
 
@@ -236,10 +236,10 @@ class PostQueryServiceTest extends TestContainerConfig {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.searchByUserNickname(user.getNickname(), "", pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByUserNickname(user.getNickname(), "", pageRequest);
 
-        assertThat(postSliceResponse.numberOfElements()).isEqualTo(pageSize);
-        assertThat(postSliceResponse.hasNext()).isTrue();
+        assertThat(sliceResponse.numberOfElements()).isEqualTo(pageSize);
+        assertThat(sliceResponse.hasNext()).isTrue();
     }
 
 }

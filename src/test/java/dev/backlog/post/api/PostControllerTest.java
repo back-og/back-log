@@ -3,10 +3,10 @@ package dev.backlog.post.api;
 import com.epages.restdocs.apispec.Schema;
 import dev.backlog.comment.dto.CommentResponse;
 import dev.backlog.common.config.ControllerTestConfig;
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.post.dto.PostUpdateRequest;
 import dev.backlog.post.service.PostService;
@@ -145,10 +145,10 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
-        when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/like")
@@ -188,8 +188,8 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts")
@@ -230,8 +230,8 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/recent")
@@ -271,8 +271,8 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         String defaultTimePeriod = "week";
@@ -343,15 +343,15 @@ class PostControllerTest extends ControllerTestConfig {
         String nickname = "testUser";
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
 
-        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(postSliceResponse);
+        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(sliceResponse);
 
         mockMvc.perform(get("/api/posts/search")
                         .param("hashtag", "tag")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(postSliceResponse.numberOfElements()))
+                .andExpect(jsonPath("$.numberOfElements").value(sliceResponse.numberOfElements()))
                 .andExpect(jsonPath("$.hasNext").value(false))
                 .andReturn();
     }
@@ -380,8 +380,8 @@ class PostControllerTest extends ControllerTestConfig {
         );
     }
 
-    private PostSliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
-        return new PostSliceResponse<>(
+    private SliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
+        return new SliceResponse<>(
                 10,
                 false,
                 List.of(new PostSummaryResponse(
