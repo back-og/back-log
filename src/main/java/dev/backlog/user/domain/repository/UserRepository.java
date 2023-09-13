@@ -9,7 +9,7 @@ public interface UserRepository {
 
     User save(User user);
 
-    boolean existByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider);
+    boolean existsByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider);
 
     User getById(Long userId);
 
