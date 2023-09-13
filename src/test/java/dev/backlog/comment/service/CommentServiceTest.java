@@ -7,6 +7,7 @@ import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
+import dev.backlog.user.dto.AuthInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,8 +60,9 @@ class CommentServiceTest {
         User user = userRepository.save(유저1);
         Post post = postRepository.save(게시물1);
 
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         CreateCommentRequest request = new CreateCommentRequest("댓글입니다다다다;");
-        Long commentId = commentService.create(request, user.getId(), post.getId());
+        Long commentId = commentService.create(request, authInfo, post.getId());
 
         Comment findComment = commentRepository.getById(commentId);
 
