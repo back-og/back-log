@@ -6,6 +6,7 @@ import dev.backlog.series.domain.repository.SeriesRepository;
 import dev.backlog.series.dto.SeriesSummaryResponse;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ class SeriesQueryServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @AfterEach
+    void tearDown() {
+        seriesRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @DisplayName("사용자 이름으로 시리즈 전체를 조회할 수 있다.")
     @Test
