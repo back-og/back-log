@@ -236,7 +236,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByUserNickname(user.getNickname(), "", pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByNicknameAndHashtag(user.getNickname(), "", pageRequest);
 
         assertThat(sliceResponse.numberOfElements()).isEqualTo(pageSize);
         assertThat(sliceResponse.hasNext()).isTrue();
