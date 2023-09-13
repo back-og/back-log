@@ -2,6 +2,7 @@ package dev.backlog.auth.domain.oauth.client;
 
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.OAuthInfoResponse;
+import dev.backlog.common.exception.InvalidAuthException;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static dev.backlog.auth.exception.AuthErrorCode.INVALID_LOGIN_TYPE;
 
 @Component
 public class OAuthMemberClientComposite {
@@ -27,7 +30,8 @@ public class OAuthMemberClientComposite {
 
     public OAuthMemberClient getClient(OAuthProvider oAuthProvider) {
         return Optional.ofNullable(mapping.get(oAuthProvider))
-                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 로그인 타입입니다."));
+                .orElseThrow(() -> new InvalidAuthException(
+                        INVALID_LOGIN_TYPE, INVALID_LOGIN_TYPE.getMessage()));
     }
 
 }

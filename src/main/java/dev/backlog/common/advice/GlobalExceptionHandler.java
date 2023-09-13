@@ -1,6 +1,7 @@
 package dev.backlog.common.advice;
 
 import dev.backlog.common.exception.GlobalErrorCode;
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(NotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(exception.getErrorCode()));
+    }
+
+    @ExceptionHandler(InvalidAuthException.class)
+    public ResponseEntity<ErrorResponse> handleException(InvalidAuthException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorResponse.of(exception.getErrorCode()));
     }
 

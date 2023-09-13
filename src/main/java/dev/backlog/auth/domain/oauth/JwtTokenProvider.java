@@ -15,6 +15,14 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+import dev.backlog.common.exception.InvalidAuthException;
+
+import static dev.backlog.auth.exception.AuthErrorCode.AUTHENTICATION_FAILED;
+import static dev.backlog.auth.exception.AuthErrorMessage.EXPIRED_TOKEN;
+import static dev.backlog.auth.exception.AuthErrorMessage.FAILED_SIGNATURE_VERIFICATION;
+import static dev.backlog.auth.exception.AuthErrorMessage.INVALID_FORMAT_TOKEN;
+import static dev.backlog.auth.exception.AuthErrorMessage.INVALID_STRUCTURE_TOKEN;
+
 @Component
 public class JwtTokenProvider {
 
@@ -58,13 +66,17 @@ public class JwtTokenProvider {
                     .parseClaimsJws(accessToken)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new IllegalArgumentException("JWT 토큰이 만료되었습니다.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED, EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
-            throw new IllegalArgumentException("JWT 토큰의 형식이 적절하지 않습니다.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED, INVALID_FORMAT_TOKEN);
         } catch (MalformedJwtException e) {
-            throw new IllegalArgumentException("JWT 토큰이 올바르게 구성되지 않았거나, 적절하지 않게 수정되었습니다.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED, INVALID_STRUCTURE_TOKEN);
         } catch (SignatureException e) {
-            throw new IllegalArgumentException("JWT 토큰의 서명 검증에 실패하였습니다.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED, FAILED_SIGNATURE_VERIFICATION);
         }
     }
 
