@@ -1,5 +1,6 @@
 package dev.backlog.post.domain;
 
+import dev.backlog.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "posthashtags")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostHashtag {
+public class PostHashtag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

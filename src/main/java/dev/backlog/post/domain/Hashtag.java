@@ -1,5 +1,6 @@
 package dev.backlog.post.domain;
 
+import dev.backlog.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "hashtags")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Hashtag {
+public class Hashtag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

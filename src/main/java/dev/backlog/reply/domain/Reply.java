@@ -1,6 +1,8 @@
 package dev.backlog.reply.domain;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import dev.backlog.comment.domain.Comment;
+import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "replys")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reply {
+public class Reply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
