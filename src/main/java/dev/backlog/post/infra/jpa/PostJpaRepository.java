@@ -24,6 +24,4 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllBySeriesOrderByCreatedAt(Series series);
 
-    int countBySeries(Series series);
-
 }

@@ -26,7 +26,6 @@ public interface PostRepository {
 
     Slice<Post> findAllByUserAndSeries(User user, Series series, Pageable pageable);
 
-    int countBySeries(Series series);
-
     List<Post> findAllBySeriesOrderByCreatedAt(Series series);
+
 }

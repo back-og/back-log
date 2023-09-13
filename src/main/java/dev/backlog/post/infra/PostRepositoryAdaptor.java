@@ -61,11 +61,6 @@ public class PostRepositoryAdaptor implements PostRepository {
     }
 
     @Override
-    public int countBySeries(Series series) {
-        return postJpaRepository.countBySeries(series);
-    }
-
-    @Override
     public List<Post> findAllBySeriesOrderByCreatedAt(Series series) {
         return postJpaRepository.findAllBySeriesOrderByCreatedAt(series);
     }
