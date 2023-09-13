@@ -7,31 +7,26 @@ import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
+import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    @Transactional
-    public Long create(CreateCommentRequest request, Long userId, Long postId) {
-        User findUser = userRepository.getById(userId);
+    public Long create(CreateCommentRequest request, AuthInfo authInfo, Long postId) {
+        User findUser = userRepository.getById(authInfo.userId());
         Post findPost = postRepository.getById(postId);
-        Comment comment = Comment.builder()
-                .content(request.content())
-                .writer(findUser)
-                .post(findPost)
-                .build();
+        Comment comment = request.toEntity(findUser, findPost);
 
-        Comment savedComment = commentRepository.save(comment);
-        return savedComment.getId();
+        return commentRepository.save(comment).getId();
     }
 
 }
