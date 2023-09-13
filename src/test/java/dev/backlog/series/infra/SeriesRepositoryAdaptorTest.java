@@ -8,6 +8,8 @@ import dev.backlog.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -69,6 +71,23 @@ class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
         //then
         List<Series> seriesList = seriesRepository.findAll();
         assertThat(seriesList).isEmpty();
+    }
+
+    @DisplayName("사용자별 시리즈를 조회할 수 있다.")
+    @Test
+    void findAllByUser() {
+        //given
+        User user = 유저1();
+        userRepository.save(user);
+        List<Series> series = List.of(시리즈1(user), 시리즈1(user));
+        seriesRepository.saveAll(series);
+        PageRequest pageRequest = PageRequest.of(0, 30);
+
+        //when
+        Slice<Series> seriesSlice = seriesRepository.findAllByUser(user, pageRequest);
+
+        //then
+        assertThat(seriesSlice).containsAll(series);
     }
 
 }

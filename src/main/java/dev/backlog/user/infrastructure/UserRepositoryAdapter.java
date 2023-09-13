@@ -16,6 +16,8 @@ import static dev.backlog.user.exception.UserErrorCode.USER_NOT_FOUNT;
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
+    private static final String USER_NOT_REGISTERED = "회원가입되지 않은 사용자입니다 input = %s %s";
+
     private final UserJpaRepository userJpaRepository;
 
     @Override
@@ -42,7 +44,9 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider) {
         return userJpaRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자는 존재하지 않습니다. 회원가입을 먼저 진행해주세요."));
+                .orElseThrow(() -> new NotFoundException(
+                        USER_NOT_FOUNT,
+                        String.format(USER_NOT_REGISTERED, oauthProviderId, oauthProvider)));
     }
 
     @Override

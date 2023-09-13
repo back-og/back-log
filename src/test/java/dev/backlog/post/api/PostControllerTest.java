@@ -3,10 +3,10 @@ package dev.backlog.post.api;
 import com.epages.restdocs.apispec.Schema;
 import dev.backlog.comment.dto.CommentResponse;
 import dev.backlog.common.config.ControllerTestConfig;
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.post.dto.PostUpdateRequest;
 import dev.backlog.post.service.PostService;
@@ -145,10 +145,10 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
-        when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/like")
@@ -159,7 +159,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-like",
                                 resourceDetails().tag("게시물").description("좋아요 누른 게시물 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
@@ -188,11 +188,11 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts")
+        mockMvc.perform(get("/api/posts/series")
                         .param("series", "시리즈")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
@@ -200,7 +200,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-series",
                                 resourceDetails().tag("게시물").description("시리즈별 게시물 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("series").description("시리즈 이름"),
                                         parameterWithName("page").description("현재 페이지"),
@@ -230,8 +230,8 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/recent")
@@ -242,7 +242,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-recent",
                                 resourceDetails().tag("게시물").description("게시물 최근 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
@@ -271,8 +271,8 @@ class PostControllerTest extends ControllerTestConfig {
         //given
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+        when(postQueryService.findLikedPosts(anyString(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         String defaultTimePeriod = "week";
@@ -284,7 +284,7 @@ class PostControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk())
                 .andDo(document("posts-find-trend",
                                 resourceDetails().tag("게시물").description("게시물 트렌딩 조회")
-                                        .responseSchema(Schema.schema("PostSliceResponse")),
+                                        .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("timePeriod").description("today, week, month, year 필터링 조건"),
                                         parameterWithName("page").description("현재 페이지"),
@@ -343,15 +343,15 @@ class PostControllerTest extends ControllerTestConfig {
         String nickname = "testUser";
         final long postId = 1l;
         final long userId = 1l;
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = getPostSliceResponse(postId, userId);
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
 
-        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(postSliceResponse);
+        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(sliceResponse);
 
         mockMvc.perform(get("/api/posts/search")
                         .param("hashtag", "tag")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(postSliceResponse.numberOfElements()))
+                .andExpect(jsonPath("$.numberOfElements").value(sliceResponse.numberOfElements()))
                 .andExpect(jsonPath("$.hasNext").value(false))
                 .andReturn();
     }
@@ -380,8 +380,8 @@ class PostControllerTest extends ControllerTestConfig {
         );
     }
 
-    private PostSliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
-        return new PostSliceResponse<>(
+    private SliceResponse<PostSummaryResponse> getPostSliceResponse(long postId, long userId) {
+        return new SliceResponse<>(
                 10,
                 false,
                 List.of(new PostSummaryResponse(

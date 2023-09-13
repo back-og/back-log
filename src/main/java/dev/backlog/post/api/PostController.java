@@ -1,9 +1,9 @@
 package dev.backlog.post.api;
 
 
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.post.dto.PostUpdateRequest;
 import dev.backlog.post.service.PostService;
@@ -41,31 +41,31 @@ public class PostController {
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
-                                                                                  String series,
-                                                                                  @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
+    @GetMapping("/series")
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
+                                                                              String series,
+                                                                              @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
+        SliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
         return ResponseEntity.ok(seriesPosts);
     }
 
     @GetMapping("/like")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findLikedPosts(AuthInfo authInfo,
-                                                                                 @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(authInfo, pageable);
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findLikedPosts(AuthInfo authInfo,
+                                                                             @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
+        SliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(authInfo, pageable);
         return ResponseEntity.ok(likedPosts);
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> recentPosts = postQueryService.findPostsInLatestOrder(pageable);
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findRecentPosts(@PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
+        SliceResponse<PostSummaryResponse> recentPosts = postQueryService.findPostsInLatestOrder(pageable);
         return ResponseEntity.ok(recentPosts);
     }
 
     @GetMapping("/trend")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
-                                                                                 Pageable pageable) {
-        PostSliceResponse<PostSummaryResponse> trendPosts = postQueryService.findLikedPosts(timePeriod, pageable);
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findTrendPosts(@RequestParam(defaultValue = "week") String timePeriod,
+                                                                             Pageable pageable) {
+        SliceResponse<PostSummaryResponse> trendPosts = postQueryService.findLikedPosts(timePeriod, pageable);
         return ResponseEntity.ok(trendPosts);
     }
 
@@ -76,13 +76,13 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PostSliceResponse<PostSummaryResponse>> searchByNicknameAndHashtag(
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> searchByNicknameAndHashtag(
             @RequestParam(required = false) String nickname,
             @RequestParam(required = false) String hashtag,
             @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable
     ) {
-        PostSliceResponse<PostSummaryResponse> postSliceResponse = postQueryService.searchByUserNickname(nickname, hashtag, pageable);
-        return ResponseEntity.ok(postSliceResponse);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByUserNickname(nickname, hashtag, pageable);
+        return ResponseEntity.ok(sliceResponse);
     }
 
     @PutMapping("/{postId}")

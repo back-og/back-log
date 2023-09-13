@@ -23,7 +23,6 @@ public class ErrorResponse {
     private String message;
     private List<FieldError> errors;
 
-
     private ErrorResponse(final ErrorCode code, List<FieldError> errors) {
         this.code = code.code();
         this.message = code.message();
@@ -34,7 +33,6 @@ public class ErrorResponse {
         this.message = code.message();
         this.code = code.code();
     }
-
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
         return new ErrorResponse(code, FieldError.of(bindingResult));
@@ -49,11 +47,10 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(MethodArgumentTypeMismatchException e) {
-        final String value = e.getValue() == null ? "" : e.getValue().toString();
+        final String value = e.getValue() == null ? "" : String.valueOf(e.getValue());
         final List<ErrorResponse.FieldError> errors = ErrorResponse.FieldError.of(e.getName(), value, e.getErrorCode());
         return new ErrorResponse(GlobalErrorCode.VALIDATION_ERROR, errors);
     }
-
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

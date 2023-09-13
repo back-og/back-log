@@ -60,4 +60,9 @@ public class PostRepositoryAdaptor implements PostRepository {
         return postJpaRepository.findAllByUserAndSeries(user, series, pageable);
     }
 
+    @Override
+    public List<Post> findAllBySeriesOrderByCreatedAt(Series series) {
+        return postJpaRepository.findAllBySeriesOrderByCreatedAt(series);
+    }
+
 }
