@@ -23,4 +23,14 @@ public record SeriesSummaryResponse(
         );
     }
 
+    public static SeriesSummaryResponse of(final Series series, final int postCount) {
+        return new SeriesSummaryResponse(
+                series.getId(),
+                null,
+                series.getName(),
+                postCount,
+                series.getUpdatedAt()
+        );
+    }
+
 }
