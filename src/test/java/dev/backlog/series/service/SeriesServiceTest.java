@@ -9,6 +9,7 @@ import dev.backlog.series.dto.SeriesUpdateRequest;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
 import dev.backlog.user.dto.AuthInfo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ class SeriesServiceTest {
 
     @Autowired
     private SeriesRepository seriesRepository;
+
+    @AfterEach
+    void tearDown() {
+        seriesRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @DisplayName("시리즈를 생성할 수 있다.")
     @Test
