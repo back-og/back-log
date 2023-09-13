@@ -5,6 +5,7 @@ import dev.backlog.user.domain.repository.UserRepository;
 import dev.backlog.user.dto.UserDetailsResponse;
 import dev.backlog.user.dto.UserResponse;
 import dev.backlog.user.dto.UserUpdateRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,11 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         유저1 = 유저1();
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
     }
 
     @Test

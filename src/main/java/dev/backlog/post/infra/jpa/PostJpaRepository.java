@@ -8,6 +8,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
     @Query(""" 
@@ -19,5 +21,7 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
     Slice<Post> findLikedPostsByUserId(Long userId, Pageable pageable);
 
     Slice<Post> findAllByUserAndSeries(User user, Series series, Pageable pageable);
+
+    List<Post> findAllBySeriesOrderByCreatedAt(Series series);
 
 }

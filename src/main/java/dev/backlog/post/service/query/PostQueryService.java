@@ -2,6 +2,7 @@ package dev.backlog.post.service.query;
 
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.repository.LikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.UserViewInfo;
@@ -9,7 +10,6 @@ import dev.backlog.post.domain.repository.PostCacheRepository;
 import dev.backlog.post.domain.repository.PostQueryRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
-import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -49,37 +49,37 @@ public class PostQueryService {
         return PostResponse.from(post, comments);
     }
 
-    public PostSliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, String hashtag, Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, String hashtag, Pageable pageable) {
         Slice<PostSummaryResponse> postSummaryResponses = fetchPostsByUserNickname(nickname, hashtag, pageable);
-        return PostSliceResponse.from(postSummaryResponses);
+        return SliceResponse.from(postSummaryResponses);
     }
 
-    public PostSliceResponse<PostSummaryResponse> findLikedPostsByUser(AuthInfo authInfo, Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> findLikedPostsByUser(AuthInfo authInfo, Pageable pageable) {
         User user = userRepository.getById(authInfo.userId());
 
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findLikedPostsByUserId(user.getId(), pageable)
                 .map(this::createPostSummaryResponse);
-        return PostSliceResponse.from(postSummaryResponses);
+        return SliceResponse.from(postSummaryResponses);
     }
 
-    public PostSliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
         User user = userRepository.getByNickname(nickname);
         Series series = seriesRepository.getByUserAndName(user, seriesName);
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
                 .map(this::createPostSummaryResponse);
-        return PostSliceResponse.from(postSummaryResponses);
+        return SliceResponse.from(postSummaryResponses);
     }
 
-    public PostSliceResponse<PostSummaryResponse> findPostsInLatestOrder(Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> findPostsInLatestOrder(Pageable pageable) {
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAll(pageable)
                 .map(this::createPostSummaryResponse);
-        return PostSliceResponse.from(postSummaryResponses);
+        return SliceResponse.from(postSummaryResponses);
     }
 
-    public PostSliceResponse<PostSummaryResponse> findLikedPosts(String timePeriod, Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> findLikedPosts(String timePeriod, Pageable pageable) {
         Slice<PostSummaryResponse> postSummaryResponses = postQueryRepository.findLikedPostsByTimePeriod(timePeriod, pageable)
                 .map(this::createPostSummaryResponse);
-        return PostSliceResponse.from(postSummaryResponses);
+        return SliceResponse.from(postSummaryResponses);
     }
 
     private Slice<PostSummaryResponse> fetchPostsByUserNickname(String nickname, String hashtag, Pageable pageable) {

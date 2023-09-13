@@ -1,5 +1,6 @@
 package dev.backlog.series.domain;
 
+import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "series")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Series {
+public class Series extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
