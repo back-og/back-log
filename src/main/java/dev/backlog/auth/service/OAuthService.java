@@ -34,13 +34,14 @@ public class OAuthService {
     public AuthTokens signup(SignupRequest request) {
         OAuthInfoResponse response = oauthMemberClientComposite.fetch(request.oAuthProvider(), request.authCode());
         checkDuplicateUser(response);
+        String profileImage = checkProfileImage(response.profileImage());
 
         User user = User.builder()
                 .oauthProvider(response.oAuthProvider())
                 .oauthProviderId(response.oAuthProviderId())
                 .nickname(response.nickname())
                 .email(response.email())
-                .profileImage(response.profileImage())
+                .profileImage(profileImage)
                 .introduction(request.introduction())
                 .blogTitle(request.blogTitle())
                 .build();
@@ -69,6 +70,13 @@ public class OAuthService {
         if (userRepository.existsByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider())) {
             throw new IllegalArgumentException("이미 회원 가입된 사용자입니다.");
         }
+    }
+
+    private String checkProfileImage(String profileImage) {
+        if (profileImage == null) {
+            profileImage = "기본 이미지 URL";
+        }
+        return profileImage;
     }
 
     private void checkUserIsDeleted(User findUser) {
