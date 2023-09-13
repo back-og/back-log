@@ -1,8 +1,8 @@
 package dev.backlog.post.domain.repository;
 
 import dev.backlog.common.RepositoryTestConfig;
-import dev.backlog.like.domain.Like;
-import dev.backlog.like.domain.repository.LikeRepository;
+import dev.backlog.like.domain.PostLike;
+import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -35,7 +35,7 @@ class PostRepositoryTest extends RepositoryTestConfig {
     private UserRepository userRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private PostLikeRepository postLikeRepository;
 
     @Autowired
     private SeriesRepository seriesRepository;
@@ -51,7 +51,7 @@ class PostRepositoryTest extends RepositoryTestConfig {
 
     @AfterEach
     void tearDown() {
-        likeRepository.deleteAll();
+        postLikeRepository.deleteAll();
         postRepository.deleteAll();
         seriesRepository.deleteAll();
         userRepository.deleteAll();
@@ -65,8 +65,8 @@ class PostRepositoryTest extends RepositoryTestConfig {
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            Like 좋아요1 = 좋아요1(user, post);
-            likeRepository.save(좋아요1);
+            PostLike 좋아요1 = 좋아요1(user, post);
+            postLikeRepository.save(좋아요1);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");

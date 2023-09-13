@@ -2,7 +2,7 @@ package dev.backlog.post.service;
 
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.config.TestContainerConfig;
-import dev.backlog.like.domain.repository.LikeRepository;
+import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.PostHashtag;
 import dev.backlog.post.domain.repository.HashtagRepository;
@@ -47,7 +47,7 @@ class PostServiceTest extends TestContainerConfig {
     private CommentRepository commentRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private PostLikeRepository postLikeRepository;
 
     @Autowired
     private SeriesRepository seriesRepository;
@@ -69,7 +69,7 @@ class PostServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeRepository.deleteAll();
+        postLikeRepository.deleteAll();
         commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
         hashtagRepository.deleteAll();

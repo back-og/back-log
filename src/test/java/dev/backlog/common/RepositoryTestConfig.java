@@ -6,9 +6,9 @@ import dev.backlog.comment.infra.CommentRepositoryAdaptor;
 import dev.backlog.comment.infra.jpa.CommentJpaRepository;
 import dev.backlog.common.config.JpaConfig;
 import dev.backlog.common.config.QueryDslConfig;
-import dev.backlog.like.domain.repository.LikeRepository;
-import dev.backlog.like.infra.LikeRepositoryAdaptor;
-import dev.backlog.like.infra.jpa.LikeJpaRepository;
+import dev.backlog.like.domain.repository.PostLikeRepository;
+import dev.backlog.like.infra.PostLikeRepositoryAdaptor;
+import dev.backlog.like.infra.jpa.PostLikeJpaRepository;
 import dev.backlog.post.domain.repository.HashtagRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostQueryRepository;
@@ -64,8 +64,8 @@ public class RepositoryTestConfig {
         }
 
         @Bean
-        public LikeRepository likeRepository(LikeJpaRepository likeJpaRepository) {
-            return new LikeRepositoryAdaptor(likeJpaRepository);
+        public PostLikeRepository postLikeRepository(PostLikeJpaRepository postLikeJpaRepository) {
+            return new PostLikeRepositoryAdaptor(postLikeJpaRepository);
         }
 
         @Bean

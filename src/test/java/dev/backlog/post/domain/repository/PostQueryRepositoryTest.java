@@ -1,8 +1,8 @@
 package dev.backlog.post.domain.repository;
 
 import dev.backlog.common.RepositoryTestConfig;
-import dev.backlog.like.domain.Like;
-import dev.backlog.like.domain.repository.LikeRepository;
+import dev.backlog.like.domain.PostLike;
+import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Hashtag;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.PostHashtag;
@@ -41,7 +41,7 @@ class PostQueryRepositoryTest extends RepositoryTestConfig {
     UserRepository userRepository;
 
     @Autowired
-    LikeRepository likeRepository;
+    PostLikeRepository postLikeRepository;
 
     @Autowired
     HashtagRepository hashtagRepository;
@@ -71,10 +71,10 @@ class PostQueryRepositoryTest extends RepositoryTestConfig {
         Post post2 = 게시물1(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
-        Like like1 = 좋아요1(user1, post1);
-        Like like2 = 좋아요1(user1, post2);
-        Like like3 = 좋아요1(user2, post1);
-        likeRepository.saveAll(List.of(like1, like2, like3));
+        PostLike postLike1 = 좋아요1(user1, post1);
+        PostLike postLike2 = 좋아요1(user1, post2);
+        PostLike postLike3 = 좋아요1(user2, post1);
+        postLikeRepository.saveAll(List.of(postLike1, postLike2, postLike3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 

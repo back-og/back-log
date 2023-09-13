@@ -3,6 +3,8 @@ package dev.backlog.post.service.query;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.config.TestContainerConfig;
+import dev.backlog.like.domain.PostLike;
+import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.Like;
 import dev.backlog.like.domain.repository.LikeRepository;
@@ -11,6 +13,7 @@ import dev.backlog.post.domain.repository.HashtagRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
+import dev.backlog.post.dto.PostSliceResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
@@ -56,7 +59,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     private CommentRepository commentRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private PostLikeRepository postLikeRepository;
 
     @Autowired
     private SeriesRepository seriesRepository;
@@ -82,7 +85,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @AfterEach
     void tearDown() {
-        likeRepository.deleteAll();
+        postLikeRepository.deleteAll();
         commentRepository.deleteAll();
         postHashtagRepository.deleteAll();
         hashtagRepository.deleteAll();
@@ -138,8 +141,8 @@ class PostQueryServiceTest extends TestContainerConfig {
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            Like like = 좋아요1(user, post);
-            likeRepository.save(like);
+            PostLike postLike = 좋아요1(user, post);
+            postLikeRepository.save(postLike);
         }
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
