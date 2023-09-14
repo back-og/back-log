@@ -2,6 +2,7 @@ package dev.backlog.comment.api;
 
 import com.epages.restdocs.apispec.Schema;
 import dev.backlog.comment.dto.CreateCommentRequest;
+import dev.backlog.comment.dto.UpdateCommentRequest;
 import dev.backlog.comment.service.CommentService;
 import dev.backlog.common.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -11,13 +12,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -58,6 +59,33 @@ class CommentControllerTest extends ControllerTestConfig {
                         )
                 )
                 .andExpect(status().isCreated());
+    }
+
+    @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 수정할 수 있다.")
+    @Test
+    void updateTest() throws Exception {
+        Long userId = 1L;
+        Long commentId = 3L;
+
+        UpdateCommentRequest request = new UpdateCommentRequest("수정댓글수정댓글댓글수정");
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
+
+        mockMvc.perform(put("/api/comments/{commentId}", commentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", TOKEN)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(document("comment-update",
+                                resourceDetails().tag("댓글").description("댓글 수정")
+                                        .requestSchema(Schema.schema("UpdateCommentRequest")),
+                                pathParameters(
+                                        parameterWithName("commentId").description("게시물 식별자")
+                                ),
+                                requestFields(
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글")
+                                )
+                        )
+                )
+                .andExpect(status().isOk());
     }
 
 }
