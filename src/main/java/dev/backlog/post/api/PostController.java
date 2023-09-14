@@ -1,6 +1,7 @@
 package dev.backlog.post.api;
 
 
+import dev.backlog.common.annotation.Login;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostResponse;
@@ -36,7 +37,7 @@ public class PostController {
     private final PostQueryService postQueryService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, AuthInfo authInfo) {
+    public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, @Login AuthInfo authInfo) {
         Long postId = postService.create(request, authInfo);
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
     }
@@ -50,7 +51,7 @@ public class PostController {
     }
 
     @GetMapping("/like")
-    public ResponseEntity<SliceResponse<PostSummaryResponse>> findLikedPosts(AuthInfo authInfo,
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findLikedPosts(@Login AuthInfo authInfo,
                                                                              @PageableDefault(size = 30, sort = "createdAt", direction = DESC) Pageable pageable) {
         SliceResponse<PostSummaryResponse> likedPosts = postQueryService.findLikedPostsByUser(authInfo, pageable);
         return ResponseEntity.ok(likedPosts);
@@ -70,7 +71,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, AuthInfo authInfo) {
+    public ResponseEntity<PostResponse> findPost(@PathVariable Long postId, @Login(required = false) AuthInfo authInfo) {
         PostResponse postResponse = postQueryService.findPostById(postId, authInfo);
         return ResponseEntity.ok(postResponse);
     }
@@ -88,14 +89,14 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<Void> updatePost(@RequestBody PostUpdateRequest request,
                                            @PathVariable Long postId,
-                                           AuthInfo authInfo) {
+                                           @Login AuthInfo authInfo) {
         postService.updatePost(request, postId, authInfo);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId,
-                                           AuthInfo authInfo) {
+                                           @Login AuthInfo authInfo) {
         postService.deletePost(postId, authInfo);
         return ResponseEntity.noContent().build();
     }

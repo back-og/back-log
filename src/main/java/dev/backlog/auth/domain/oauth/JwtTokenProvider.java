@@ -1,5 +1,6 @@
 package dev.backlog.auth.domain.oauth;
 
+import dev.backlog.common.exception.InvalidAuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-
-import dev.backlog.common.exception.InvalidAuthException;
 
 import static dev.backlog.auth.exception.AuthErrorCode.AUTHENTICATION_FAILED;
 import static dev.backlog.auth.exception.AuthErrorMessage.EXPIRED_TOKEN;

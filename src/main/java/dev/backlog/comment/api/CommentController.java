@@ -1,9 +1,11 @@
 package dev.backlog.comment.api;
 
+import dev.backlog.comment.dto.CreateCommentRequest;
 import java.net.URI;
 import dev.backlog.comment.dto.CommentCreateRequest;
 import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.comment.service.CommentService;
+import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ public class CommentController {
     public ResponseEntity<Void> create(
             @RequestBody CommentCreateRequest request,
             AuthInfo authInfo,
+            @RequestBody CreateCommentRequest request,
+            @Login AuthInfo authInfo,
             @PathVariable Long postId
     ) {
         Long commentId = commentService.create(request, authInfo, postId);
