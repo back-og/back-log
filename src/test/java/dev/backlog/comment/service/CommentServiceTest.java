@@ -2,8 +2,8 @@ package dev.backlog.comment.service;
 
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
-import dev.backlog.comment.dto.CreateCommentRequest;
-import dev.backlog.comment.dto.UpdateCommentRequest;
+import dev.backlog.comment.dto.CommentCreateRequest;
+import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -61,7 +61,7 @@ class CommentServiceTest {
         Post post = postRepository.save(게시물1);
 
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
-        CreateCommentRequest request = new CreateCommentRequest("댓글입니다다다다;");
+        CommentCreateRequest request = new CommentCreateRequest("댓글입니다다다다;");
         Long commentId = commentService.create(request, authInfo, post.getId());
 
         Comment findComment = commentRepository.getById(commentId);
@@ -80,7 +80,7 @@ class CommentServiceTest {
 
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
-        UpdateCommentRequest request = new UpdateCommentRequest(updateCommentContent);
+        CommentUpdateRequest request = new CommentUpdateRequest(updateCommentContent);
         commentService.update(request, authInfo, comment.getId());
         Comment findComment = commentRepository.getById(comment.getId());
 

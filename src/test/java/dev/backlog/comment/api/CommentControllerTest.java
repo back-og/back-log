@@ -1,8 +1,8 @@
 package dev.backlog.comment.api;
 
 import com.epages.restdocs.apispec.Schema;
-import dev.backlog.comment.dto.CreateCommentRequest;
-import dev.backlog.comment.dto.UpdateCommentRequest;
+import dev.backlog.comment.dto.CommentCreateRequest;
+import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.comment.service.CommentService;
 import dev.backlog.common.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ class CommentControllerTest extends ControllerTestConfig {
         Long postId = 2L;
         Long commentId = 3L;
 
-        CreateCommentRequest request = new CreateCommentRequest("댓글테스트댓글테스트");
+        CommentCreateRequest request = new CommentCreateRequest("댓글테스트댓글테스트");
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(commentService.create(eq(request), any(), any()))
                 .thenReturn(commentId);
@@ -67,7 +67,7 @@ class CommentControllerTest extends ControllerTestConfig {
         Long userId = 1L;
         Long commentId = 3L;
 
-        UpdateCommentRequest request = new UpdateCommentRequest("수정댓글수정댓글댓글수정");
+        CommentUpdateRequest request = new CommentUpdateRequest("수정댓글수정댓글댓글수정");
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
         mockMvc.perform(put("/api/comments/{commentId}", commentId)

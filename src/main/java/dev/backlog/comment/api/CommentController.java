@@ -1,8 +1,8 @@
 package dev.backlog.comment.api;
 
 import java.net.URI;
-import dev.backlog.comment.dto.CreateCommentRequest;
-import dev.backlog.comment.dto.UpdateCommentRequest;
+import dev.backlog.comment.dto.CommentCreateRequest;
+import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.comment.service.CommentService;
 import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<Void> create(
-            @RequestBody CreateCommentRequest request,
+            @RequestBody CommentCreateRequest request,
             AuthInfo authInfo,
             @PathVariable Long postId
     ) {
@@ -33,7 +33,7 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     public ResponseEntity<Void> update(
-            @RequestBody UpdateCommentRequest request,
+            @RequestBody CommentUpdateRequest request,
             AuthInfo authInfo,
             @PathVariable Long commentId
     ) {

@@ -2,8 +2,8 @@ package dev.backlog.comment.service;
 
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
-import dev.backlog.comment.dto.CreateCommentRequest;
-import dev.backlog.comment.dto.UpdateCommentRequest;
+import dev.backlog.comment.dto.CommentCreateRequest;
+import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -22,7 +22,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public Long create(CreateCommentRequest request, AuthInfo authInfo, Long postId) {
+    public Long create(CommentCreateRequest request, AuthInfo authInfo, Long postId) {
         User findUser = userRepository.getById(authInfo.userId());
         Post findPost = postRepository.getById(postId);
         Comment comment = request.toEntity(findUser, findPost);
@@ -30,7 +30,7 @@ public class CommentService {
         return commentRepository.save(comment).getId();
     }
 
-    public void update(UpdateCommentRequest request, AuthInfo authInfo, Long commentId) {
+    public void update(CommentUpdateRequest request, AuthInfo authInfo, Long commentId) {
         validateWriter(authInfo.userId(), commentId);
 
         Comment comment = commentRepository.getById(commentId);
