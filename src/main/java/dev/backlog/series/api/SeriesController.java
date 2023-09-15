@@ -1,5 +1,6 @@
 package dev.backlog.series.api;
 
+import dev.backlog.common.annotation.Login;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.series.dto.SeriesCreateRequest;
 import dev.backlog.series.dto.SeriesSummaryResponse;
@@ -33,7 +34,7 @@ public class SeriesController {
 
     @PostMapping("/v1")
     public ResponseEntity<Void> create(@Valid @RequestBody SeriesCreateRequest seriesCreateRequest,
-                                       AuthInfo authInfo) {
+                                       @Login AuthInfo authInfo) {
         seriesService.create(seriesCreateRequest, authInfo);
         return ResponseEntity.noContent().build();
     }
@@ -46,7 +47,7 @@ public class SeriesController {
     }
 
     @PutMapping("/v1/{seriesId}")
-    public ResponseEntity<Void> updateSeries(AuthInfo authInfo,
+    public ResponseEntity<Void> updateSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId,
                                              @Valid @RequestBody SeriesUpdateRequest seriesUpdateRequest) {
         seriesService.updateSeries(authInfo, seriesId, seriesUpdateRequest);
@@ -54,7 +55,7 @@ public class SeriesController {
     }
 
     @DeleteMapping("/v1/{seriesId}")
-    public ResponseEntity<Void> deleteSeries(AuthInfo authInfo,
+    public ResponseEntity<Void> deleteSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId) {
         seriesService.deleteSeries(authInfo, seriesId);
         return ResponseEntity.noContent().build();
