@@ -1,5 +1,6 @@
 package dev.backlog.comment.service;
 
+import java.util.NoSuchElementException;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CommentCreateRequest;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 
 import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.댓글1;
@@ -105,6 +105,36 @@ class CommentServiceTest {
 
         assertThatThrownBy(() -> commentService.update(request, authInfo, comment.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 삭제할 수 있다.")
+    @Test
+    void deleteCommentTest() {
+        User user = userRepository.save(유저1);
+        postRepository.save(게시물1);
+        Comment comment = commentRepository.save(댓글1);
+
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
+        commentService.delete(authInfo, comment.getId());
+
+        assertThatThrownBy(() -> commentRepository.getById(comment.getId()))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("해당 게시물을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 다를 경우 댓글을 삭제할 수 없다.")
+    @Test
+    void deleteCommentFailTest() {
+        Long userId = 1000L;
+        userRepository.save(유저1);
+        postRepository.save(게시물1);
+        Comment comment = commentRepository.save(댓글1);
+
+        AuthInfo authInfo = new AuthInfo(userId, "토큰");
+
+        assertThatThrownBy(() -> commentService.delete(authInfo, comment.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 댓글의 작성자가 아닙니다.");
     }
 
 }
