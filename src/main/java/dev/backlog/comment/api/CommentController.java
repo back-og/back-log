@@ -39,7 +39,7 @@ public class CommentController {
             @PathVariable Long commentId
     ) {
         commentService.update(request, authInfo, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{commentId}")

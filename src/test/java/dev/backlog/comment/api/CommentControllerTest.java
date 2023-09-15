@@ -86,7 +86,7 @@ class CommentControllerTest extends ControllerTestConfig {
                                 )
                         )
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 삭제할 수 있다.")
