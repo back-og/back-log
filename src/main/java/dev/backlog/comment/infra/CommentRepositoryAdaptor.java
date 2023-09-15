@@ -47,4 +47,9 @@ public class CommentRepositoryAdaptor implements CommentRepository {
         commentJpaRepository.deleteAll();
     }
 
+    @Override
+    public void delete(Comment comment) {
+        commentJpaRepository.delete(comment);
+    }
+
 }
