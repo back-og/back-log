@@ -37,11 +37,18 @@ public class CommentService {
         comment.updateContent(request.content());
     }
 
+    public void delete(AuthInfo authInfo, Long commentId) {
+        validateWriter(authInfo.userId(), commentId);
+
+        Comment comment = commentRepository.getById(commentId);
+        commentRepository.delete(comment);
+    }
+
     private void validateWriter(Long userId, Long commentId) {
         Comment comment = commentRepository.getById(commentId);
         Long writerId = comment.getWriter().getId();
         if (!writerId.equals(userId)) {
-            throw new IllegalArgumentException("해당 댓글을 수정할 수 없습니다.");
+            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다.");
         }
     }
 

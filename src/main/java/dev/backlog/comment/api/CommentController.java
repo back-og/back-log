@@ -7,6 +7,7 @@ import dev.backlog.comment.service.CommentService;
 import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,6 +40,12 @@ public class CommentController {
     ) {
         commentService.update(request, authInfo, commentId);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> update(AuthInfo authInfo, @PathVariable Long commentId) {
+        commentService.delete(authInfo, commentId);
+        return ResponseEntity.noContent().build();
     }
 
 }
