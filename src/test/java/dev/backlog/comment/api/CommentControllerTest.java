@@ -17,6 +17,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -86,6 +87,27 @@ class CommentControllerTest extends ControllerTestConfig {
                         )
                 )
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 삭제할 수 있다.")
+    @Test
+    void deleteTest() throws Exception {
+        Long userId = 1L;
+        Long commentId = 3L;
+
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
+
+        mockMvc.perform(delete("/api/comments/{commentId}", commentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", TOKEN))
+                .andDo(document("comment-delete",
+                                resourceDetails().tag("댓글").description("댓글 삭제"),
+                                pathParameters(
+                                        parameterWithName("commentId").description("게시물 식별자")
+                                )
+                        )
+                )
+                .andExpect(status().isNoContent());
     }
 
 }
