@@ -4,6 +4,7 @@ import dev.backlog.auth.AuthTokens;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
 import dev.backlog.auth.service.OAuthService;
+import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/renew-token")
-    public ResponseEntity<AuthTokens> renew(AuthInfo authInfo) {
+    public ResponseEntity<AuthTokens> renew(@Login AuthInfo authInfo) {
         return ResponseEntity.ok(oAuthService.renew(authInfo.userId(), authInfo.refreshToken()));
     }
 

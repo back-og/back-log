@@ -1,5 +1,6 @@
 package dev.backlog.like.api;
 
+import dev.backlog.common.annotation.Login;
 import dev.backlog.like.dto.LikeStatus;
 import dev.backlog.like.service.PostLikeService;
 import dev.backlog.user.dto.AuthInfo;
@@ -18,7 +19,7 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     @PutMapping("/{postId}/like")
-    public ResponseEntity<LikeStatus> switchLike(@PathVariable Long postId, AuthInfo authInfo) {
+    public ResponseEntity<LikeStatus> switchLike(@PathVariable Long postId, @Login AuthInfo authInfo) {
         LikeStatus likeStatus = postLikeService.switchLike(postId, authInfo);
         return ResponseEntity.ok(likeStatus);
     }
