@@ -1,6 +1,7 @@
 package dev.backlog.user.domain;
 
 import dev.backlog.auth.domain.oauth.OAuthProvider;
+import dev.backlog.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ import java.util.Objects;
 @Where(clause = "is_deleted = false")
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

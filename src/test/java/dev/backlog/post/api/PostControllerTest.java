@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -339,21 +340,61 @@ class PostControllerTest extends ControllerTestConfig {
     @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
     @Test
     void searchByUserNicknameTest() throws Exception {
-        // Arrange
-        String nickname = "testUser";
         final long postId = 1l;
         final long userId = 1l;
         SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
 
-        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(sliceResponse);
+        when(postQueryService.searchByNicknameAndHashtag(any(), any(), any())).thenReturn(sliceResponse);
 
         mockMvc.perform(get("/api/posts/search")
                         .param("hashtag", "tag")
+                        .param("nickname", "nickname")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andDo(document("posts-find-nickname&hashtag",
+                                resourceDetails().tag("게시물").description("게시물 필터 조회")
+                                        .responseSchema(Schema.schema("SliceResponse")),
+                                queryParameters(
+                                        parameterWithName("nickname").description("유저 닉네임").optional(),
+                                        parameterWithName("hashtag").description("해쉬태").optional(),
+                                        parameterWithName("timePeriod").description("today, week, month, year 필터링 조건").optional(),
+                                        parameterWithName("page").description("현재 페이지").optional(),
+                                        parameterWithName("size").description("페이지 당 게시물 수").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("numberOfElements").type(JsonFieldType.NUMBER).description("게시글 수"),
+                                        fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("마지막 페이지 체크"),
+                                        fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("게시글 데이터"),
+                                        fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
+                                        fieldWithPath("data[].thumbnailImage").type(JsonFieldType.STRING).description("시리즈"),
+                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
+                                        fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
+                                        fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
+                                        fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
+                                )
+                        )
+                ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(sliceResponse.numberOfElements()))
-                .andExpect(jsonPath("$.hasNext").value(false))
-                .andReturn();
+                .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @DisplayName("게시물 삭제 요청이 들어오면 삭제 후 204 상태코드를 반환한다.")
+    @Test
+    void deletePostTest() throws Exception {
+        long postId = 1L;
+
+        mockMvc.perform(delete("/api/posts/{postId}", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", TOKEN))
+                .andDo(document("post-delete",
+                                resourceDetails().tag("게시물").description("게시물 업데이트"),
+                                pathParameters(
+                                        parameterWithName("postId").description("게시물 식별자")
+                                )
+                        )
+                )
+                .andExpect(status().isNoContent());
     }
 
     private PostResponse getPostResponse(

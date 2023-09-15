@@ -1,5 +1,6 @@
 package dev.backlog.like.domain;
 
+import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.post.domain.Post;
 import dev.backlog.user.domain.User;
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLike {
+public class PostLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

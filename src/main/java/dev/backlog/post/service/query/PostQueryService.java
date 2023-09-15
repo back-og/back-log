@@ -49,7 +49,7 @@ public class PostQueryService {
         return PostResponse.from(post, comments);
     }
 
-    public SliceResponse<PostSummaryResponse> searchByUserNickname(String nickname, String hashtag, Pageable pageable) {
+    public SliceResponse<PostSummaryResponse> searchByNicknameAndHashtag(String nickname, String hashtag, Pageable pageable) {
         Slice<PostSummaryResponse> postSummaryResponses = fetchPostsByUserNickname(nickname, hashtag, pageable);
         return SliceResponse.from(postSummaryResponses);
     }

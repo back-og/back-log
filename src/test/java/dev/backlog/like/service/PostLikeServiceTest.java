@@ -2,7 +2,7 @@ package dev.backlog.like.service;
 
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.like.domain.repository.PostLikeRepository;
-import dev.backlog.like.dto.LikeStatus;
+import dev.backlog.like.dto.LikeStatusResponse;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -45,11 +45,11 @@ class PostLikeServiceTest {
         Post post = postRepository.save(게시물1(user, null));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatus likeStatus = postLikeService.switchLike(post.getId(), authInfo);
+        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
 
         assertAll(
-                () -> assertThat(likeStatus.likeCount()).isOne(),
-                () -> assertThat(likeStatus.like()).isTrue()
+                () -> assertThat(likeStatusResponse.likeCount()).isOne(),
+                () -> assertThat(likeStatusResponse.like()).isTrue()
         );
     }
 
@@ -61,11 +61,11 @@ class PostLikeServiceTest {
         postLikeRepository.save(new PostLike(user, post));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatus likeStatus = postLikeService.switchLike(post.getId(), authInfo);
+        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
 
         assertAll(
-                () -> assertThat(likeStatus.likeCount()).isZero(),
-                () -> assertThat(likeStatus.like()).isFalse()
+                () -> assertThat(likeStatusResponse.likeCount()).isZero(),
+                () -> assertThat(likeStatusResponse.like()).isFalse()
         );
     }
 

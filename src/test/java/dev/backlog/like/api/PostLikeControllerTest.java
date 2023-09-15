@@ -1,7 +1,8 @@
 package dev.backlog.like.api;
 
+import com.epages.restdocs.apispec.Schema;
 import dev.backlog.common.config.ControllerTestConfig;
-import dev.backlog.like.dto.LikeStatus;
+import dev.backlog.like.dto.LikeStatusResponse;
 import dev.backlog.like.service.PostLikeService;
 import dev.backlog.user.dto.AuthInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ class PostLikeControllerTest extends ControllerTestConfig {
 
         String token = TOKEN.substring(7);
         AuthInfo authInfo = new AuthInfo(userId, token);
-        LikeStatus response = new LikeStatus(1, true);
+        LikeStatusResponse response = new LikeStatusResponse(1, true);
         when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
         when(postLikeService.switchLike(postId, authInfo)).thenReturn(response);
 
@@ -45,7 +46,8 @@ class PostLikeControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-like",
-                                resourceDetails().tag("Like").description("게시물 좋아요 요청"),
+                                resourceDetails().tag("Like").description("게시물 좋아요 요청")
+                                        .responseSchema(Schema.schema("LikeStatusResponse")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
                                 ),
