@@ -4,6 +4,7 @@ import static java.util.Locale.ENGLISH;
 
 public enum OAuthProvider {
     KAKAO,
+    GITHUB
     ;
 
     public static OAuthProvider from(String type) {
