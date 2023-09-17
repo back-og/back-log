@@ -34,7 +34,6 @@ public class GithubApiClient {
         body.add("client_secret", githubProperties.getClientSecret());
         body.add("code", authCode);
 
-
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
         GithubTokens response = restTemplate.postForObject(REQUEST_TOKEN_URL, request, GithubTokens.class);
