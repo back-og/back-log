@@ -1,12 +1,9 @@
 package dev.backlog.post.service.query;
 
-import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Post;
-import dev.backlog.post.domain.UserViewInfo;
-import dev.backlog.post.domain.repository.PostCacheRepository;
 import dev.backlog.post.domain.repository.PostQueryRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
@@ -22,7 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,22 +28,17 @@ public class PostQueryService {
 
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
-    private final PostCacheRepository postCacheRepository;
     private final UserRepository userRepository;
     private final SeriesRepository seriesRepository;
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
+    private final Map<Boolean, PostAccessStrategy> postAccessStrategyMap;
 
     @Transactional
     public PostResponse findPostById(Long postId, AuthInfo authInfo) {
         Post post = postRepository.getById(postId);
-        List<Comment> comments = commentRepository.findAllByPost(post);
-
-        if (Boolean.FALSE.equals(postCacheRepository.existsByPostIdAndUserId(postId, authInfo.userId()))) {
-            postCacheRepository.save(new UserViewInfo(postId, authInfo.userId()));
-            post.increaseViewCount();
-        }
-        return PostResponse.from(post, comments);
+        Boolean isPublic = post.getIsPublic();
+        return postAccessStrategyMap.get(isPublic).findPostById(post, authInfo);
     }
 
     public SliceResponse<PostSummaryResponse> searchByNicknameAndHashtag(String nickname, String hashtag, Pageable pageable) {
