@@ -8,6 +8,7 @@ import dev.backlog.like.domain.PostLike;
 import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.HashtagRepository;
+import dev.backlog.post.domain.repository.PostCacheRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
@@ -30,9 +31,10 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글_모음;
 import static dev.backlog.common.fixture.EntityFixture.시리즈1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
@@ -67,6 +69,9 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Autowired
     private HashtagRepository hashtagRepository;
 
+    @Autowired
+    private PostCacheRepository postCacheRepository;
+
     private User 유저1;
     private Post 게시물1;
     private List<Post> 게시물_모음;
@@ -75,7 +80,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @BeforeEach
     void setUp() {
         유저1 = 유저1();
-        게시물1 = 게시물1(유저1, null);
+        게시물1 = 공개_게시물(유저1, null);
         게시물_모음 = 게시물_모음(유저1, null);
         댓글_모음 = 댓글_모음(유저1, 게시물1);
     }
@@ -89,6 +94,7 @@ class PostQueryServiceTest extends TestContainerConfig {
         postRepository.deleteAll();
         seriesRepository.deleteAll();
         userRepository.deleteAll();
+        postCacheRepository.deleteAll();
     }
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
@@ -112,9 +118,12 @@ class PostQueryServiceTest extends TestContainerConfig {
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
         User user = userRepository.save(유저1);
-        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         Post post = postRepository.save(게시물1);
         commentRepository.saveAll(댓글_모음);
+
+        long randomId = new Random().nextLong();
+        Long anotherUserId = (randomId == user.getId()) ? 0l : randomId;
+        AuthInfo authInfo = new AuthInfo(anotherUserId, "토큰");
 
         //when
         PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
@@ -205,8 +214,8 @@ class PostQueryServiceTest extends TestContainerConfig {
         User user2 = 유저1();
         userRepository.saveAll(List.of(user1, user2));
 
-        Post post1 = 게시물1(user1, null);
-        Post post2 = 게시물1(user1, null);
+        Post post1 = 공개_게시물(user1, null);
+        Post post2 = 공개_게시물(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
         PostLike like1 = 좋아요1(user1, post1);
