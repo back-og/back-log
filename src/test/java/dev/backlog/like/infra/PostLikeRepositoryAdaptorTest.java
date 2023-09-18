@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.좋아요1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +36,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
         //given
         User user1 = userRepository.save(유저1());
         User user2 = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user1, null));
+        Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요1(user1, post), 좋아요1(user2, post));
         postLikeRepository.saveAll(postLikes);
 
@@ -52,7 +52,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
     void saveTest() {
         //given
         User user1 = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user1, null));
+        Post post = postRepository.save(공개_게시물(user1, null));
         PostLike postLike = 좋아요1(user1, post);
 
         //when
@@ -68,7 +68,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
         //given
         User user1 = userRepository.save(유저1());
         User user2 = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user1, null));
+        Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요1(user1, post), 좋아요1(user2, post));
 
         //when
@@ -84,7 +84,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
         //given
         User user1 = userRepository.save(유저1());
         User user2 = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user1, null));
+        Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요1(user1, post), 좋아요1(user2, post));
         postLikeRepository.saveAll(postLikes);
 
@@ -102,7 +102,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
         //given
         User user1 = userRepository.save(유저1());
         User user2 = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user1, null));
+        Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요1(user1, post), 좋아요1(user2, post));
         List<PostLike> savedPostLikes = postLikeRepository.saveAll(postLikes);
 
@@ -117,7 +117,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
     @Test
     void findByUserAndPostIdTest() {
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         postLikeRepository.save(new PostLike(user, post));
 
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPostId(user, post.getId());

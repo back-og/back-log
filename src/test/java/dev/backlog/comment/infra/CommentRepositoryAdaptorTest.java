@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ class CommentRepositoryAdaptorTest extends RepositoryTestConfig {
     void saveAllTest() {
         //given
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
 
         //when
@@ -49,7 +49,7 @@ class CommentRepositoryAdaptorTest extends RepositoryTestConfig {
     void findAllByPostTest() {
         //given
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         commentRepository.saveAll(List.of(댓글1(user, post), 댓글1(user, post)));
 
         //when
@@ -65,7 +65,7 @@ class CommentRepositoryAdaptorTest extends RepositoryTestConfig {
     void countByPostTest() {
         //given
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
         commentRepository.saveAll(comments);
 
@@ -81,7 +81,7 @@ class CommentRepositoryAdaptorTest extends RepositoryTestConfig {
     void deleteAllTest() {
         //given
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         List<Comment> comments = List.of(댓글1(user, post), 댓글1(user, post));
         commentRepository.saveAll(comments);
 
