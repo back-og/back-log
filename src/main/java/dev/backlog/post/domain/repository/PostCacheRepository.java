@@ -8,4 +8,6 @@ public interface PostCacheRepository {
 
     UserViewInfo save(UserViewInfo userViewInfo);
 
+    void deleteAll();
+
 }
