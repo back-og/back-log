@@ -34,6 +34,11 @@ oauth:
     redirect-url: ${KAKAO_REDIRECT_URL}
     client-secret: ${KAKAO_SECRET}
 
+  github:
+    client-id: ${GITHUB_CLIENT_ID}
+    redirect-url: ${GITHUB_REDIRECT_URL}
+    client-secret: ${GITHUB_SECRET}
+
 springdoc:
   swagger-ui:
     url: ${SWAGGER_UI_URL}
