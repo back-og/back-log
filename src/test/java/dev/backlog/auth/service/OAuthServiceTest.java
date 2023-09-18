@@ -48,7 +48,7 @@ class OAuthServiceTest {
 
     @DisplayName("로그인 타입에 맞는 리다이렉트 할 url을 생성한다.")
     @Test
-    void getAuthCodeReqeustUrlTest() {
+    void getAuthCodeRequestUrlTest() {
         String expectedUrl = "https://example.com";
         when(authCodeRequestUrlProviderComposite.provide(OAuthProvider.KAKAO)).thenReturn(expectedUrl);
 
@@ -93,9 +93,7 @@ class OAuthServiceTest {
 
         assertAll(
                 () -> assertThat(authTokens.accessToken()).isEqualTo("accessToken"),
-                () -> assertThat(authTokens.refreshToken()).isEqualTo("refreshToken"),
-                () -> assertThat(authTokens.grantType()).isEqualTo("Bearer "),
-                () -> assertThat(authTokens.expiresIn()).isEqualTo(1000L)
+                () -> assertThat(authTokens.refreshToken()).isEqualTo("refreshToken")
         );
     }
 

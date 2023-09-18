@@ -9,7 +9,7 @@ import java.util.Date;
 @Component
 public class AuthTokensGenerator {
 
-    private static final String BEARER_TYPE = "Bearer";
+    private static final String BEARER_TYPE = "Bearer ";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final Long accessTokenExpireTime;
