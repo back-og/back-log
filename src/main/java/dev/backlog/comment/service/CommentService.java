@@ -1,8 +1,10 @@
 package dev.backlog.comment.service;
 
+import java.util.List;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CommentCreateRequest;
+import dev.backlog.comment.dto.CommentResponse;
 import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
@@ -25,8 +27,16 @@ public class CommentService {
     public Long create(CommentCreateRequest request, AuthInfo authInfo, Long postId) {
         User findUser = userRepository.getById(authInfo.userId());
         Post findPost = postRepository.getById(postId);
-        Comment comment = request.toEntity(findUser, findPost);
 
+        if (request.parentId() != null) {
+            Comment findComment = commentRepository.getById(request.parentId());
+            Comment comment = request.toEntity(findUser, findPost, findComment);
+            findComment.updateChildren(comment);
+
+            return commentRepository.save(comment).getId();
+        }
+
+        Comment comment = request.toEntity(findUser, findPost, null);
         return commentRepository.save(comment).getId();
     }
 
@@ -35,6 +45,14 @@ public class CommentService {
 
         Comment comment = commentRepository.getById(commentId);
         comment.updateContent(request.content());
+    }
+
+    public List<CommentResponse> findChildComments(Long commentId) {
+        Comment comment = commentRepository.getById(commentId);
+        List<Comment> comments = comment.getChildren();
+        return comments.stream()
+                .map(CommentResponse::from)
+                .toList();
     }
 
     public void delete(AuthInfo authInfo, Long commentId) {

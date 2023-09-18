@@ -1,5 +1,7 @@
 package dev.backlog.comment.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.post.domain.Post;
 import dev.backlog.user.domain.User;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,6 +39,13 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
     @Column(nullable = false, length = 50)
     private String content;
 
@@ -46,17 +56,23 @@ public class Comment extends BaseEntity {
     private Comment(
             User writer,
             Post post,
+            Comment parent,
             String content,
             boolean isDeleted
     ) {
         this.writer = writer;
         this.post = post;
+        this.parent = parent;
         this.content = content;
         this.isDeleted = isDeleted;
     }
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateChildren(Comment comment) {
+        this.children.add(comment);
     }
 
 }
