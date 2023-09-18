@@ -28,7 +28,7 @@ public class EntityFixture {
                 .build();
     }
 
-    public static Post 게시물1(User user, Series series) {
+    public static Post 공개_게시물(User user, Series series) {
         return Post.builder()
                 .series(series)
                 .user(user)
@@ -41,10 +41,23 @@ public class EntityFixture {
                 .build();
     }
 
+    public static Post 비공개_게시물(User user, Series series) {
+        return Post.builder()
+                .series(series)
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .summary("요약")
+                .isPublic(false)
+                .thumbnailImage("썸네일URL")
+                .path("경로")
+                .build();
+    }
+
     public static List<Post> 게시물_모음(User user, Series series) {
         List<Post> posts = new ArrayList<>();
         for (int index = 0; index < 30; index++) {
-            Post post = 게시물1(user, series);
+            Post post = 공개_게시물(user, series);
             posts.add(post);
         }
         return posts;
