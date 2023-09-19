@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글1;
@@ -75,7 +76,30 @@ class CommentServiceTest {
         assertThat(findComment.getWriter().getId()).isEqualTo(유저1.getId());
     }
 
+    @DisplayName("대댓글을 생성할 수 있다.")
+    @Transactional
+    @Test
+    void createChildCommentTest() {
+        User user = userRepository.save(유저1);
+        Post post = postRepository.save(게시물1);
+        Comment parentComment = commentRepository.save(댓글1);
+
+        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
+        CommentCreateRequest request = new CommentCreateRequest("대~댓~글입니다", parentComment.getId());
+        Long newCommentId = commentService.create(request, authInfo, post.getId());
+
+        Comment findNewComment = commentRepository.getById(newCommentId);
+        Comment findParentComment = commentRepository.getById(parentComment.getId());
+
+        assertThat(findNewComment.getPost().getId()).isEqualTo(게시물1.getId());
+        assertThat(findNewComment.getWriter().getId()).isEqualTo(유저1.getId());
+        assertThat(findNewComment.getParent().getId()).isEqualTo(parentComment.getId());
+        assertThat(findParentComment.getChildren().get(0).getId()).isEqualTo(findNewComment.getId());
+        assertThat(findParentComment.getChildren().size()).isOne();
+    }
+
     @DisplayName("댓글과 대댓글을 조회할 수 있다.")
+    @Transactional
     @Test
     void findCommentsTest() {
         User user = userRepository.save(유저1);
@@ -85,18 +109,17 @@ class CommentServiceTest {
                 .content("대댓글입니다.")
                 .writer(user)
                 .post(post)
-                .parent(comment)
                 .build();
         Comment 대댓글2 = Comment.builder()
                 .content("대댓글입니다.")
                 .writer(user)
                 .post(post)
-                .parent(comment)
                 .build();
+
         Comment saved대댓글 = commentRepository.save(대댓글);
         Comment saved대댓글2 = commentRepository.save(대댓글2);
-        comment.updateChildren(saved대댓글);
-        comment.updateChildren(saved대댓글2);
+        대댓글.updateParent(comment);
+        대댓글2.updateParent(comment);
 
         List<CommentResponse> childrenComments = commentService.findChildComments(comment.getId());
 
