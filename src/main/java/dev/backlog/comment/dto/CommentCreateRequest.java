@@ -6,12 +6,11 @@ import dev.backlog.user.domain.User;
 
 public record CommentCreateRequest(String content, Long parentId) {
 
-    public Comment toEntity(User user, Post post, Comment comment) {
+    public Comment toEntity(User user, Post post) {
         return Comment.builder()
                 .content(content)
                 .post(post)
                 .writer(user)
-                .parent(comment)
                 .build();
     }
 
