@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ class PostHashtagJpaRepositoryTest extends RepositoryTestConfig {
     @BeforeEach
     void setUp() {
         유저1 = userRepository.save(유저1());
-        게시물1 = postRepository.save(게시물1(유저1, null));
+        게시물1 = postRepository.save(공개_게시물(유저1, null));
         해쉬태그_모음 = hashtagRepository.saveAll(해쉬태그_모음());
     }
 

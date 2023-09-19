@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -42,7 +42,7 @@ class PostLikeServiceTest {
     @Test
     void switchLikeTest() {
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
         LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
@@ -57,7 +57,7 @@ class PostLikeServiceTest {
     @Test
     void doubleSwitchLikeTest() {
         User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        Post post = postRepository.save(공개_게시물(user, null));
         postLikeRepository.save(new PostLike(user, post));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -64,7 +64,7 @@ class PostServiceTest extends TestContainerConfig {
     @BeforeEach
     void setUp() {
         유저1 = 유저1();
-        게시물1 = 게시물1(유저1, null);
+        게시물1 = 공개_게시물(유저1, null);
     }
 
     @AfterEach

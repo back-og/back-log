@@ -21,8 +21,8 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static dev.backlog.common.fixture.EntityFixture.좋아요1;
 import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
@@ -67,8 +67,8 @@ class PostQueryRepositoryTest extends RepositoryTestConfig {
         User user2 = 유저1();
         userRepository.saveAll(List.of(user1, user2));
 
-        Post post1 = 게시물1(user1, null);
-        Post post2 = 게시물1(user1, null);
+        Post post1 = 공개_게시물(user1, null);
+        Post post2 = 공개_게시물(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
         PostLike postLike1 = 좋아요1(user1, post1);

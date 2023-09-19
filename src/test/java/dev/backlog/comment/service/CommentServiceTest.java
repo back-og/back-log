@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +45,7 @@ class CommentServiceTest {
     @BeforeEach
     public void setUp() {
         유저1 = 유저1();
-        게시물1 = 게시물1(유저1, null);
+        게시물1 = 공개_게시물(유저1, null);
         댓글1 = 댓글1(유저1, 게시물1);
     }
 
