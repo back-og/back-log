@@ -56,13 +56,11 @@ public class Comment extends BaseEntity {
     private Comment(
             User writer,
             Post post,
-            Comment parent,
             String content,
             boolean isDeleted
     ) {
         this.writer = writer;
         this.post = post;
-        this.parent = parent;
         this.content = content;
         this.isDeleted = isDeleted;
     }
@@ -71,8 +69,9 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void updateChildren(Comment comment) {
-        this.children.add(comment);
+    public void updateParent(Comment parent){
+        this.parent = parent;
+        parent.getChildren().add(this);
     }
 
 }
