@@ -17,29 +17,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    @Transactional
     public Long create(CommentCreateRequest request, AuthInfo authInfo, Long postId) {
         User findUser = userRepository.getById(authInfo.userId());
         Post findPost = postRepository.getById(postId);
 
+        Comment comment = request.toEntity(findUser, findPost);
         if (request.parentId() != null) {
-            Comment findComment = commentRepository.getById(request.parentId());
-            Comment comment = request.toEntity(findUser, findPost, findComment);
-            findComment.updateChildren(comment);
-
-            return commentRepository.save(comment).getId();
+            Comment parentComment = commentRepository.getById(request.parentId());
+            comment.updateParent(parentComment);
         }
 
-        Comment comment = request.toEntity(findUser, findPost, null);
         return commentRepository.save(comment).getId();
     }
 
+    @Transactional
     public void update(CommentUpdateRequest request, AuthInfo authInfo, Long commentId) {
         validateWriter(authInfo.userId(), commentId);
 
@@ -55,6 +54,7 @@ public class CommentService {
                 .toList();
     }
 
+    @Transactional
     public void delete(AuthInfo authInfo, Long commentId) {
         validateWriter(authInfo.userId(), commentId);
 
