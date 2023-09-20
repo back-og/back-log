@@ -72,8 +72,10 @@ class CommentServiceTest {
 
         Comment findComment = commentRepository.getById(commentId);
 
-        assertThat(findComment.getPost().getId()).isEqualTo(게시물1.getId());
-        assertThat(findComment.getWriter().getId()).isEqualTo(유저1.getId());
+        assertAll(
+                () -> assertThat(findComment.getPost().getId()).isEqualTo(게시물1.getId()),
+                () -> assertThat(findComment.getWriter().getId()).isEqualTo(유저1.getId())
+        );
     }
 
     @DisplayName("대댓글을 생성할 수 있다.")
@@ -91,11 +93,13 @@ class CommentServiceTest {
         Comment findNewComment = commentRepository.getById(newCommentId);
         Comment findParentComment = commentRepository.getById(parentComment.getId());
 
-        assertThat(findNewComment.getPost().getId()).isEqualTo(게시물1.getId());
-        assertThat(findNewComment.getWriter().getId()).isEqualTo(유저1.getId());
-        assertThat(findNewComment.getParent().getId()).isEqualTo(parentComment.getId());
-        assertThat(findParentComment.getChildren().get(0).getId()).isEqualTo(findNewComment.getId());
-        assertThat(findParentComment.getChildren().size()).isOne();
+        assertAll(
+                () -> assertThat(findNewComment.getPost().getId()).isEqualTo(게시물1.getId()),
+                () -> assertThat(findNewComment.getWriter().getId()).isEqualTo(유저1.getId()),
+                () -> assertThat(findNewComment.getParent().getId()).isEqualTo(parentComment.getId()),
+                () -> assertThat(findParentComment.getChildren().get(0).getId()).isEqualTo(findNewComment.getId()),
+                () -> assertThat(findParentComment.getChildren().size()).isOne()
+        );
     }
 
     @DisplayName("댓글과 대댓글을 조회할 수 있다.")
@@ -127,7 +131,8 @@ class CommentServiceTest {
                 () -> assertThat(childrenComments.get(0).commentId()).isEqualTo(saved대댓글.getId()),
                 () -> assertThat(childrenComments.get(1).commentId()).isEqualTo(saved대댓글2.getId()),
                 () -> assertThat(saved대댓글.getParent().getId()).isEqualTo(comment.getId()),
-                () -> assertThat(saved대댓글2.getParent().getId()).isEqualTo(comment.getId())
+                () -> assertThat(saved대댓글2.getParent().getId()).isEqualTo(comment.getId()),
+                ()-> assertThat(childrenComments.size()).isEqualTo(2)
         );
     }
 
