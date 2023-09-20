@@ -55,7 +55,8 @@ class CommentControllerTest extends ControllerTestConfig {
                                         parameterWithName("postId").description("게시물 식별자")
                                 ),
                                 requestFields(
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글")
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글"),
+                                        fieldWithPath("parentId").ignored().optional()
                                 )
                         )
                 )
