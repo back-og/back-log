@@ -1,6 +1,5 @@
 package dev.backlog.reply.domain;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.user.domain.User;
