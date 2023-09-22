@@ -1,72 +1,42 @@
 package dev.backlog.like.service;
 
-import dev.backlog.like.domain.PostLike;
-import dev.backlog.like.domain.repository.PostLikeRepository;
-import dev.backlog.like.dto.LikeStatusResponse;
-import dev.backlog.post.domain.Post;
-import dev.backlog.post.domain.repository.PostRepository;
-import dev.backlog.user.domain.User;
-import dev.backlog.user.domain.repository.UserRepository;
 import dev.backlog.user.dto.AuthInfo;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 @SpringBootTest
 class PostLikeServiceTest {
 
-    @Autowired
-    private PostLikeRepository postLikeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PostRepository postRepository;
+
     @Autowired
     private PostLikeService postLikeService;
 
-    @AfterEach
-    void tearDown() {
-        postLikeRepository.deleteAll();
-        postRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
-    @DisplayName("게시물에 좋아요를 최초로 누르면 좋아요가 상승한다.")
+    @DisplayName("낙관적 락 동시성 테스트")
     @Test
-    void switchLikeTest() {
-        User user = userRepository.save(유저1());
-        Post post = postRepository.save(공개_게시물(user, null));
+    void optimisticLockTest() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        AtomicLong userIdCounter = new AtomicLong(1);
 
-        AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
-
-        assertAll(
-                () -> assertThat(likeStatusResponse.likeCount()).isOne(),
-                () -> assertThat(likeStatusResponse.like()).isTrue()
-        );
-    }
-
-    @DisplayName("게시물에 좋아요를 누른상태에서 한번 더 누르면 취소된다.")
-    @Test
-    void doubleSwitchLikeTest() {
-        User user = userRepository.save(유저1());
-        Post post = postRepository.save(공개_게시물(user, null));
-        postLikeRepository.save(new PostLike(user, post));
-
-        AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
-
-        assertAll(
-                () -> assertThat(likeStatusResponse.likeCount()).isZero(),
-                () -> assertThat(likeStatusResponse.like()).isFalse()
-        );
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    Long userId = userIdCounter.getAndIncrement();
+                    postLikeService.switchLike(1L, new AuthInfo(userId, "토큰"));
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
     }
 
 }

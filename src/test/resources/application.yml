@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3306/backlog?autoReconnect=true&serverTimezone=Asia/Seoul
+    username: back
+    password: abcd1234
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
     properties:
       hibernate:
