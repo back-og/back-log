@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SeriesErrorCode implements ErrorCode {
     SERIES_NOT_FOUNT("S004", "시리즈를 찾을 수 없음"),
+    INVALID_DATA_LENGTH("S022", "시리즈에서 처리할 수 있는 데이터 크기를 초과했습니다."),
     ;
 
     private final String errorCode;

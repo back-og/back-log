@@ -17,8 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeriesRepositoryAdaptor implements SeriesRepository {
 
-    private static final String USER_AND_SERIES_NOT_FOUND_MESSAGE = "유저 아이디(%s)와 시리즈 이름(%s)에 대한 시리즈가 없음";
-    private static final String SERIES_NOT_FOUND_MESSAGE = "시리즈 아이디(%s)에 대한 시리즈가 없음";
+    private static final String USER_AND_SERIES_NOT_FOUND_MESSAGE = "유저 아이디(%s)와 시리즈 이름(%s)에 대한 시리즈가 없습니다.";
+    private static final String SERIES_NOT_FOUND_MESSAGE = "시리즈 아이디(%s)에 대한 시리즈가 없습니다.";
 
     private final SeriesJpaRepository seriesJpaRepository;
 

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PostErrorCode implements ErrorCode {
     POST_NOT_FOUND("P004", "게시글을 찾을 수 없습니다."),
-    INVALID_DATA_LENGTH("P022", "처리할 수 있는 데이터 크기를 초과했습니다."),
+    INVALID_DATA_LENGTH("P022", "게시글에서 처리할 수 있는 데이터 크기를 초과했습니다."),
     ;
 
     private final String errorCode;
