@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
-
-    USER_NOT_FOUNT("U004", "유저를 찾을 수 없음"),
+    USER_NOT_FOUND("U004", "유저를 찾을 수 없습니다."),
+    INVALID_DATA_LENGTH("U022", "처리할 수 있는 데이터 크기를 초과했습니다."),
     ;
 
     private final String code;

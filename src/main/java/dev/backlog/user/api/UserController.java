@@ -6,6 +6,7 @@ import dev.backlog.user.dto.UserDetailsResponse;
 import dev.backlog.user.dto.UserResponse;
 import dev.backlog.user.dto.UserUpdateRequest;
 import dev.backlog.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateProfile(@RequestBody UserUpdateRequest request, @Login AuthInfo authInfo) {
+    public ResponseEntity<Void> updateProfile(@Valid @RequestBody UserUpdateRequest request, @Login AuthInfo authInfo) {
         userService.updateProfile(request, authInfo.userId());
 
         return ResponseEntity.noContent().build();
