@@ -1,7 +1,5 @@
 package dev.backlog.comment.service;
 
-import java.util.List;
-
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CommentCreateRequest;
@@ -16,6 +14,8 @@ import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static dev.backlog.comment.exception.CommentErrorCode.INVALID_WRITER;
 
