@@ -12,7 +12,6 @@ public record PostUpdateRequest(
         String content,
         List<String> hashtags,
         String summary,
-        @NotBlank
         boolean isPublic,
         String thumbnailImage,
         @NotBlank

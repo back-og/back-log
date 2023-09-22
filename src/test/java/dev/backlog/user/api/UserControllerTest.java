@@ -127,7 +127,7 @@ class UserControllerTest extends ControllerTestConfig {
         String token = "토큰";
         UserUpdateRequest request = new UserUpdateRequest(
                 "새닉네임",
-                "새이메일",
+                "programmers@naver.com",
                 "새프로필이미지",
                 "새소개",
                 "새블로그제목"

@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,7 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/series")
-    public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(@Valid SeriesPostsFindRequest seriesPostsFindRequest,
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(@Valid @ModelAttribute SeriesPostsFindRequest seriesPostsFindRequest,
                                                                               @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
         SliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(seriesPostsFindRequest, pageable);
         return ResponseEntity.ok(seriesPosts);
