@@ -1,6 +1,6 @@
 package dev.backlog.auth.infrastructure.kakao.client;
 
-import dev.backlog.auth.infrastructure.kakao.KakaoTokens;
+import dev.backlog.auth.infrastructure.kakao.dto.KakaoTokens;
 import dev.backlog.auth.infrastructure.kakao.config.KakaoProperties;
 import dev.backlog.auth.infrastructure.kakao.dto.KakaoMemberResponse;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package dev.backlog.auth.infrastructure.kakao.client;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.client.OAuthMemberClient;
 import dev.backlog.auth.domain.oauth.dto.OAuthInfoResponse;
-import dev.backlog.auth.infrastructure.kakao.KakaoTokens;
+import dev.backlog.auth.infrastructure.kakao.dto.KakaoTokens;
 import dev.backlog.auth.infrastructure.kakao.dto.KakaoMemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
