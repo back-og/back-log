@@ -1,5 +1,8 @@
 package dev.backlog.common.exception;
 
+import lombok.Getter;
+
+@Getter
 public class DataLengthExceededException extends BackLogException {
 
     private final ErrorCode errorCode;
