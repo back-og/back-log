@@ -1,7 +1,7 @@
 package dev.backlog.auth.api;
 
 import com.epages.restdocs.apispec.Schema;
-import dev.backlog.auth.AuthTokens;
+import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
 import dev.backlog.auth.service.OAuthService;

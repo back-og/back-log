@@ -1,6 +1,6 @@
 package dev.backlog.auth.infrastructure.github.client;
 
-import dev.backlog.auth.infrastructure.github.GithubTokens;
+import dev.backlog.auth.infrastructure.github.dto.GithubTokens;
 import dev.backlog.auth.infrastructure.github.config.GithubProperties;
 import dev.backlog.auth.infrastructure.github.dto.GithubMemberResponse;
 import lombok.RequiredArgsConstructor;

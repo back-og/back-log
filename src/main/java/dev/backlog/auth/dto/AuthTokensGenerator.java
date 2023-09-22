@@ -1,4 +1,4 @@
-package dev.backlog.auth;
+package dev.backlog.auth.dto;
 
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Value;

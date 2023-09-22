@@ -1,4 +1,4 @@
-package dev.backlog.common;
+package dev.backlog.common.config;
 
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import dev.backlog.common.annotation.Login;
