@@ -190,7 +190,7 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(sliceResponse);
+        when(postQueryService.findPostsByUserAndSeries(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
         mockMvc.perform(get("/api/posts/series")
