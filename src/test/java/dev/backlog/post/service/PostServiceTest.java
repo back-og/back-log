@@ -2,6 +2,7 @@ package dev.backlog.post.service;
 
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.config.TestContainerConfig;
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.like.domain.repository.PostLikeRepository;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.PostHashtag;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
@@ -132,7 +132,7 @@ class PostServiceTest extends TestContainerConfig {
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
         postService.deletePost(postId, authInfo);
         assertThatThrownBy(() -> postRepository.getById(postId))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @DisplayName("게시물 작성자가 아니면 게시물을 삭제할 수 없다.")

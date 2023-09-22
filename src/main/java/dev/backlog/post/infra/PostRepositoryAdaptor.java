@@ -1,5 +1,6 @@
 package dev.backlog.post.infra;
 
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.infra.jpa.PostJpaRepository;
@@ -11,11 +12,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+
+import static dev.backlog.post.exception.PostErrorCode.POST_NOT_FOUND;
 
 @Repository
 @RequiredArgsConstructor
 public class PostRepositoryAdaptor implements PostRepository {
+
+    private static final String POST_NOT_FOUND_MESSAGE = "입력된 게시글 아이디(%s)로 게시글을 찾을 수 없습니다.";
 
     private final PostJpaRepository postJpaRepository;
 
@@ -37,7 +41,11 @@ public class PostRepositoryAdaptor implements PostRepository {
     @Override
     public Post getById(Long postId) {
         return postJpaRepository.findById(postId)
-                .orElseThrow(() -> new NoSuchElementException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(
+                                POST_NOT_FOUND,
+                                String.format(POST_NOT_FOUND_MESSAGE, postId)
+                        )
+                );
     }
 
     @Override

@@ -5,4 +5,5 @@ public class BackLogException extends RuntimeException {
     public BackLogException(String message) {
         super(message);
     }
+
 }

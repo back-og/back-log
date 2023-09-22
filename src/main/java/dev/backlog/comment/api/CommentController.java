@@ -5,6 +5,7 @@ import dev.backlog.comment.dto.CommentUpdateRequest;
 import dev.backlog.comment.service.CommentService;
 import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +27,7 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<Void> create(
-            @RequestBody CommentCreateRequest request,
+            @Valid @RequestBody CommentCreateRequest request,
             @Login AuthInfo authInfo,
             @PathVariable Long postId
     ) {
@@ -36,7 +37,7 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     public ResponseEntity<Void> update(
-            @RequestBody CommentUpdateRequest request,
+            @Valid @RequestBody CommentUpdateRequest request,
             @Login AuthInfo authInfo,
             @PathVariable Long commentId
     ) {

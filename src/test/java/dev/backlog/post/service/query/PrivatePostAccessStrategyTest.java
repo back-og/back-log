@@ -1,5 +1,6 @@
 package dev.backlog.post.service.query;
 
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
@@ -74,7 +75,7 @@ class PrivatePostAccessStrategyTest {
 
         //when, then
         assertThatThrownBy(() -> privatePostAccessStrategy.findPostById(post, authInfo))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidAuthException.class);
     }
 
 }

@@ -1,11 +1,11 @@
 package dev.backlog.comment.service;
 
-import java.util.List;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CommentCreateRequest;
 import dev.backlog.comment.dto.CommentResponse;
 import dev.backlog.comment.dto.CommentUpdateRequest;
+import dev.backlog.common.exception.MissMatchException;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -15,10 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static dev.backlog.comment.exception.CommentErrorCode.INVALID_WRITER;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
+
+    private static final String INVALID_WRITER_MESSAGE = "아이디(%s) 댓글의 작성자가 사용자 아이디(%s)와 일치하지 않습니다.";
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -66,7 +72,10 @@ public class CommentService {
         Comment comment = commentRepository.getById(commentId);
         Long writerId = comment.getWriter().getId();
         if (!writerId.equals(userId)) {
-            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다.");
+            throw new MissMatchException(
+                    INVALID_WRITER,
+                    String.format(INVALID_WRITER_MESSAGE, commentId, userId)
+            );
         }
     }
 

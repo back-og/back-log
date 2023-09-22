@@ -8,6 +8,7 @@ import dev.backlog.post.domain.repository.PostQueryRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
+import dev.backlog.post.dto.SeriesPostsFindRequest;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
 import dev.backlog.user.domain.User;
@@ -54,9 +55,9 @@ public class PostQueryService {
         return SliceResponse.from(postSummaryResponses);
     }
 
-    public SliceResponse<PostSummaryResponse> findPostsByUserAndSeries(String nickname, String seriesName, Pageable pageable) {
-        User user = userRepository.getByNickname(nickname);
-        Series series = seriesRepository.getByUserAndName(user, seriesName);
+    public SliceResponse<PostSummaryResponse> findPostsByUserAndSeries(SeriesPostsFindRequest seriesPostsFindRequest, Pageable pageable) {
+        User user = userRepository.getByNickname(seriesPostsFindRequest.nickname());
+        Series series = seriesRepository.getByUserAndName(user, seriesPostsFindRequest.series());
         Slice<PostSummaryResponse> postSummaryResponses = postRepository.findAllByUserAndSeries(user, series, pageable)
                 .map(this::createPostSummaryResponse);
         return SliceResponse.from(postSummaryResponses);

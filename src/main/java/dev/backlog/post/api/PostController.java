@@ -7,15 +7,18 @@ import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
 import dev.backlog.post.dto.PostUpdateRequest;
+import dev.backlog.post.dto.SeriesPostsFindRequest;
 import dev.backlog.post.service.PostService;
 import dev.backlog.post.service.query.PostQueryService;
 import dev.backlog.user.dto.AuthInfo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,16 +40,15 @@ public class PostController {
     private final PostQueryService postQueryService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody PostCreateRequest request, @Login AuthInfo authInfo) {
+    public ResponseEntity<Void> create(@Valid @RequestBody PostCreateRequest request, @Login AuthInfo authInfo) {
         Long postId = postService.create(request, authInfo);
         return ResponseEntity.created(URI.create("/posts/" + postId)).build();
     }
 
     @GetMapping("/series")
-    public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(String nickname,
-                                                                              String series,
+    public ResponseEntity<SliceResponse<PostSummaryResponse>> findSeriesPosts(@Valid @ModelAttribute SeriesPostsFindRequest seriesPostsFindRequest,
                                                                               @PageableDefault(size = 30, sort = "createdAt") Pageable pageable) {
-        SliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(nickname, series, pageable);
+        SliceResponse<PostSummaryResponse> seriesPosts = postQueryService.findPostsByUserAndSeries(seriesPostsFindRequest, pageable);
         return ResponseEntity.ok(seriesPosts);
     }
 
@@ -87,7 +89,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@RequestBody PostUpdateRequest request,
+    public ResponseEntity<Void> updatePost(@Valid @RequestBody PostUpdateRequest request,
                                            @PathVariable Long postId,
                                            @Login AuthInfo authInfo) {
         postService.updatePost(request, postId, authInfo);

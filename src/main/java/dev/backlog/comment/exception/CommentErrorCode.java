@@ -1,4 +1,4 @@
-package dev.backlog.series.exception;
+package dev.backlog.comment.exception;
 
 import dev.backlog.common.exception.ErrorCode;
 import lombok.Getter;
@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SeriesErrorCode implements ErrorCode {
-    SERIES_NOT_FOUNT("S004", "시리즈를 찾을 수 없습니다."),
-    INVALID_DATA_LENGTH("S022", "시리즈에서 처리할 수 있는 데이터 크기를 초과했습니다."),
+public enum CommentErrorCode implements ErrorCode {
+    INVALID_WRITER("C000", "해당 댓글의 작성자가 아닙니다."),
+    COMMENT_NOT_FOUND("C004", "댓글을 찾을 수 없습니다."),
     ;
 
     private final String errorCode;
@@ -16,13 +16,12 @@ public enum SeriesErrorCode implements ErrorCode {
 
     @Override
     public String code() {
-        return null;
+        return errorCode;
     }
 
     @Override
     public String message() {
-        return null;
+        return message;
     }
 
 }
-

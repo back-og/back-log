@@ -1,7 +1,5 @@
 package dev.backlog.comment.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.post.domain.Post;
 import dev.backlog.user.domain.User;
@@ -19,6 +17,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -69,7 +70,7 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void updateParent(Comment parent){
+    public void updateParent(Comment parent) {
         this.parent = parent;
         parent.getChildren().add(this);
     }

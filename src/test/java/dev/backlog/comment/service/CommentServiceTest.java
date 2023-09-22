@@ -1,12 +1,12 @@
 package dev.backlog.comment.service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.comment.dto.CommentCreateRequest;
 import dev.backlog.comment.dto.CommentResponse;
 import dev.backlog.comment.dto.CommentUpdateRequest;
+import dev.backlog.common.exception.MissMatchException;
+import dev.backlog.common.exception.NotFoundException;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -20,12 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글1;
 import static dev.backlog.common.fixture.EntityFixture.유저1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class CommentServiceTest {
@@ -132,7 +134,7 @@ class CommentServiceTest {
                 () -> assertThat(childrenComments.get(1).commentId()).isEqualTo(saved대댓글2.getId()),
                 () -> assertThat(saved대댓글.getParent().getId()).isEqualTo(comment.getId()),
                 () -> assertThat(saved대댓글2.getParent().getId()).isEqualTo(comment.getId()),
-                ()-> assertThat(childrenComments.size()).isEqualTo(2)
+                () -> assertThat(childrenComments).hasSize(2)
         );
     }
 
@@ -168,7 +170,7 @@ class CommentServiceTest {
         CommentUpdateRequest request = new CommentUpdateRequest(updateCommentContent);
 
         assertThatThrownBy(() -> commentService.update(request, authInfo, comment.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MissMatchException.class);
     }
 
     @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 삭제할 수 있다.")
@@ -182,8 +184,7 @@ class CommentServiceTest {
         commentService.delete(authInfo, comment.getId());
 
         assertThatThrownBy(() -> commentRepository.getById(comment.getId()))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("해당 게시물을 찾을 수 없습니다.");
+                .isInstanceOf(NotFoundException.class);
     }
 
     @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 다를 경우 댓글을 삭제할 수 없다.")
@@ -197,8 +198,7 @@ class CommentServiceTest {
         AuthInfo authInfo = new AuthInfo(userId, "토큰");
 
         assertThatThrownBy(() -> commentService.delete(authInfo, comment.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 댓글의 작성자가 아닙니다.");
+                .isInstanceOf(MissMatchException.class);
     }
 
 }

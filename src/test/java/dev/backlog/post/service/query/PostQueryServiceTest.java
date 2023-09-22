@@ -13,6 +13,7 @@ import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
+import dev.backlog.post.dto.SeriesPostsFindRequest;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
 import dev.backlog.user.domain.User;
@@ -173,9 +174,10 @@ class PostQueryServiceTest extends TestContainerConfig {
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
+        SeriesPostsFindRequest seriesPostsFindRequest = new SeriesPostsFindRequest(user.getNickname(), "시리즈");
 
         //when
-        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsByUserAndSeries(seriesPostsFindRequest, pageRequest);
 
         //then
         assertAll(
