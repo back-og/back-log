@@ -7,6 +7,7 @@ import dev.backlog.auth.service.OAuthService;
 import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthTokens> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<AuthTokens> signup(@Valid @RequestBody SignupRequest request) {
         return ResponseEntity.ok(oAuthService.signup(request));
     }
 
