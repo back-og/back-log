@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,6 +72,11 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String path;
 
+    private int likeCount = 0;
+
+    @Version
+    private int version;
+
     @Builder
     private Post(
             Series series,
@@ -102,6 +108,14 @@ public class Post extends BaseEntity {
     public void addAllPostHashtag(List<PostHashtag> postHashtags) {
         this.postHashtags.clear();
         this.postHashtags.addAll(postHashtags);
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount -= 1;
     }
 
     public void removeAllHashtag() {

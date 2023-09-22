@@ -30,17 +30,18 @@ public class PostLikeService {
 
         switchLike(postLike, post, user);
 
-        int likeCount = postLikeRepository.countByPost(post);
         boolean isLiked = postLike.isEmpty();
-        return new LikeStatusResponse(likeCount, isLiked);
+        return new LikeStatusResponse(post.getLikeCount(), isLiked);
     }
 
     private void switchLike(Optional<PostLike> postLike, Post post, User user) {
         if (postLike.isPresent()) {
             postLikeRepository.delete(postLike.get());
+            post.decreaseLikeCount();
             return;
         }
         postLikeRepository.save(new PostLike(user, post));
+        post.increaseLikeCount();
     }
 
 }

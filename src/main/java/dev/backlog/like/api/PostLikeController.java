@@ -18,9 +18,9 @@ public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    @PutMapping("/{postId}/like")
-    public ResponseEntity<LikeStatusResponse> switchLike(@PathVariable Long postId, @Login AuthInfo authInfo) {
-        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(postId, authInfo);
+    @PutMapping("/{postId}/like/{userId}") // 로그인 편의를 위해 코드 변경
+    public ResponseEntity<LikeStatusResponse> switchLike(@PathVariable Long postId, @PathVariable Long userId) {
+        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(postId, new AuthInfo(userId, "토큰"));
         return ResponseEntity.ok(likeStatusResponse);
     }
 
