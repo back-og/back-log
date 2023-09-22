@@ -39,7 +39,7 @@ class CommentControllerTest extends ControllerTestConfig {
         Long postId = 2L;
         Long commentId = 3L;
 
-        CommentCreateRequest request = new CommentCreateRequest("댓글테스트댓글테스트");
+        CommentCreateRequest request = new CommentCreateRequest("댓글테스트댓글테스트", null);
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(commentService.create(eq(request), any(), any()))
                 .thenReturn(commentId);
