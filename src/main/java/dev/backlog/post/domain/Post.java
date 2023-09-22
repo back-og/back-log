@@ -80,6 +80,8 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String path;
 
+    private int likeCount = 0;
+
     @Builder
     private Post(
             Series series,
@@ -115,6 +117,15 @@ public class Post extends BaseEntity {
         this.postHashtags.clear();
         this.postHashtags.addAll(postHashtags);
     }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount -= 1;
+    }
+
 
     public void removeAllHashtag() {
         this.postHashtags.clear();

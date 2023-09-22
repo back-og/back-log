@@ -3,12 +3,15 @@ package dev.backlog.post.infra.jpa;
 import dev.backlog.post.domain.Post;
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
@@ -23,5 +26,8 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
     Slice<Post> findAllByUserAndSeries(User user, Series series, Pageable pageable);
 
     List<Post> findAllBySeriesOrderByCreatedAt(Series series);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Post> findById(Long id);
 
 }
