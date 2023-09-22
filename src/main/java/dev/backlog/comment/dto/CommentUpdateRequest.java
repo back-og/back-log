@@ -1,4 +1,6 @@
 package dev.backlog.comment.dto;
 
-public record CommentUpdateRequest(String content) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CommentUpdateRequest(@NotBlank String content) {
 }
