@@ -17,8 +17,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -154,6 +153,27 @@ class UserControllerTest extends ControllerTestConfig {
                         )
                 )
                 .andExpect(status().isNoContent()
+                );
+    }
+
+    @DisplayName("사용자는 탈퇴할 수 있다.")
+    @Test
+    void deleteUser() throws Exception {
+        Long userId = 1000L;
+        String token = "토큰";
+
+        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+
+        mockMvc.perform(delete("/api/users/me")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(document("user-delete",
+                                resourceDetails().tag("User").description("사용자 탈퇴"),
+                                preprocessRequest(prettyPrint())
+                        )
+                )
+                .andExpect(status().isOk()
                 );
     }
 
