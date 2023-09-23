@@ -107,8 +107,9 @@ public class User extends BaseEntity {
         return Objects.hash(id);
     }
 
-    public void updateNickName(String nickName) {
-        this.nickname = nickName;
+    public void updateNickName(String nickname) {
+        validateNicknameLength(nickname);
+        this.nickname = nickname;
     }
 
     public void updateEmail(String email) {
@@ -120,10 +121,12 @@ public class User extends BaseEntity {
     }
 
     public void updateIntroduction(String introduction) {
+        validateIntroductionLength(introduction);
         this.introduction = introduction;
     }
 
     public void updateBlogTitle(String blogTitle) {
+        validateBlogTitleLength(blogTitle);
         this.blogTitle = blogTitle;
     }
 
