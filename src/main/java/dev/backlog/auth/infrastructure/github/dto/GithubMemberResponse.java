@@ -18,6 +18,13 @@ public class GithubMemberResponse {
     @JsonProperty("avatar_url")
     private String imageUrl;
 
+    public GithubMemberResponse(Long id, String email, String nickname, String imageUrl) {
+        this.id = id;
+        this.email = email;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+    }
+
     public OAuthInfoResponse toOAuthInfoResponse() {
         return OAuthInfoResponse.of(
                 nickname,
