@@ -33,13 +33,13 @@ class PrivatePostAccessStrategyTest {
     @Autowired
     private PostRepository postRepository;
 
-    private User 유저1;
-    private Post 게시물1;
+    private User 유저;
+    private Post 게시물;
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저();
-        게시물1 = 비공개_게시물(유저1, null);
+        유저 = 유저();
+        게시물 = 비공개_게시물(유저, null);
     }
 
     @AfterEach
@@ -52,9 +52,9 @@ class PrivatePostAccessStrategyTest {
     @Test
     void userFindPrivatePostByIdTest() {
         //given
-        User user = userRepository.save(유저1);
+        User user = userRepository.save(유저);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
-        Post post = postRepository.save(게시물1);
+        Post post = postRepository.save(게시물);
 
         //when
         PostResponse postResponse = privatePostAccessStrategy.findPostById(post, authInfo);
@@ -66,8 +66,8 @@ class PrivatePostAccessStrategyTest {
     @DisplayName("작성자가 아닌 사용자는 다른 사용자의 비공개 게시물을 조회할 수 없다.")
     @Test
     void notFindPrivatePostByIdTest() {
-        User user = userRepository.save(유저1);
-        Post post = postRepository.save(게시물1);
+        User user = userRepository.save(유저);
+        Post post = postRepository.save(게시물);
 
         long randomId = new Random().nextLong();
         Long anotherUserId = (randomId == user.getId()) ? 0l : randomId;

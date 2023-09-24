@@ -2,6 +2,7 @@ package dev.backlog.post.domain.repository;
 
 import dev.backlog.common.config.TestContainerConfig;
 import dev.backlog.post.domain.UserViewInfo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ class PostCacheRepositoryTest extends TestContainerConfig {
 
     @Autowired
     private PostCacheRepository postCacheRepository;
+
+    @AfterEach
+    void tearDown() {
+        postCacheRepository.deleteAll();
+    }
 
     @DisplayName("조회 내역을 저장할 수 있다.")
     @Test

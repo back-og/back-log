@@ -39,13 +39,13 @@ class PublicPostAccessStrategyTest extends TestContainerConfig {
     @Autowired
     private PostCacheRepository postCacheRepository;
 
-    private User 유저1;
-    private Post 게시물1;
+    private User 유저;
+    private Post 게시물;
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저();
-        게시물1 = 공개_게시물(유저1, null);
+        유저 = 유저();
+        게시물 = 공개_게시물(유저, null);
     }
 
     @AfterEach
@@ -59,8 +59,8 @@ class PublicPostAccessStrategyTest extends TestContainerConfig {
     @Test
     void userFindPublicPostByIdTest() {
         //given
-        User user = userRepository.save(유저1);
-        Post post = postRepository.save(게시물1);
+        User user = userRepository.save(유저);
+        Post post = postRepository.save(게시물);
 
         long randomId = new Random().nextLong();
         Long anotherUserId = (randomId == user.getId()) ? 0l : randomId;
@@ -82,8 +82,8 @@ class PublicPostAccessStrategyTest extends TestContainerConfig {
     @NullSource
     void anonymousUserFindPublicPostByIdTest(AuthInfo authInfo) {
         //given
-        userRepository.save(유저1);
-        Post post = postRepository.save(게시물1);
+        userRepository.save(유저);
+        Post post = postRepository.save(게시물);
 
         //when
         PostResponse postResponse = publicPostAccessStrategy.findPostById(post, authInfo);
