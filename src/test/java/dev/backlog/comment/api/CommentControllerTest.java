@@ -17,6 +17,8 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -24,6 +26,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -51,6 +54,9 @@ class CommentControllerTest extends ControllerTestConfig {
                 .andDo(document("comment-create",
                                 resourceDetails().tag("댓글").description("댓글 생성")
                                         .requestSchema(Schema.schema("CreateCommentRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(
                                         parameterWithName("postId").description("게시물 식별자")
                                 ),
@@ -60,7 +66,8 @@ class CommentControllerTest extends ControllerTestConfig {
                                 )
                         )
                 )
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/comments/" + commentId));
     }
 
     @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 수정할 수 있다.")
@@ -81,6 +88,9 @@ class CommentControllerTest extends ControllerTestConfig {
                                         .requestSchema(Schema.schema("UpdateCommentRequest")),
                                 pathParameters(
                                         parameterWithName("commentId").description("게시물 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
                                 ),
                                 requestFields(
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("댓글")
@@ -105,6 +115,9 @@ class CommentControllerTest extends ControllerTestConfig {
                                 resourceDetails().tag("댓글").description("댓글 삭제"),
                                 pathParameters(
                                         parameterWithName("commentId").description("게시물 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
                                 )
                         )
                 )
