@@ -21,14 +21,14 @@ class KakaoAuthCodeRequestUrlProviderTest {
     private KakaoAuthCodeRequestUrlProvider provider;
 
     @Test
-    void oAuthProvider() {
+    void oAuthProviderTest() {
         OAuthProvider oAuthProvider = provider.oAuthProvider();
 
         assertThat(oAuthProvider).isEqualTo(OAuthProvider.KAKAO);
     }
 
     @Test
-    void provide() {
+    void provideTest() {
         String resultUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=testClientId&redirect_uri=https://testClientId/redirect";
 
         when(kakaoProperties.getClientId()).thenReturn("testClientId");

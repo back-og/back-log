@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class OAuthProviderTest {
 
     @Test
-    void from() {
+    void fromTest() {
         String kakao = "kakao";
         OAuthProvider result = OAuthProvider.from(kakao);
 
@@ -17,14 +17,14 @@ class OAuthProviderTest {
     }
 
     @Test
-    void values() {
+    void valuesTest() {
         OAuthProvider[] oAuthProviders = OAuthProvider.values();
 
-        assertThat(oAuthProviders.length).isEqualTo(2);
+        assertThat(oAuthProviders).hasSize(2);
     }
 
     @Test
-    void valueOf() {
+    void valueOfTest() {
         String github = "GITHUB";
         OAuthProvider result = OAuthProvider.valueOf(github);
 

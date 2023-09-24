@@ -15,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,15 +33,9 @@ class KakaoApiClientTest {
     private KakaoApiClient kakaoApiClient;
 
     @Test
-    void fetchToken() {
+    void fetchTokenTest() {
         String authCode = "authCode";
-        KakaoTokens kakaoTokens = new KakaoTokens(
-                "accessToken",
-                "tokenType",
-                "refreshToken",
-                1000,
-                1000
-        );
+        KakaoTokens kakaoTokens = getKakaoTokens();
 
         when(kakaoProperties.getClientId()).thenReturn("testClientId");
         when(kakaoProperties.getRedirectUrl()).thenReturn("testRedirectUrl");
@@ -63,7 +59,7 @@ class KakaoApiClientTest {
     }
 
     @Test
-    void fetchMember() {
+    void fetchMemberTest() {
         KakaoMemberResponse response = new KakaoMemberResponse(1L, null);
         ResponseEntity<KakaoMemberResponse> mockResponse = ResponseEntity.ok(response);
 
@@ -77,6 +73,16 @@ class KakaoApiClientTest {
         KakaoMemberResponse result = kakaoApiClient.fetchMember("accessToken");
 
         assertThat(result).isNotNull();
+    }
+
+    private KakaoTokens getKakaoTokens() {
+        return new KakaoTokens(
+                "accessToken",
+                "tokenType",
+                "refreshToken",
+                1000,
+                1000
+        );
     }
 
 }

@@ -28,7 +28,7 @@ class GithubAuthCodeRequestUrlProviderTest {
     }
 
     @Test
-    void provide() {
+    void provideTest() {
         String resultUrl = "https://github.com/login/oauth/authorize?client_id=testClientId&redirect_uri=https://testClientId/redirect";
 
         when(githubProperties.getClientId()).thenReturn("testClientId");

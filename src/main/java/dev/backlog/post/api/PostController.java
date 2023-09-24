@@ -32,7 +32,7 @@ import java.net.URI;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/v1")
 @RequiredArgsConstructor
 public class PostController {
 

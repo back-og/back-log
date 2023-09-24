@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.시리즈_모음;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -41,18 +41,15 @@ class SeriesQueryServiceTest {
     @DisplayName("사용자 이름으로 시리즈 전체를 조회할 수 있다.")
     @Test
     void findSeriesTest() {
-        //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
         List<Series> series = 시리즈_모음(user);
         seriesRepository.saveAll(series);
 
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        //when
         SliceResponse<SeriesSummaryResponse> sliceResponse = seriesQueryService.findSeries(user.getNickname(), pageRequest);
 
-        //then
         assertAll(
                 () -> assertThat(sliceResponse.hasNext()).isFalse(),
                 () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size())

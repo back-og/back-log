@@ -17,6 +17,8 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -24,6 +26,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -44,13 +47,16 @@ class CommentControllerTest extends ControllerTestConfig {
         when(commentService.create(eq(request), any(), any()))
                 .thenReturn(commentId);
 
-        mockMvc.perform(post("/api/comments/{postId}", postId)
+        mockMvc.perform(post("/api/comments/v1/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("comment-create",
                                 resourceDetails().tag("댓글").description("댓글 생성")
                                         .requestSchema(Schema.schema("CreateCommentRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(
                                         parameterWithName("postId").description("게시물 식별자")
                                 ),
@@ -60,7 +66,8 @@ class CommentControllerTest extends ControllerTestConfig {
                                 )
                         )
                 )
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/comments/" + commentId));
     }
 
     @DisplayName("댓글 작성자와 로그인한 사용자의 아이디가 같을 경우 댓글을 수정할 수 있다.")
@@ -72,13 +79,16 @@ class CommentControllerTest extends ControllerTestConfig {
         CommentUpdateRequest request = new CommentUpdateRequest("수정댓글수정댓글댓글수정");
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(put("/api/comments/{commentId}", commentId)
+        mockMvc.perform(put("/api/comments/v1/{commentId}", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("comment-update",
                                 resourceDetails().tag("댓글").description("댓글 수정")
                                         .requestSchema(Schema.schema("UpdateCommentRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(
                                         parameterWithName("commentId").description("게시물 식별자")
                                 ),
@@ -98,11 +108,14 @@ class CommentControllerTest extends ControllerTestConfig {
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(delete("/api/comments/{commentId}", commentId)
+        mockMvc.perform(delete("/api/comments/v1/{commentId}", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("comment-delete",
                                 resourceDetails().tag("댓글").description("댓글 삭제"),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(
                                         parameterWithName("commentId").description("게시물 식별자")
                                 )

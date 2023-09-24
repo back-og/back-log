@@ -42,11 +42,11 @@ class PostLikeControllerTest extends ControllerTestConfig {
         when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
         when(postLikeService.switchLike(postId, authInfo)).thenReturn(response);
 
-        mockMvc.perform(put("/api/posts/{postId}/like", postId)
+        mockMvc.perform(put("/api/posts/v1/{postId}/like", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-like",
-                                resourceDetails().tag("Like").description("게시물 좋아요 요청")
+                                resourceDetails().tag("좋아요").description("게시물 좋아요 요청")
                                         .responseSchema(Schema.schema("LikeStatusResponse")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")

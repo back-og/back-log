@@ -1,18 +1,19 @@
 package dev.backlog.common.fixture;
 
-import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostUpdateRequest;
 import dev.backlog.series.dto.SeriesCreateRequest;
 import dev.backlog.series.dto.SeriesUpdateRequest;
+import dev.backlog.user.dto.UserUpdateRequest;
 
 import java.util.List;
 
 public class DtoFixture {
 
-    public static SignupRequest 회원가입정보() {
+    public static SignupRequest 회원_가입_정보() {
         return SignupRequest.of(
                 "블로그 제목",
                 "소개",
@@ -21,7 +22,17 @@ public class DtoFixture {
         );
     }
 
-    public static AuthTokens 토큰생성() {
+    public static UserUpdateRequest 회원_수정_요청() {
+        return new UserUpdateRequest(
+                "새닉네임",
+                "새이메일",
+                "새이미지",
+                "새소개",
+                "새블로그제목"
+        );
+    }
+
+    public static AuthTokens 토큰_생성() {
         return AuthTokens.of(
                 "accessToken",
                 "refreshToken",
@@ -30,7 +41,7 @@ public class DtoFixture {
         );
     }
 
-    public static PostCreateRequest 게시물생성요청() {
+    public static PostCreateRequest 게시물_생성_요청() {
         return new PostCreateRequest(
                 "시리즈",
                 "제목", "내용",
@@ -42,7 +53,7 @@ public class DtoFixture {
         );
     }
 
-    public static PostUpdateRequest 게시물수정요청() {
+    public static PostUpdateRequest 게시물_수정_요청() {
         return new PostUpdateRequest(
                 "변경된 시리즈",
                 "변경된 제목",
@@ -55,13 +66,13 @@ public class DtoFixture {
         );
     }
 
-    public static SeriesCreateRequest 시리즈생성요청() {
+    public static SeriesCreateRequest 시리즈_생성_요청() {
         return new SeriesCreateRequest(
                 "시리즈 이름"
         );
     }
 
-    public static SeriesUpdateRequest 시리즈수정요청() {
+    public static SeriesUpdateRequest 시리즈_수정_요청() {
         return new SeriesUpdateRequest(
                 "수정된 시리즈 이름"
         );

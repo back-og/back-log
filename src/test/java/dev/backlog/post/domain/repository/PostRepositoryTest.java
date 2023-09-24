@@ -20,9 +20,9 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.좋아요1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.좋아요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -40,13 +40,13 @@ class PostRepositoryTest extends RepositoryTestConfig {
     @Autowired
     private SeriesRepository seriesRepository;
 
-    private User 유저1;
+    private User 유저;
     private List<Post> 게시물_모음;
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
-        게시물_모음 = 게시물_모음(유저1, null);
+        유저 = 유저();
+        게시물_모음 = 게시물_모음(유저, null);
     }
 
     @AfterEach
@@ -61,11 +61,11 @@ class PostRepositoryTest extends RepositoryTestConfig {
     @Test
     void findLikedPostsByUserIdTest() {
         //given
-        User user = userRepository.save(유저1);
+        User user = userRepository.save(유저);
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            PostLike 좋아요1 = 좋아요1(user, post);
+            PostLike 좋아요1 = 좋아요(user, post);
             postLikeRepository.save(좋아요1);
         }
 
@@ -85,8 +85,8 @@ class PostRepositoryTest extends RepositoryTestConfig {
     @Test
     void findAllByUserAndSeriesTest() {
         //given
-        User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
+        User user = userRepository.save(유저);
+        Series series = seriesRepository.save(시리즈(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
@@ -99,31 +99,6 @@ class PostRepositoryTest extends RepositoryTestConfig {
                 () -> assertThat(postSlice.hasNext()).isFalse(),
                 () -> assertThat(postSlice.getNumberOfElements()).isEqualTo(postSlice.getContent().size())
         );
-    }
-
-    // TODO: 2023/09/11 테스트 코드 작성
-    @Test
-    void save() {
-    }
-
-    @Test
-    void saveAll() {
-    }
-
-    @Test
-    void findAll() {
-    }
-
-    @Test
-    void getById() {
-    }
-
-    @Test
-    void delete() {
-    }
-
-    @Test
-    void deleteAll() {
     }
 
 }
