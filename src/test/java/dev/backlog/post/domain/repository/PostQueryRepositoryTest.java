@@ -23,9 +23,9 @@ import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.좋아요1;
-import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.좋아요;
+import static dev.backlog.common.fixture.EntityFixture.해쉬_태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -54,8 +54,8 @@ class PostQueryRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
-        해쉬태그 = 해쉬태그_모음().get(0);
+        유저1 = 유저();
+        해쉬태그 = 해쉬_태그_모음().get(0);
     }
 
     @DisplayName("오늘, 이번 주, 이번 달, 올해 필터링을 통해 좋아요 많이 받은 순서로 게시물을 조회할 수 있다.")
@@ -63,17 +63,17 @@ class PostQueryRepositoryTest extends RepositoryTestConfig {
     @ValueSource(strings = {"today, week, month, year, default"})
     void findLikedPostsByTimePeriodTest(String timePeriod) {
         //given
-        User user1 = 유저1();
-        User user2 = 유저1();
+        User user1 = 유저();
+        User user2 = 유저();
         userRepository.saveAll(List.of(user1, user2));
 
         Post post1 = 공개_게시물(user1, null);
         Post post2 = 공개_게시물(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
-        PostLike postLike1 = 좋아요1(user1, post1);
-        PostLike postLike2 = 좋아요1(user1, post2);
-        PostLike postLike3 = 좋아요1(user2, post1);
+        PostLike postLike1 = 좋아요(user1, post1);
+        PostLike postLike2 = 좋아요(user1, post2);
+        PostLike postLike3 = 좋아요(user2, post1);
         postLikeRepository.saveAll(List.of(postLike1, postLike2, postLike3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);

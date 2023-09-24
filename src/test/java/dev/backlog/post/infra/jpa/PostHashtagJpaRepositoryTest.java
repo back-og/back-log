@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.해쉬태그_모음;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.해쉬_태그_모음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO: 2023/09/11 테스트 경로 수정 및 분리
@@ -41,9 +41,9 @@ class PostHashtagJpaRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = userRepository.save(유저1());
+        유저1 = userRepository.save(유저());
         게시물1 = postRepository.save(공개_게시물(유저1, null));
-        해쉬태그_모음 = hashtagRepository.saveAll(해쉬태그_모음());
+        해쉬태그_모음 = hashtagRepository.saveAll(해쉬_태그_모음());
     }
 
     @DisplayName("PostHashtag에서 Post를 찾아 PostHashtag를 삭제한다.")

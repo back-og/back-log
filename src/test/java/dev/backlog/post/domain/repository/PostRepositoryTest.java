@@ -20,9 +20,9 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.좋아요1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.좋아요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -45,7 +45,7 @@ class PostRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물_모음 = 게시물_모음(유저1, null);
     }
 
@@ -65,7 +65,7 @@ class PostRepositoryTest extends RepositoryTestConfig {
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            PostLike 좋아요1 = 좋아요1(user, post);
+            PostLike 좋아요1 = 좋아요(user, post);
             postLikeRepository.save(좋아요1);
         }
 
@@ -86,7 +86,7 @@ class PostRepositoryTest extends RepositoryTestConfig {
     void findAllByUserAndSeriesTest() {
         //given
         User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");

@@ -24,9 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static dev.backlog.common.fixture.DtoFixture.게시물수정요청;
+import static dev.backlog.common.fixture.DtoFixture.게시물_수정_요청;
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -63,7 +63,7 @@ class PostServiceTest extends TestContainerConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물1 = 공개_게시물(유저1, null);
     }
 
@@ -105,7 +105,7 @@ class PostServiceTest extends TestContainerConfig {
     void updatePostTest() {
         User user = userRepository.save(유저1);
         Post post = postRepository.save(게시물1);
-        PostUpdateRequest request = 게시물수정요청();
+        PostUpdateRequest request = 게시물_수정_요청();
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
         postService.updatePost(request, post.getId(), authInfo);

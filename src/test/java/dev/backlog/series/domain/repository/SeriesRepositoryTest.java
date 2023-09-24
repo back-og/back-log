@@ -10,8 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -27,8 +27,8 @@ class SeriesRepositoryTest extends RepositoryTestConfig {
     @Test
     void getByUserAndNameTest() {
         //given
-        User savedUser = userRepository.save(유저1());
-        Series savedSeries = seriesRepository.save(시리즈1(savedUser));
+        User savedUser = userRepository.save(유저());
+        Series savedSeries = seriesRepository.save(시리즈(savedUser));
 
         //when
         Series foundSeries = seriesRepository.getByUserAndName(savedUser, savedSeries.getName());
@@ -41,8 +41,8 @@ class SeriesRepositoryTest extends RepositoryTestConfig {
     @Test
     void deleteAllTest() {
         //given
-        User savedUser = userRepository.save(유저1());
-        Series savedSeries = seriesRepository.save(시리즈1(savedUser));
+        User savedUser = userRepository.save(유저());
+        Series savedSeries = seriesRepository.save(시리즈(savedUser));
 
         //when
         seriesRepository.deleteAll();

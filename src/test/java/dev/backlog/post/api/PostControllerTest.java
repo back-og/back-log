@@ -60,7 +60,7 @@ class PostControllerTest extends ControllerTestConfig {
     void createTest() throws Exception {
         Long userId = 1L;
         Long postId = 2L;
-        PostCreateRequest request = DtoFixture.게시물생성요청();
+        PostCreateRequest request = DtoFixture.게시물_생성_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(postService.create(eq(request), any()))
                 .thenReturn(postId);
@@ -315,7 +315,7 @@ class PostControllerTest extends ControllerTestConfig {
     void updatePostTest() throws Exception {
         final Long postId = 1L;
         final Long userId = 1L;
-        PostUpdateRequest request = DtoFixture.게시물수정요청();
+        PostUpdateRequest request = DtoFixture.게시물_수정_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
         mockMvc.perform(put("/api/posts/{postId}", postId)

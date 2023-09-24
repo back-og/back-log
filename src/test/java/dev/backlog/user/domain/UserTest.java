@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -16,7 +16,7 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        user = 유저1();
+        user = 유저();
     }
 
     @Test

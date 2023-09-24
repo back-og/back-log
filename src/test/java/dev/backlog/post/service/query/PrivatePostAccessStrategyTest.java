@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Random;
 
 import static dev.backlog.common.fixture.EntityFixture.비공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -38,7 +38,7 @@ class PrivatePostAccessStrategyTest {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물1 = 비공개_게시물(유저1, null);
     }
 

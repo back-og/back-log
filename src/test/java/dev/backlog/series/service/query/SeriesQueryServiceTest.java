@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.시리즈_모음;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -42,7 +42,7 @@ class SeriesQueryServiceTest {
     @Test
     void findSeriesTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
         List<Series> series = 시리즈_모음(user);
         seriesRepository.saveAll(series);

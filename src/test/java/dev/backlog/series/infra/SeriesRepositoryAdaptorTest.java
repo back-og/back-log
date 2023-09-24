@@ -13,8 +13,8 @@ import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
@@ -29,9 +29,9 @@ class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
     @Test
     void saveTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
-        Series series = 시리즈1(user);
+        Series series = 시리즈(user);
 
         //when
         Series savedSeries = seriesRepository.save(series);
@@ -44,9 +44,9 @@ class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
     @Test
     void getByUserAndNameTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
-        Series series = 시리즈1(user);
+        Series series = 시리즈(user);
         Series savedSeries = seriesRepository.save(series);
 
         //when
@@ -60,9 +60,9 @@ class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
     @Test
     void deleteAllTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
-        Series series = 시리즈1(user);
+        Series series = 시리즈(user);
         seriesRepository.save(series);
 
         //when
@@ -77,9 +77,9 @@ class SeriesRepositoryAdaptorTest extends RepositoryTestConfig {
     @Test
     void findAllByUser() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
-        List<Series> series = List.of(시리즈1(user), 시리즈1(user));
+        List<Series> series = List.of(시리즈(user), 시리즈(user));
         seriesRepository.saveAll(series);
         PageRequest pageRequest = PageRequest.of(0, 30);
 

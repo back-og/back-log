@@ -37,9 +37,9 @@ import java.util.Random;
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글_모음;
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.좋아요1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.좋아요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -80,7 +80,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물1 = 공개_게시물(유저1, null);
         게시물_모음 = 게시물_모음(유저1, null);
         댓글_모음 = 댓글_모음(유저1, 게시물1);
@@ -148,7 +148,7 @@ class PostQueryServiceTest extends TestContainerConfig {
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            PostLike postLike = 좋아요1(user, post);
+            PostLike postLike = 좋아요(user, post);
             postLikeRepository.save(postLike);
         }
 
@@ -170,7 +170,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     void findPostsByUserAndSeriesTest() {
         //given
         User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
@@ -212,17 +212,17 @@ class PostQueryServiceTest extends TestContainerConfig {
     @ValueSource(strings = {"today, week, month, year, default"})
     void findLikedPostsTest(String timePeriod) {
         //given
-        User user1 = 유저1();
-        User user2 = 유저1();
+        User user1 = 유저();
+        User user2 = 유저();
         userRepository.saveAll(List.of(user1, user2));
 
         Post post1 = 공개_게시물(user1, null);
         Post post2 = 공개_게시물(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
-        PostLike like1 = 좋아요1(user1, post1);
-        PostLike like2 = 좋아요1(user1, post2);
-        PostLike like3 = 좋아요1(user2, post1);
+        PostLike like1 = 좋아요(user1, post1);
+        PostLike like2 = 좋아요(user1, post2);
+        PostLike like3 = 좋아요(user2, post1);
         postLikeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);

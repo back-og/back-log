@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Random;
 
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -44,7 +44,7 @@ class PublicPostAccessStrategyTest extends TestContainerConfig {
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물1 = 공개_게시물(유저1, null);
     }
 

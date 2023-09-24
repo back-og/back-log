@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,10 +42,10 @@ class SeriesServiceTest {
     @Test
     void createTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
-        SeriesCreateRequest seriesCreateRequest = DtoFixture.시리즈생성요청();
+        SeriesCreateRequest seriesCreateRequest = DtoFixture.시리즈_생성_요청();
 
         //when
         Long seriesId = seriesService.create(seriesCreateRequest, authInfo);
@@ -58,11 +58,11 @@ class SeriesServiceTest {
     @Test
     void updateSeriesTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
-        Series series = seriesRepository.save(시리즈1(user));
-        SeriesUpdateRequest seriesUpdateRequest = DtoFixture.시리즈수정요청();
+        Series series = seriesRepository.save(시리즈(user));
+        SeriesUpdateRequest seriesUpdateRequest = DtoFixture.시리즈_수정_요청();
 
         //when
         seriesService.updateSeries(authInfo, series.getId(), seriesUpdateRequest);
@@ -76,10 +76,10 @@ class SeriesServiceTest {
     @Test
     void deleteSeriesTest() {
         //given
-        User user = 유저1();
+        User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
-        Series series = seriesRepository.save(시리즈1(user));
+        Series series = seriesRepository.save(시리즈(user));
 
         //when
         seriesService.deleteSeries(authInfo, series.getId());

@@ -21,8 +21,8 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static dev.backlog.common.fixture.DtoFixture.시리즈생성요청;
-import static dev.backlog.common.fixture.DtoFixture.시리즈수정요청;
+import static dev.backlog.common.fixture.DtoFixture.시리즈_생성_요청;
+import static dev.backlog.common.fixture.DtoFixture.시리즈_수정_요청;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -54,7 +54,7 @@ class SeriesControllerTest extends ControllerTestConfig {
     void createTest() throws Exception {
         Long userId = 1L;
         Long seriesId = 1L;
-        SeriesCreateRequest seriesCreateRequest = 시리즈생성요청();
+        SeriesCreateRequest seriesCreateRequest = 시리즈_생성_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(seriesService.create(eq(seriesCreateRequest), any())).thenReturn(seriesId);
 
@@ -123,7 +123,7 @@ class SeriesControllerTest extends ControllerTestConfig {
     void updateSeriesTest() throws Exception {
         final Long seriesId = 1L;
         final Long userId = 1L;
-        SeriesUpdateRequest seriesUpdateRequest = 시리즈수정요청();
+        SeriesUpdateRequest seriesUpdateRequest = 시리즈_수정_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
         mockMvc.perform(put("/api/series/v1/{seriesId}", seriesId)

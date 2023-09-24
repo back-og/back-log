@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -40,7 +40,7 @@ class UserRepositoryAdapterTest {
     void getByOauthProviderIdAndOauthProvider() {
         String providerId = "123";
         OAuthProvider github = OAuthProvider.GITHUB;
-        User user = 유저1();
+        User user = 유저();
 
         when(userJpaRepository.findByOauthProviderIdAndOauthProvider(providerId, github)).thenReturn(Optional.ofNullable(user));
 
@@ -70,7 +70,7 @@ class UserRepositoryAdapterTest {
 
     @Test
     void delete() {
-        User user = 유저1();
+        User user = 유저();
         User savedUser = userJpaRepository.save(user);
 
         adapter.delete(savedUser);

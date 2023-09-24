@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
-import static dev.backlog.common.fixture.EntityFixture.댓글1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.댓글;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,9 +50,9 @@ class CommentServiceTest {
 
     @BeforeEach
     public void setUp() {
-        유저1 = 유저1();
+        유저1 = 유저();
         게시물1 = 공개_게시물(유저1, null);
-        댓글1 = 댓글1(유저1, 게시물1);
+        댓글1 = 댓글(유저1, 게시물1);
     }
 
     @AfterEach
