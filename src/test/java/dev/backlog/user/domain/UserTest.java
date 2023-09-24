@@ -20,7 +20,7 @@ class UserTest {
     }
 
     @Test
-    void updateNickName() {
+    void updateNickNameTest() {
         String updatedNickname = "업데이트닉네임";
         user.updateNickName(updatedNickname);
 
@@ -28,7 +28,7 @@ class UserTest {
     }
 
     @Test
-    void updateEmail() {
+    void updateEmailTest() {
         String updatedEmail = "업데이트이메일";
         user.updateEmail(updatedEmail);
 
@@ -36,7 +36,7 @@ class UserTest {
     }
 
     @Test
-    void updateProfileImage() {
+    void updateProfileImageTest() {
         String updatedProfileImage = "업데이트프로필사진";
         user.updateProfileImage(updatedProfileImage);
 
@@ -44,7 +44,7 @@ class UserTest {
     }
 
     @Test
-    void updateIntroduction() {
+    void updateIntroductionTest() {
         String updatedIntroduction = "업데이트소개";
         user.updateIntroduction(updatedIntroduction);
 
@@ -52,7 +52,7 @@ class UserTest {
     }
 
     @Test
-    void updateBlogTitle() {
+    void updateBlogTitleTest() {
         String updatedBlogTitle = "업데이트블로그제목";
         user.updateBlogTitle(updatedBlogTitle);
 
@@ -60,7 +60,7 @@ class UserTest {
     }
 
     @Test
-    void markUserAsDeleted() {
+    void markUserAsDeletedTest() {
         user.markUserAsDeleted();
 
         assertThat(user.isDeleted()).isTrue();
@@ -68,7 +68,7 @@ class UserTest {
     }
 
     @Test
-    void unmarkUserAsDeleted() {
+    void unmarkUserAsDeletedTest() {
         user.unmarkUserAsDeleted();
 
         assertThat(user.isDeleted()).isFalse();
@@ -76,7 +76,7 @@ class UserTest {
     }
 
     @Test
-    void validateNicknameLength() {
+    void validateNicknameLengthTest() {
         String updatedNickname = "abcdefghijklmnopqrstuvwzyz";
 
         assertThatThrownBy(() -> user.updateNickName(updatedNickname))
@@ -92,7 +92,7 @@ class UserTest {
     }
 
     @Test
-    void validateBlogTitleLength() {
+    void validateBlogTitleLengthTest() {
         String updatedBlogTitle = "abcdefghijklmnopqrstuvwzyzabcdefghijklmnopqrstuvwzyz";
 
         assertThatThrownBy(() -> user.updateBlogTitle(updatedBlogTitle))

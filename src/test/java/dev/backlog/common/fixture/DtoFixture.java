@@ -7,6 +7,7 @@ import dev.backlog.post.dto.PostCreateRequest;
 import dev.backlog.post.dto.PostUpdateRequest;
 import dev.backlog.series.dto.SeriesCreateRequest;
 import dev.backlog.series.dto.SeriesUpdateRequest;
+import dev.backlog.user.dto.UserUpdateRequest;
 
 import java.util.List;
 
@@ -18,6 +19,16 @@ public class DtoFixture {
                 "소개",
                 "authCode",
                 OAuthProvider.KAKAO
+        );
+    }
+
+    public static UserUpdateRequest 회원_수정_요청() {
+        return new UserUpdateRequest(
+                "새닉네임",
+                "새이메일",
+                "새이미지",
+                "새소개",
+                "새블로그제목"
         );
     }
 

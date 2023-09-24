@@ -27,7 +27,7 @@ class UserRepositoryAdapterTest {
     private UserRepositoryAdapter adapter;
 
     @Test
-    void existsByOauthProviderIdAndOauthProvider() {
+    void existsByOauthProviderIdAndOauthProviderTest() {
         String providerId = "123";
         OAuthProvider github = OAuthProvider.GITHUB;
 
@@ -37,7 +37,7 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void getByOauthProviderIdAndOauthProvider() {
+    void getByOauthProviderIdAndOauthProviderTest() {
         String providerId = "123";
         OAuthProvider github = OAuthProvider.GITHUB;
         User user = 유저();
@@ -48,7 +48,7 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void getByOauthProviderIdAndOauthProviderFail() {
+    void getByOauthProviderIdAndOauthProviderFailTest() {
         String providerId = "123";
         OAuthProvider github = OAuthProvider.GITHUB;
 
@@ -59,22 +59,13 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void getByNicknameFail() {
+    void getByNicknameFailTest() {
         String nickname = "nickname";
 
         when(userJpaRepository.findByNickname(nickname)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> adapter.getByNickname(nickname))
                 .isInstanceOf(NotFoundException.class);
-    }
-
-    @Test
-    void delete() {
-        User user = 유저();
-        User savedUser = userJpaRepository.save(user);
-
-        adapter.delete(savedUser);
-
     }
 
 }
