@@ -20,7 +20,7 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/api/comments/v1")
 public class CommentController {
 
     private final CommentService commentService;

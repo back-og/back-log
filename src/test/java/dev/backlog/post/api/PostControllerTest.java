@@ -66,7 +66,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postService.create(eq(request), any()))
                 .thenReturn(postId);
 
-        mockMvc.perform(post("/api/posts")
+        mockMvc.perform(post("/api/posts/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
@@ -109,7 +109,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostById(any(), any())).thenReturn(postResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/{postId}", postId)
+        mockMvc.perform(get("/api/posts/v1/{postId}", postId)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-find",
                                 resourceDetails().tag("게시물").description("게시물 상세 조회")
@@ -173,7 +173,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/like")
+        mockMvc.perform(get("/api/posts/v1/like")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc")
@@ -229,7 +229,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostsByUserAndSeries(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/series")
+        mockMvc.perform(get("/api/posts/v1/series")
                         .param("series", "시리즈")
                         .param("nickname", "유저 닉네임")
                         .param("page", String.valueOf(0))
@@ -285,7 +285,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/recent")
+        mockMvc.perform(get("/api/posts/v1/recent")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,desc")
@@ -339,7 +339,7 @@ class PostControllerTest extends ControllerTestConfig {
 
         //when, then
         String defaultTimePeriod = "week";
-        mockMvc.perform(get("/api/posts/trend")
+        mockMvc.perform(get("/api/posts/v1/trend")
                         .param("timePeriod", defaultTimePeriod)
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
@@ -391,7 +391,7 @@ class PostControllerTest extends ControllerTestConfig {
 
         when(postQueryService.searchByNicknameAndHashtag(any(), any(), any())).thenReturn(sliceResponse);
 
-        mockMvc.perform(get("/api/posts/search")
+        mockMvc.perform(get("/api/posts/v1/search")
                         .param("hashtag", "tag")
                         .param("nickname", "nickname")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -442,7 +442,7 @@ class PostControllerTest extends ControllerTestConfig {
         PostUpdateRequest request = DtoFixture.게시물_수정_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(put("/api/posts/{postId}", postId)
+        mockMvc.perform(put("/api/posts/v1/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
@@ -472,7 +472,7 @@ class PostControllerTest extends ControllerTestConfig {
     void deletePostTest() throws Exception {
         long postId = 1L;
 
-        mockMvc.perform(delete("/api/posts/{postId}", postId)
+        mockMvc.perform(delete("/api/posts/v1/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-delete",

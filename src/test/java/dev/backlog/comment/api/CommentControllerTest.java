@@ -47,7 +47,7 @@ class CommentControllerTest extends ControllerTestConfig {
         when(commentService.create(eq(request), any(), any()))
                 .thenReturn(commentId);
 
-        mockMvc.perform(post("/api/comments/{postId}", postId)
+        mockMvc.perform(post("/api/comments/v1/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
@@ -79,7 +79,7 @@ class CommentControllerTest extends ControllerTestConfig {
         CommentUpdateRequest request = new CommentUpdateRequest("수정댓글수정댓글댓글수정");
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(put("/api/comments/{commentId}", commentId)
+        mockMvc.perform(put("/api/comments/v1/{commentId}", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
@@ -108,7 +108,7 @@ class CommentControllerTest extends ControllerTestConfig {
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(delete("/api/comments/{commentId}", commentId)
+        mockMvc.perform(delete("/api/comments/v1/{commentId}", commentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("comment-delete",

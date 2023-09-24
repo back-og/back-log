@@ -42,7 +42,7 @@ class PostLikeControllerTest extends ControllerTestConfig {
         when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
         when(postLikeService.switchLike(postId, authInfo)).thenReturn(response);
 
-        mockMvc.perform(put("/api/posts/{postId}/like", postId)
+        mockMvc.perform(put("/api/posts/v1/{postId}/like", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-like",

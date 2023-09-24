@@ -55,7 +55,7 @@ class HTMLCharacterEscapesTest {
                 .build());
 
         //when
-        ResponseEntity<PostResponse> response = restTemplate.getForEntity("/api/posts/" + post.getId(), PostResponse.class);
+        ResponseEntity<PostResponse> response = restTemplate.getForEntity("/api/posts/v1/" + post.getId(), PostResponse.class);
 
         //then
         assertThat(response.getBody().content()).isEqualTo(responseContent);

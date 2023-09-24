@@ -45,7 +45,7 @@ class UserControllerTest extends ControllerTestConfig {
 
         when(userService.findUserProfile(nickname)).thenReturn(response);
 
-        mockMvc.perform(get("/api/users/{nickname}", nickname)
+        mockMvc.perform(get("/api/users/v1/{nickname}", nickname)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -79,7 +79,7 @@ class UserControllerTest extends ControllerTestConfig {
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(userService.findMyProfile(anyLong())).thenReturn(response);
 
-        mockMvc.perform(get("/api/users/me")
+        mockMvc.perform(get("/api/users/v1/me")
                         .header("Authorization", TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -114,7 +114,7 @@ class UserControllerTest extends ControllerTestConfig {
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(put("/api/users/me")
+        mockMvc.perform(put("/api/users/v1/me")
                         .header("Authorization", TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -145,7 +145,7 @@ class UserControllerTest extends ControllerTestConfig {
 
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(delete("/api/users/me")
+        mockMvc.perform(delete("/api/users/v1/me")
                         .header("Authorization", TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                 )

@@ -25,28 +25,28 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("/api/series")
+@RequestMapping("/api/series/v1")
 @RequiredArgsConstructor
 public class SeriesController {
 
     private final SeriesService seriesService;
     private final SeriesQueryService seriesQueryService;
 
-    @PostMapping("/v1")
+    @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody SeriesCreateRequest seriesCreateRequest,
                                        @Login AuthInfo authInfo) {
         seriesService.create(seriesCreateRequest, authInfo);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/v1")
+    @GetMapping
     public ResponseEntity<SliceResponse<SeriesSummaryResponse>> findSeries(String nickname,
                                                                            @PageableDefault(size = 30, sort = "updatedAt", direction = DESC) Pageable pageable) {
         SliceResponse<SeriesSummaryResponse> series = seriesQueryService.findSeries(nickname, pageable);
         return ResponseEntity.ok(series);
     }
 
-    @PutMapping("/v1/{seriesId}")
+    @PutMapping("/{seriesId}")
     public ResponseEntity<Void> updateSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId,
                                              @Valid @RequestBody SeriesUpdateRequest seriesUpdateRequest) {
@@ -54,7 +54,7 @@ public class SeriesController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/v1/{seriesId}")
+    @DeleteMapping("/{seriesId}")
     public ResponseEntity<Void> deleteSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId) {
         seriesService.deleteSeries(authInfo, seriesId);
