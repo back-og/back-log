@@ -1,8 +1,8 @@
 package dev.backlog.auth.infrastructure.github.client;
 
-import dev.backlog.auth.infrastructure.github.dto.GithubTokens;
 import dev.backlog.auth.infrastructure.github.config.GithubProperties;
 import dev.backlog.auth.infrastructure.github.dto.GithubMemberResponse;
+import dev.backlog.auth.infrastructure.github.dto.GithubTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
