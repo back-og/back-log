@@ -13,7 +13,7 @@ public interface PostLikeJpaRepository extends JpaRepository<PostLike, Long> {
 
     int countByPost(Post post);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_READ)
     Optional<PostLike> findByUserAndPostId(User user, Long postId);
 
 }
