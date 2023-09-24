@@ -46,7 +46,7 @@ class PostLikeControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN))
                 .andDo(document("post-like",
-                                resourceDetails().tag("Like").description("게시물 좋아요 요청")
+                                resourceDetails().tag("좋아요").description("게시물 좋아요 요청")
                                         .responseSchema(Schema.schema("LikeStatusResponse")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")

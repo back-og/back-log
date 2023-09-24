@@ -50,7 +50,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("user-profile",
-                                resourceDetails().tag("User").description("사용자 프로필 조회")
+                                resourceDetails().tag("사용자").description("사용자 프로필 조회")
                                         .responseSchema(Schema.schema("UserResponse")),
                                 pathParameters(
                                         parameterWithName("nickname").description("닉네임")
@@ -84,7 +84,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("my-profile",
-                                resourceDetails().tag("User").description("자신의 프로필 조회")
+                                resourceDetails().tag("사용자").description("자신의 프로필 조회")
                                         .responseSchema(Schema.schema("UserDetailsResponse")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
@@ -120,7 +120,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(document("user-update",
-                                resourceDetails().tag("User").description("사용자 정보 수정")
+                                resourceDetails().tag("사용자").description("사용자 정보 수정")
                                         .requestSchema(Schema.schema("UserUpdateRequest")),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
@@ -150,7 +150,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("user-delete",
-                                resourceDetails().tag("User").description("사용자 탈퇴"),
+                                resourceDetails().tag("사용자").description("사용자 탈퇴"),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
                                 )
