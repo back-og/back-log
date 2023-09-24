@@ -1,13 +1,13 @@
 package dev.backlog.auth.service;
 
-import dev.backlog.auth.dto.AuthTokens;
-import dev.backlog.auth.dto.AuthTokensGenerator;
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import dev.backlog.auth.domain.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.auth.domain.oauth.dto.OAuthInfoResponse;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.auth.dto.AuthTokens;
+import dev.backlog.auth.dto.AuthTokensGenerator;
 import dev.backlog.common.fixture.DtoFixture;
 import dev.backlog.common.fixture.EntityFixture;
 import dev.backlog.user.domain.User;
@@ -48,7 +48,7 @@ class OAuthServiceTest {
 
     @DisplayName("로그인 타입에 맞는 리다이렉트 할 url을 생성한다.")
     @Test
-    void getAuthCodeReqeustUrlTest() {
+    void getAuthCodeRequestUrlTest() {
         String expectedUrl = "https://example.com";
         when(authCodeRequestUrlProviderComposite.provide(OAuthProvider.KAKAO)).thenReturn(expectedUrl);
 

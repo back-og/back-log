@@ -15,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +33,7 @@ class GithubApiClientTest {
     private GithubApiClient githubApiClient;
 
     @Test
-    void fetchToken() {
+    void fetchTokenTest() {
         String authCode = "authCode";
         GithubTokens githubTokens = new GithubTokens(
                 "scope",
@@ -65,7 +67,7 @@ class GithubApiClientTest {
     }
 
     @Test
-    void fetchMember() {
+    void fetchMemberTest() {
         GithubMemberResponse response = new GithubMemberResponse(
                 1L,
                 "test123@gmail.com",

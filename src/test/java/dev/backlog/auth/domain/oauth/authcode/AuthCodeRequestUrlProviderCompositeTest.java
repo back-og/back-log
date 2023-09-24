@@ -29,7 +29,7 @@ class AuthCodeRequestUrlProviderCompositeTest {
     private AuthCodeRequestUrlProviderComposite composite;
 
     @Test
-    void provide() {
+    void provideTest() {
         OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
         String resultUrl = "https://github.com/login/oauth/authorize?client_id=testClientId&redirect_uri=https://testClientId/redirect";
 
@@ -45,7 +45,7 @@ class AuthCodeRequestUrlProviderCompositeTest {
     }
 
     @Test
-    void provideFail() {
+    void provideFailTest() {
         when(provider.oAuthProvider()).thenReturn(OAuthProvider.KAKAO);
 
         providers = new HashSet<>(Collections.singletonList(provider));

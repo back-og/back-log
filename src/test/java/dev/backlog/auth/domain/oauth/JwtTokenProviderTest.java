@@ -1,6 +1,6 @@
 package dev.backlog.auth.domain.oauth;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.Test;
@@ -16,45 +16,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class JwtTokenProviderTest {
 
+    private static final String SUBJECT = "123";
     private static final String SECRET_KEY = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS512).getEncoded());
 
     @InjectMocks
     private JwtTokenProvider provider = new JwtTokenProvider(SECRET_KEY);
 
     @Test
-    void generate() {
-        String subject = "123L";
+    void generateTest() {
         Date date = new Date(System.currentTimeMillis() + 3600000);
 
-        String result = provider.generate(subject, date);
+        String result = provider.generate(SUBJECT, date);
 
         assertThat(result).isNotNull();
     }
 
     @Test
-    void extractUserId() {
-        String subject = "123";
+    void extractUserIdTest() {
         Date date = new Date(System.currentTimeMillis() + 3600000);
 
-        String token = provider.generate(subject, date);
+        String token = provider.generate(SUBJECT, date);
         Long result = provider.extractUserId(token);
 
-        assertThat(result).isEqualTo(Long.parseLong(subject));
+        assertThat(result).isEqualTo(Long.parseLong(SUBJECT));
     }
 
     @Test
-    void isExpiredRefreshToken() {
-        String subject = "123L";
+    void isExpiredRefreshTokenTest() {
         Date date = new Date(System.currentTimeMillis() + 3600000);
 
-        String token = provider.generate(subject, date);
+        String token = provider.generate(SUBJECT, date);
 
         assertThat(provider.isExpiredRefreshToken(token)).isFalse();
     }
 
     @Test
-    void isExpiredRefreshTokenFail() {
-        String subject = "123L";
+    void isExpiredRefreshTokenFailTest() {
+        String subject = SUBJECT;
         Date date = DateUtil.yesterday();
 
         String token = provider.generate(subject, date);

@@ -1,9 +1,9 @@
 package dev.backlog.auth.api;
 
 import com.epages.restdocs.apispec.Schema;
-import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.auth.service.OAuthService;
 import dev.backlog.common.config.ControllerTestConfig;
 import dev.backlog.common.fixture.DtoFixture;
@@ -153,7 +153,7 @@ class AuthControllerTest extends ControllerTestConfig {
 
     @DisplayName("리프레시 토큰이 만료되지 않았을 경우 리프레시 토큰으로 액세스 토큰을 갱신한다.")
     @Test
-    void updateAccessToken() throws Exception {
+    void updateAccessTokenTest() throws Exception {
         Long userId = 1000L;
         String token = "토큰";
         String refreshToken = "refreshToken";
