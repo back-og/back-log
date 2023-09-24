@@ -57,7 +57,7 @@ class AuthControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("auth-redirect",
-                                resourceDetails().tag("Auth").description("접근 권한 url 리다이렉트"),
+                                resourceDetails().tag("인증").description("접근 권한 url 리다이렉트"),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -86,7 +86,7 @@ class AuthControllerTest extends ControllerTestConfig {
                         .content(objectMapper.writeValueAsString(signupRequest))
                 )
                 .andDo(document("auth-signup",
-                                resourceDetails().tags("Auth").description("회원가입")
+                                resourceDetails().tags("인증").description("회원가입")
                                         .requestSchema(Schema.schema("SignupRequest"))
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
@@ -109,8 +109,7 @@ class AuthControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.accessToken").value("accessToken"))
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
                 .andExpect(jsonPath("$.grantType").value("Bearer "))
-                .andExpect(jsonPath("$.expiresIn").value(1000L)
-                );
+                .andExpect(jsonPath("$.expiresIn").value(1000L));
     }
 
     @DisplayName("올바른 로그인 타입과 인증 코드를 받아 로그인에 성공한다.")
@@ -126,7 +125,7 @@ class AuthControllerTest extends ControllerTestConfig {
                         .param("code", "authCode")
                 )
                 .andDo(document("auth-login",
-                                resourceDetails().tag("Auth").description("로그인")
+                                resourceDetails().tag("인증").description("로그인")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
@@ -155,7 +154,6 @@ class AuthControllerTest extends ControllerTestConfig {
     @Test
     void updateAccessTokenTest() throws Exception {
         Long userId = 1000L;
-        String token = "토큰";
         String refreshToken = "refreshToken";
         AuthTokens newAuthTokens = AuthTokens.of(
                 "newGeneratedAccessToken",
@@ -163,15 +161,15 @@ class AuthControllerTest extends ControllerTestConfig {
                 "Bearer ",
                 1000L);
 
-        when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
+        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(oAuthService.renew(anyLong(), any())).thenReturn(newAuthTokens);
 
         mockMvc.perform(post("/api/auth/v2/renew-token")
-                        .header("Authorization", "Bearer " + token)
+                        .header("Authorization", TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(document("renew-token",
-                                resourceDetails().tag("Auth").description("토큰 갱신")
+                                resourceDetails().tag("인증").description("토큰 갱신")
                                         .responseSchema(Schema.schema("AuthTokens")),
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
@@ -187,8 +185,7 @@ class AuthControllerTest extends ControllerTestConfig {
                 .andExpect(jsonPath("$.accessToken").value("newGeneratedAccessToken"))
                 .andExpect(jsonPath("$.refreshToken").value(refreshToken))
                 .andExpect(jsonPath("$.grantType").value("Bearer "))
-                .andExpect(jsonPath("$.expiresIn").value(1000L)
-                );
+                .andExpect(jsonPath("$.expiresIn").value(1000L));
     }
 
 }
