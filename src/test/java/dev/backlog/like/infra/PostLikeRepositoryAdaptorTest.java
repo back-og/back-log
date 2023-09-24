@@ -7,6 +7,7 @@ import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,68 +31,63 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
     @Autowired
     private PostRepository postRepository;
 
+    @AfterEach
+    void tearDown() {
+        postLikeRepository.deleteAll();
+        postRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @DisplayName("특정 게시물에 달린 좋아요 수를 조회할 수 있다.")
     @Test
     void countByPostTest() {
-        //given
         User user1 = userRepository.save(유저());
         User user2 = userRepository.save(유저());
         Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요(user1, post), 좋아요(user2, post));
         postLikeRepository.saveAll(postLikes);
 
-        //when
         int likeCount = postLikeRepository.countByPost(post);
 
-        //then
         assertThat(likeCount).isEqualTo(postLikes.size());
     }
 
     @DisplayName("좋아요를 저장할 수 있다.")
     @Test
     void saveTest() {
-        //given
         User user1 = userRepository.save(유저());
         Post post = postRepository.save(공개_게시물(user1, null));
         PostLike postLike = 좋아요(user1, post);
 
-        //when
         PostLike savedPostLike = postLikeRepository.save(postLike);
 
-        //then
         assertThat(savedPostLike).isEqualTo(postLike);
     }
 
     @DisplayName("여러 좋아요를 저장할 수 있다.")
     @Test
     void saveAllTest() {
-        //given
         User user1 = userRepository.save(유저());
         User user2 = userRepository.save(유저());
         Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요(user1, post), 좋아요(user2, post));
 
-        //when
         List<PostLike> savedPostLikes = postLikeRepository.saveAll(postLikes);
 
-        //then
         assertThat(savedPostLikes).containsAll(postLikes);
     }
 
     @DisplayName("모든 좋아요를 삭제할 수 있다.")
     @Test
     void deleteAllTest() {
-        //given
         User user1 = userRepository.save(유저());
         User user2 = userRepository.save(유저());
         Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요(user1, post), 좋아요(user2, post));
         postLikeRepository.saveAll(postLikes);
 
-        //when
         postLikeRepository.deleteAll();
 
-        //then
         List<PostLike> foundPostLikes = postLikeRepository.findAll();
         assertThat(foundPostLikes).isEmpty();
     }
@@ -99,17 +95,14 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
     @DisplayName("모든 좋아요를 조회할 수 있다.")
     @Test
     void findAllTest() {
-        //given
         User user1 = userRepository.save(유저());
         User user2 = userRepository.save(유저());
         Post post = postRepository.save(공개_게시물(user1, null));
         List<PostLike> postLikes = List.of(좋아요(user1, post), 좋아요(user2, post));
         List<PostLike> savedPostLikes = postLikeRepository.saveAll(postLikes);
 
-        //when
         List<PostLike> foundPostLikes = postLikeRepository.findAll();
 
-        //then
         assertThat(foundPostLikes).containsAll(savedPostLikes);
     }
 
@@ -122,7 +115,7 @@ class PostLikeRepositoryAdaptorTest extends RepositoryTestConfig {
 
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPostId(user, post.getId());
 
-        assertThat(postLike.isPresent()).isTrue();
+        assertThat(postLike).isPresent();
     }
 
 }
