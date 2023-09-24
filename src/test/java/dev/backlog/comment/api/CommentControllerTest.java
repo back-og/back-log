@@ -86,11 +86,11 @@ class CommentControllerTest extends ControllerTestConfig {
                 .andDo(document("comment-update",
                                 resourceDetails().tag("댓글").description("댓글 수정")
                                         .requestSchema(Schema.schema("UpdateCommentRequest")),
-                                pathParameters(
-                                        parameterWithName("commentId").description("게시물 식별자")
-                                ),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
+                                ),
+                                pathParameters(
+                                        parameterWithName("commentId").description("게시물 식별자")
                                 ),
                                 requestFields(
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("댓글")
@@ -113,11 +113,11 @@ class CommentControllerTest extends ControllerTestConfig {
                         .header("Authorization", TOKEN))
                 .andDo(document("comment-delete",
                                 resourceDetails().tag("댓글").description("댓글 삭제"),
-                                pathParameters(
-                                        parameterWithName("commentId").description("게시물 식별자")
-                                ),
                                 requestHeaders(
                                         headerWithName("Authorization").description("토큰")
+                                ),
+                                pathParameters(
+                                        parameterWithName("commentId").description("게시물 식별자")
                                 )
                         )
                 )
