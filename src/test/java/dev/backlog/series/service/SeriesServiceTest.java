@@ -41,33 +41,27 @@ class SeriesServiceTest {
     @DisplayName("시리즈를 생성할 수 있다.")
     @Test
     void createTest() {
-        //given
         User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
         SeriesCreateRequest seriesCreateRequest = DtoFixture.시리즈_생성_요청();
 
-        //when
         Long seriesId = seriesService.create(seriesCreateRequest, authInfo);
 
-        //then
         assertThat(seriesId).isNotNull();
     }
 
     @DisplayName("시리즈를 수정할 수 있다.")
     @Test
     void updateSeriesTest() {
-        //given
         User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
         Series series = seriesRepository.save(시리즈(user));
         SeriesUpdateRequest seriesUpdateRequest = DtoFixture.시리즈_수정_요청();
 
-        //when
         seriesService.updateSeries(authInfo, series.getId(), seriesUpdateRequest);
 
-        //then
         Series updatedSeries = seriesRepository.getById(series.getId());
         assertThat(updatedSeries.getName()).isEqualTo(seriesUpdateRequest.seriesName());
     }
@@ -75,16 +69,13 @@ class SeriesServiceTest {
     @DisplayName("시리즈를 삭제할 수 있다.")
     @Test
     void deleteSeriesTest() {
-        //given
         User user = 유저();
         userRepository.save(user);
         AuthInfo authInfo = new AuthInfo(user.getId(), "refreshToken");
         Series series = seriesRepository.save(시리즈(user));
 
-        //when
         seriesService.deleteSeries(authInfo, series.getId());
 
-        //then
         Long seriesId = series.getId();
         assertThatThrownBy(() -> seriesRepository.getById(seriesId))
                 .isInstanceOf(NotFoundException.class);

@@ -41,7 +41,6 @@ class SeriesQueryServiceTest {
     @DisplayName("사용자 이름으로 시리즈 전체를 조회할 수 있다.")
     @Test
     void findSeriesTest() {
-        //given
         User user = 유저();
         userRepository.save(user);
         List<Series> series = 시리즈_모음(user);
@@ -49,10 +48,8 @@ class SeriesQueryServiceTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        //when
         SliceResponse<SeriesSummaryResponse> sliceResponse = seriesQueryService.findSeries(user.getNickname(), pageRequest);
 
-        //then
         assertAll(
                 () -> assertThat(sliceResponse.hasNext()).isFalse(),
                 () -> assertThat(sliceResponse.numberOfElements()).isEqualTo(sliceResponse.data().size())
