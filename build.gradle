@@ -142,7 +142,7 @@ tasks.named('test') {
 }
 
 openapi3 {
-    server = "http://localhost:8080"
+    server = "https://bbacklog.site"
     title = "backlog API 문서"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"
