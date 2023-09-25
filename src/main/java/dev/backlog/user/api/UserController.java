@@ -1,10 +1,12 @@
 package dev.backlog.user.api;
 
+import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import dev.backlog.user.dto.UserDetailsResponse;
 import dev.backlog.user.dto.UserResponse;
 import dev.backlog.user.dto.UserUpdateRequest;
 import dev.backlog.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/v1")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -28,19 +30,19 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDetailsResponse> findMyProfile(AuthInfo authInfo) {
+    public ResponseEntity<UserDetailsResponse> findMyProfile(@Login AuthInfo authInfo) {
         return ResponseEntity.ok(userService.findMyProfile(authInfo.userId()));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Void> updateProfile(@RequestBody UserUpdateRequest request, AuthInfo authInfo) {
+    public ResponseEntity<Void> updateProfile(@Valid @RequestBody UserUpdateRequest request, @Login AuthInfo authInfo) {
         userService.updateProfile(request, authInfo.userId());
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteUser(AuthInfo authInfo) {
+    public ResponseEntity<Void> deleteUser(@Login AuthInfo authInfo) {
         userService.deleteUser(authInfo.userId());
 
         return ResponseEntity.ok().build();

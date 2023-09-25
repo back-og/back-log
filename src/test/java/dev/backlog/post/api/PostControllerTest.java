@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -59,12 +61,12 @@ class PostControllerTest extends ControllerTestConfig {
     void createTest() throws Exception {
         Long userId = 1L;
         Long postId = 2L;
-        PostCreateRequest request = DtoFixture.게시물생성요청();
+        PostCreateRequest request = DtoFixture.게시물_생성_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(postService.create(eq(request), any()))
                 .thenReturn(postId);
 
-        mockMvc.perform(post("/api/posts")
+        mockMvc.perform(post("/api/posts/v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
@@ -107,12 +109,14 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostById(any(), any())).thenReturn(postResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/{postId}", postId)
+        mockMvc.perform(get("/api/posts/v1/{postId}", postId)
                         .header("Authorization", TOKEN))
-                .andExpect(status().isOk())
                 .andDo(document("post-find",
                                 resourceDetails().tag("게시물").description("게시물 상세 조회")
                                         .responseSchema(Schema.schema("PostResponse")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰, null 허용")
+                                ),
                                 pathParameters(parameterWithName("postId").description("게시물 식별자")),
                                 responseFields(
                                         fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
@@ -126,17 +130,35 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("summary").type(JsonFieldType.STRING).description("게시글 요약"),
                                         fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN).description("게시글 공개 여부"),
                                         fieldWithPath("path").type(JsonFieldType.STRING).description("게시글 저장 경로"),
-                                        fieldWithPath("createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
                                         fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("댓글"),
                                         fieldWithPath("comments[].commentId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
                                         fieldWithPath("comments[].writer").type(JsonFieldType.OBJECT).description("댓글 작성자"),
                                         fieldWithPath("comments[].writer.userId").type(JsonFieldType.NUMBER).description("댓글 작성자 번호"),
                                         fieldWithPath("comments[].writer.nickname").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
                                         fieldWithPath("comments[].content").type(JsonFieldType.STRING).description("댓글 본문"),
-                                        fieldWithPath("comments[].createdAt").type(JsonFieldType.NULL).description("댓글 작성 시간")
+                                        fieldWithPath("comments[].createdAt").type(JsonFieldType.STRING).description("댓글 작성 시간")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("postId").value(postResponse.postId()))
+                .andExpect(jsonPath("series.seriesId").value(postResponse.series().seriesId()))
+                .andExpect(jsonPath("series.seriesName").value(postResponse.series().seriesName()))
+                .andExpect(jsonPath("userId").value(postResponse.userId()))
+                .andExpect(jsonPath("title").value(postResponse.title()))
+                .andExpect(jsonPath("viewCount").value(postResponse.viewCount()))
+                .andExpect(jsonPath("content").value(postResponse.content()))
+                .andExpect(jsonPath("summary").value(postResponse.summary()))
+                .andExpect(jsonPath("isPublic").value(postResponse.isPublic()))
+                .andExpect(jsonPath("path").value(postResponse.path()))
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("comments").isArray())
+                .andExpect(jsonPath("comments[0].commentId").value(postResponse.comments().get(0).commentId()))
+                .andExpect(jsonPath("comments[0].writer.userId").value(postResponse.comments().get(0).writer().userId()))
+                .andExpect(jsonPath("comments[0].writer.nickname").value(postResponse.comments().get(0).writer().nickname()))
+                .andExpect(jsonPath("comments[0].content").value(postResponse.comments().get(0).content()))
+                .andExpect(jsonPath("comments[0].createdAt").exists());
     }
 
     @DisplayName("사용자가 좋아요를 누른 게시글 목록을 최신 순서로 반환한다.")
@@ -151,7 +173,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findLikedPostsByUser(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/like")
+        mockMvc.perform(get("/api/posts/v1/like")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc")
@@ -160,6 +182,9 @@ class PostControllerTest extends ControllerTestConfig {
                 .andDo(document("posts-find-like",
                                 resourceDetails().tag("게시물").description("좋아요 누른 게시물 조회")
                                         .responseSchema(Schema.schema("SliceResponse")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 queryParameters(
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
@@ -174,12 +199,24 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
                                         fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
                                         fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
-                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
                                         fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
                                         fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].postId").value(sliceResponse.data().get(0).postId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].title").value(sliceResponse.data().get(0).title()))
+                .andExpect(jsonPath("data[0].summary").value(sliceResponse.data().get(0).summary()))
+                .andExpect(jsonPath("data[0].userId").value(sliceResponse.data().get(0).userId()))
+                .andExpect(jsonPath("data[0].createdAt").exists())
+                .andExpect(jsonPath("data[0].commentCount").value(sliceResponse.data().get(0).commentCount()))
+                .andExpect(jsonPath("data[0].likeCount").value(sliceResponse.data().get(0).likeCount()));
     }
 
     @DisplayName("사용자 닉네임과 시리즈 이름으로 게시글 목록을 과거순으로 반환한다.")
@@ -189,11 +226,12 @@ class PostControllerTest extends ControllerTestConfig {
         final long postId = 1l;
         final long userId = 1l;
         SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
-        when(postQueryService.findPostsByUserAndSeries(any(), any(String.class), any(PageRequest.class))).thenReturn(sliceResponse);
+        when(postQueryService.findPostsByUserAndSeries(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/series")
+        mockMvc.perform(get("/api/posts/v1/series")
                         .param("series", "시리즈")
+                        .param("nickname", "유저 닉네임")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,asc"))
@@ -203,6 +241,7 @@ class PostControllerTest extends ControllerTestConfig {
                                         .responseSchema(Schema.schema("SliceResponse")),
                                 queryParameters(
                                         parameterWithName("series").description("시리즈 이름"),
+                                        parameterWithName("nickname").description("유저 닉네임"),
                                         parameterWithName("page").description("현재 페이지"),
                                         parameterWithName("size").description("페이지 당 게시물 수"),
                                         parameterWithName("sort").description("정렬 기준")
@@ -216,12 +255,24 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
                                         fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
                                         fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
-                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
                                         fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
                                         fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].postId").value(sliceResponse.data().get(0).postId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].title").value(sliceResponse.data().get(0).title()))
+                .andExpect(jsonPath("data[0].summary").value(sliceResponse.data().get(0).summary()))
+                .andExpect(jsonPath("data[0].userId").value(sliceResponse.data().get(0).userId()))
+                .andExpect(jsonPath("data[0].createdAt").exists())
+                .andExpect(jsonPath("data[0].commentCount").value(sliceResponse.data().get(0).commentCount()))
+                .andExpect(jsonPath("data[0].likeCount").value(sliceResponse.data().get(0).likeCount()));
     }
 
     @DisplayName("게시물 목록을 최신 순서로 조회한다.")
@@ -234,7 +285,7 @@ class PostControllerTest extends ControllerTestConfig {
         when(postQueryService.findPostsInLatestOrder(any(PageRequest.class))).thenReturn(sliceResponse);
 
         //when, then
-        mockMvc.perform(get("/api/posts/recent")
+        mockMvc.perform(get("/api/posts/v1/recent")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "createdAt,desc")
@@ -257,12 +308,24 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
                                         fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
                                         fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
-                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
                                         fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
                                         fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].postId").value(sliceResponse.data().get(0).postId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].title").value(sliceResponse.data().get(0).title()))
+                .andExpect(jsonPath("data[0].summary").value(sliceResponse.data().get(0).summary()))
+                .andExpect(jsonPath("data[0].userId").value(sliceResponse.data().get(0).userId()))
+                .andExpect(jsonPath("data[0].createdAt").exists())
+                .andExpect(jsonPath("data[0].commentCount").value(sliceResponse.data().get(0).commentCount()))
+                .andExpect(jsonPath("data[0].likeCount").value(sliceResponse.data().get(0).likeCount()));
     }
 
     @DisplayName("좋아요 많이 받은 순서로 게시물을 조회한다.")
@@ -276,7 +339,7 @@ class PostControllerTest extends ControllerTestConfig {
 
         //when, then
         String defaultTimePeriod = "week";
-        mockMvc.perform(get("/api/posts/trend")
+        mockMvc.perform(get("/api/posts/v1/trend")
                         .param("timePeriod", defaultTimePeriod)
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
@@ -299,12 +362,76 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
                                         fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
                                         fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
-                                        fieldWithPath("data[].createdAt").type(JsonFieldType.NULL).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
                                         fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
                                         fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].postId").value(sliceResponse.data().get(0).postId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].title").value(sliceResponse.data().get(0).title()))
+                .andExpect(jsonPath("data[0].summary").value(sliceResponse.data().get(0).summary()))
+                .andExpect(jsonPath("data[0].userId").value(sliceResponse.data().get(0).userId()))
+                .andExpect(jsonPath("data[0].createdAt").exists())
+                .andExpect(jsonPath("data[0].commentCount").value(sliceResponse.data().get(0).commentCount()))
+                .andExpect(jsonPath("data[0].likeCount").value(sliceResponse.data().get(0).likeCount()));
+    }
+
+    @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
+    @Test
+    void searchByUserNicknameTest() throws Exception {
+        final long postId = 1l;
+        final long userId = 1l;
+        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+
+        when(postQueryService.searchByNicknameAndHashtag(any(), any(), any())).thenReturn(sliceResponse);
+
+        mockMvc.perform(get("/api/posts/v1/search")
+                        .param("hashtag", "tag")
+                        .param("nickname", "nickname")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(document("posts-find-nickname&hashtag",
+                                resourceDetails().tag("게시물").description("게시물 필터 조회")
+                                        .responseSchema(Schema.schema("SliceResponse")),
+                                queryParameters(
+                                        parameterWithName("nickname").description("유저 닉네임").optional(),
+                                        parameterWithName("hashtag").description("해쉬태").optional(),
+                                        parameterWithName("timePeriod").description("today, week, month, year 필터링 조건").optional(),
+                                        parameterWithName("page").description("현재 페이지").optional(),
+                                        parameterWithName("size").description("페이지 당 게시물 수").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("numberOfElements").type(JsonFieldType.NUMBER).description("게시글 수"),
+                                        fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("마지막 페이지 체크"),
+                                        fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("게시글 데이터"),
+                                        fieldWithPath("data[].postId").type(JsonFieldType.NUMBER).description("게시글 번호"),
+                                        fieldWithPath("data[].thumbnailImage").type(JsonFieldType.STRING).description("시리즈"),
+                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("시리즈 번호"),
+                                        fieldWithPath("data[].summary").type(JsonFieldType.STRING).description("시리즈 이름"),
+                                        fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("게시글 작성자 번호"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 작성 시간"),
+                                        fieldWithPath("data[].commentCount").type(JsonFieldType.NUMBER).description("댓글"),
+                                        fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("댓글 작성자 번호")
+                                )
+                        )
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].postId").value(sliceResponse.data().get(0).postId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].title").value(sliceResponse.data().get(0).title()))
+                .andExpect(jsonPath("data[0].summary").value(sliceResponse.data().get(0).summary()))
+                .andExpect(jsonPath("data[0].userId").value(sliceResponse.data().get(0).userId()))
+                .andExpect(jsonPath("data[0].createdAt").exists())
+                .andExpect(jsonPath("data[0].commentCount").value(sliceResponse.data().get(0).commentCount()))
+                .andExpect(jsonPath("data[0].likeCount").value(sliceResponse.data().get(0).likeCount()));
     }
 
     @DisplayName("사용자의 게시물 업데이트 요청을 받아 업데이트 한 뒤 204 상태코드를 반환한다.")
@@ -312,16 +439,19 @@ class PostControllerTest extends ControllerTestConfig {
     void updatePostTest() throws Exception {
         final Long postId = 1L;
         final Long userId = 1L;
-        PostUpdateRequest request = DtoFixture.게시물수정요청();
+        PostUpdateRequest request = DtoFixture.게시물_수정_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
-        mockMvc.perform(put("/api/posts/{postId}", postId)
+        mockMvc.perform(put("/api/posts/v1/{postId}", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", TOKEN)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(document("post-update",
                                 resourceDetails().tag("게시물").description("게시물 업데이트")
                                         .requestSchema(Schema.schema("PostUpdateRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(parameterWithName("postId").description("게시물 식별자")),
                                 requestFields(
                                         fieldWithPath("series").type(JsonFieldType.STRING).description("시리즈"),
@@ -333,27 +463,29 @@ class PostControllerTest extends ControllerTestConfig {
                                         fieldWithPath("thumbnailImage").type(JsonFieldType.STRING).description("썸네일 URL"),
                                         fieldWithPath("path").type(JsonFieldType.STRING).description("게시물 경로"))
                         )
-                ).andExpect(status().isNoContent());
+                )
+                .andExpect(status().isNoContent());
     }
 
-    @DisplayName("사용자 닉네임으로 게시물리스트를 조회후 상태코드 200과 함께 데이터를 리턴한다.")
+    @DisplayName("게시물 삭제 요청이 들어오면 삭제 후 204 상태코드를 반환한다.")
     @Test
-    void searchByUserNicknameTest() throws Exception {
-        // Arrange
-        String nickname = "testUser";
-        final long postId = 1l;
-        final long userId = 1l;
-        SliceResponse<PostSummaryResponse> sliceResponse = getPostSliceResponse(postId, userId);
+    void deletePostTest() throws Exception {
+        long postId = 1L;
 
-        when(postQueryService.searchByUserNickname(any(), any(), any())).thenReturn(sliceResponse);
-
-        mockMvc.perform(get("/api/posts/search")
-                        .param("hashtag", "tag")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(sliceResponse.numberOfElements()))
-                .andExpect(jsonPath("$.hasNext").value(false))
-                .andReturn();
+        mockMvc.perform(delete("/api/posts/v1/{postId}", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", TOKEN))
+                .andDo(document("post-delete",
+                                resourceDetails().tag("게시물").description("게시물 업데이트"),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
+                                pathParameters(
+                                        parameterWithName("postId").description("게시물 식별자")
+                                )
+                        )
+                )
+                .andExpect(status().isNoContent());
     }
 
     private PostResponse getPostResponse(
@@ -371,11 +503,13 @@ class PostControllerTest extends ControllerTestConfig {
                 "요약",
                 true,
                 "경로",
-                null,
+                LocalDateTime.now(),
                 List.of(new CommentResponse(
-                        commentId,
-                        new Writer(userId, "닉네임"),
-                        "내용", null)
+                                commentId,
+                                new Writer(userId, "닉네임"),
+                                "내용",
+                                LocalDateTime.now()
+                        )
                 )
         );
     }
@@ -390,7 +524,7 @@ class PostControllerTest extends ControllerTestConfig {
                         "제목",
                         "요약",
                         userId,
-                        null,
+                        LocalDateTime.now(),
                         0,
                         0)
                 )

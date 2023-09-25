@@ -1,4 +1,4 @@
-package dev.backlog.auth;
+package dev.backlog.auth.dto;
 
 public record AuthTokens(
         String accessToken,

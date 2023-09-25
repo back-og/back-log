@@ -2,7 +2,7 @@ package dev.backlog.like.service;
 
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.like.domain.repository.PostLikeRepository;
-import dev.backlog.like.dto.LikeStatus;
+import dev.backlog.like.dto.LikeStatusResponse;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.user.domain.User;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
+import static dev.backlog.common.fixture.EntityFixture.유저;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -41,31 +41,31 @@ class PostLikeServiceTest {
     @DisplayName("게시물에 좋아요를 최초로 누르면 좋아요가 상승한다.")
     @Test
     void switchLikeTest() {
-        User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        User user = userRepository.save(유저());
+        Post post = postRepository.save(공개_게시물(user, null));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatus likeStatus = postLikeService.switchLike(post.getId(), authInfo);
+        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
 
         assertAll(
-                () -> assertThat(likeStatus.likeCount()).isOne(),
-                () -> assertThat(likeStatus.like()).isTrue()
+                () -> assertThat(likeStatusResponse.likeCount()).isOne(),
+                () -> assertThat(likeStatusResponse.like()).isTrue()
         );
     }
 
     @DisplayName("게시물에 좋아요를 누른상태에서 한번 더 누르면 취소된다.")
     @Test
     void doubleSwitchLikeTest() {
-        User user = userRepository.save(유저1());
-        Post post = postRepository.save(게시물1(user, null));
+        User user = userRepository.save(유저());
+        Post post = postRepository.save(공개_게시물(user, null));
         postLikeRepository.save(new PostLike(user, post));
 
         AuthInfo authInfo = new AuthInfo(post.getId(), "토큰");
-        LikeStatus likeStatus = postLikeService.switchLike(post.getId(), authInfo);
+        LikeStatusResponse likeStatusResponse = postLikeService.switchLike(post.getId(), authInfo);
 
         assertAll(
-                () -> assertThat(likeStatus.likeCount()).isZero(),
-                () -> assertThat(likeStatus.like()).isFalse()
+                () -> assertThat(likeStatusResponse.likeCount()).isZero(),
+                () -> assertThat(likeStatusResponse.like()).isFalse()
         );
     }
 

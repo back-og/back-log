@@ -15,6 +15,7 @@ import static dev.backlog.auth.exception.AuthErrorCode.INVALID_LOGIN_TYPE;
 @Component
 public class AuthCodeRequestUrlProviderComposite {
 
+    private static final String INVALID_LOGIN_TYPE_MESSAGE = "로그인 타입(%s)에 일치하는 타입이 없습니다.";
     private final Map<OAuthProvider, AuthCodeRequestUrlProvider> mapping;
 
     public AuthCodeRequestUrlProviderComposite(Set<AuthCodeRequestUrlProvider> providers) {
@@ -33,7 +34,10 @@ public class AuthCodeRequestUrlProviderComposite {
     private AuthCodeRequestUrlProvider getProvider(OAuthProvider oAuthProvider) {
         return Optional.ofNullable(mapping.get(oAuthProvider))
                 .orElseThrow(() -> new InvalidAuthException(
-                        INVALID_LOGIN_TYPE, INVALID_LOGIN_TYPE.getMessage()));
+                                INVALID_LOGIN_TYPE,
+                                String.format(INVALID_LOGIN_TYPE_MESSAGE, oAuthProvider)
+                        )
+                );
     }
 
 }

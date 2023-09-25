@@ -22,4 +22,9 @@ public class PostCacheRepositoryAdaptor implements PostCacheRepository {
         return postRedisRepository.save(userViewInfo);
     }
 
+    @Override
+    public void deleteAll() {
+        postRedisRepository.deleteAll();
+    }
+
 }

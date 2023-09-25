@@ -1,30 +1,34 @@
 package dev.backlog.auth.service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Objects;
-import dev.backlog.auth.AuthTokens;
-import dev.backlog.auth.AuthTokensGenerator;
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import dev.backlog.auth.domain.oauth.client.OAuthMemberClientComposite;
 import dev.backlog.auth.domain.oauth.dto.OAuthInfoResponse;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.auth.dto.AuthTokens;
+import dev.backlog.auth.dto.AuthTokensGenerator;
 import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.user.domain.User;
 import dev.backlog.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Objects;
+
 import static dev.backlog.auth.exception.AuthErrorCode.ALREADY_REGISTERED;
 import static dev.backlog.auth.exception.AuthErrorCode.AUTHENTICATION_FAILED;
 import static dev.backlog.auth.exception.AuthErrorCode.DELETED_USER;
-import static dev.backlog.auth.exception.AuthErrorMessage.EXPIRED_REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
+
+    private static final String EXPIRED_REFRESH_TOKEN_MESSAGE = "리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요.";
+    private static final String ALREADY_REGISTERED_MESSAGE = "이미 가입된 사용자입니다.";
+    private static final String DELETED_USER_MESSAGE = "탈퇴한 지 30일이 지난 사용자입니다. 다시 회원가입해 주세요.";
 
     private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
     private final OAuthMemberClientComposite oauthMemberClientComposite;
@@ -66,7 +70,7 @@ public class OAuthService {
     public AuthTokens renew(Long userId, String token) {
         if (jwtTokenProvider.isExpiredRefreshToken(token)) {
             throw new InvalidAuthException(
-                    AUTHENTICATION_FAILED, EXPIRED_REFRESH_TOKEN);
+                    AUTHENTICATION_FAILED, EXPIRED_REFRESH_TOKEN_MESSAGE);
         } else {
             return authTokensGenerator.refreshJwtToken(userId, token);
         }
@@ -75,7 +79,7 @@ public class OAuthService {
     private void checkDuplicateUser(OAuthInfoResponse response) {
         if (userRepository.existsByOauthProviderIdAndOauthProvider(response.oAuthProviderId(), response.oAuthProvider())) {
             throw new InvalidAuthException(
-                    ALREADY_REGISTERED, ALREADY_REGISTERED.getMessage());
+                    ALREADY_REGISTERED, ALREADY_REGISTERED_MESSAGE);
         }
     }
 
@@ -92,7 +96,7 @@ public class OAuthService {
             if (between.getDays() >= 30) {
                 userRepository.delete(findUser);
                 throw new InvalidAuthException(
-                        DELETED_USER, DELETED_USER.getMessage());
+                        DELETED_USER, DELETED_USER_MESSAGE);
             }
             findUser.unmarkUserAsDeleted();
         }

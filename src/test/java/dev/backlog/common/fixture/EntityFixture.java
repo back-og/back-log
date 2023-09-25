@@ -16,7 +16,7 @@ import static dev.backlog.auth.domain.oauth.OAuthProvider.KAKAO;
 
 public class EntityFixture {
 
-    public static User 유저1() {
+    public static User 유저() {
         return User.builder()
                 .oauthProvider(KAKAO)
                 .oauthProviderId("KAKAO_ID")
@@ -28,7 +28,7 @@ public class EntityFixture {
                 .build();
     }
 
-    public static Post 게시물1(User user, Series series) {
+    public static Post 공개_게시물(User user, Series series) {
         return Post.builder()
                 .series(series)
                 .user(user)
@@ -41,16 +41,29 @@ public class EntityFixture {
                 .build();
     }
 
+    public static Post 비공개_게시물(User user, Series series) {
+        return Post.builder()
+                .series(series)
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .summary("요약")
+                .isPublic(false)
+                .thumbnailImage("썸네일URL")
+                .path("경로")
+                .build();
+    }
+
     public static List<Post> 게시물_모음(User user, Series series) {
         List<Post> posts = new ArrayList<>();
         for (int index = 0; index < 30; index++) {
-            Post post = 게시물1(user, series);
+            Post post = 공개_게시물(user, series);
             posts.add(post);
         }
         return posts;
     }
 
-    public static Comment 댓글1(User user, Post post) {
+    public static Comment 댓글(User user, Post post) {
         return Comment.builder()
                 .writer(user)
                 .post(post)
@@ -62,13 +75,13 @@ public class EntityFixture {
     public static List<Comment> 댓글_모음(User user, Post post) {
         List<Comment> comments = new ArrayList<>();
         for (int index = 0; index < 5; index++) {
-            Comment comment = 댓글1(user, post);
+            Comment comment = 댓글(user, post);
             comments.add(comment);
         }
         return comments;
     }
 
-    public static Series 시리즈1(User user) {
+    public static Series 시리즈(User user) {
         return Series.builder()
                 .user(user)
                 .name("시리즈")
@@ -78,19 +91,19 @@ public class EntityFixture {
     public static List<Series> 시리즈_모음(User user) {
         List<Series> series = new ArrayList<>();
         for (int index = 0; index < 10; index++) {
-            series.add(시리즈1(user));
+            series.add(시리즈(user));
         }
         return series;
     }
 
-    public static PostLike 좋아요1(User user, Post post) {
+    public static PostLike 좋아요(User user, Post post) {
         return PostLike.builder()
                 .post(post)
                 .user(user)
                 .build();
     }
 
-    public static List<Hashtag> 해쉬태그_모음() {
+    public static List<Hashtag> 해쉬_태그_모음() {
         return createHashtags("해쉬태그", "해쉬태그1", "해쉬태그2", "해쉬태그3");
     }
 

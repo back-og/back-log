@@ -1,11 +1,13 @@
 package dev.backlog.auth.api;
 
-import dev.backlog.auth.AuthTokens;
 import dev.backlog.auth.domain.oauth.OAuthProvider;
 import dev.backlog.auth.domain.oauth.dto.SignupRequest;
+import dev.backlog.auth.dto.AuthTokens;
 import dev.backlog.auth.service.OAuthService;
+import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthTokens> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<AuthTokens> signup(@Valid @RequestBody SignupRequest request) {
         return ResponseEntity.ok(oAuthService.signup(request));
     }
 
@@ -45,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/renew-token")
-    public ResponseEntity<AuthTokens> renew(AuthInfo authInfo) {
+    public ResponseEntity<AuthTokens> renew(@Login AuthInfo authInfo) {
         return ResponseEntity.ok(oAuthService.renew(authInfo.userId(), authInfo.refreshToken()));
     }
 

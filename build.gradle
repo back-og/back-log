@@ -1,32 +1,93 @@
 buildscript {
-	ext {
-		restdocsApiSpecVersion = '0.18.3' // restdocsApiSpecVersion 버전 변수 설정
-	}
+    ext {
+        restdocsApiSpecVersion = '0.18.3' // restdocsApiSpecVersion 버전 변수 설정
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.1.2'
-	id 'io.spring.dependency-management' version '1.1.2'
-	id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
-	id 'org.hidetake.swagger.generator' version '2.18.2'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
+    id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+    id 'org.hidetake.swagger.generator' version '2.18.2'
+    id 'jacoco'
 }
 
 group = 'dev'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
+}
+
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: [
+                    'dev/backlog/BacklogApplication.class',
+                    '**/advice/**',
+                    "**/config/**",
+                    "**/exception/**",
+                    "**/dto/**"
+            ] + Qdomains)
+        }))
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+test {
+    finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                //minimum = 0.7
+            }
+        }
+
+        rule {
+            excludes = [
+                    'dev/backlog/BacklogApplication.class',
+                    '**/advice/**',
+                    "**/config/**",
+                    "**/exception/**",
+                    "**/dto/**"
+            ]
+        }
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
@@ -34,75 +95,78 @@ ext {
 }
 
 dependencies {
-	/* SPRING */
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    /* SPRING */
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-	/* Database */
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    /* Database */
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
-	/* JWT */
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    /* JWT */
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	/* Lombok */
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    /* Lombok */
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	/* Test */
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    /* Test */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	/* TestContainer */
-	testImplementation "org.testcontainers:testcontainers:1.19.0"
-	testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+    /* TestContainer */
+    testImplementation "org.testcontainers:testcontainers:1.19.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
 
-	/* Docs & UI */
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    /* Docs & UI */
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
-	/* QueryDsl */
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    /* QueryDsl */
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    /* StringEscapeUtils */
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 openapi3 {
-	server = "http://localhost:8080"
-	title = "backlog API 문서"
-	description = "Spring REST Docs with SwaggerUI."
-	version = "0.0.1"
-	outputFileNamePrefix = 'backlog'
-	format = 'json'
+    server = "https://bbacklog.site"
+    title = "backlog API 문서"
+    description = "Spring REST Docs with SwaggerUI."
+    version = "0.0.1"
+    outputFileNamePrefix = 'backlog'
+    format = 'json'
 
-	outputDirectory = 'build/resources/main/static'
+    outputDirectory = 'build/resources/main/static'
 }
 
 task copyDocs {
-	dependsOn(':openapi3')
-	doLast {
-		delete 'src/main/resources/static/backlog.json'
-		copy {
-			from "build/resources/main/static/backlog.json"
-			into "src/main/resources/static/"
-		}
-	}
+    dependsOn(':openapi3')
+    doLast {
+        delete 'src/main/resources/static/backlog.json'
+        copy {
+            from "build/resources/main/static/backlog.json"
+            into "src/main/resources/static/"
+        }
+    }
 }
 
 bootJar {
-	dependsOn(':copyDocs')
+    dependsOn(':copyDocs')
 }
 
 jar {
-	enabled=false
+    enabled = false
 }

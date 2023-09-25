@@ -10,13 +10,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static dev.backlog.user.exception.UserErrorCode.USER_NOT_FOUNT;
+import static dev.backlog.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
-    private static final String USER_NOT_REGISTERED = "회원가입되지 않은 사용자입니다 input = %s %s";
+    private static final String USER_NOT_REGISTERED_MESSAGE = "해당 아이디(%s)와 로그인 타입(%s)의 유저는 회원가입되지 않았습니다.";
+    private static final String USER_NOT_FOUND_MESSAGE = "해당 아이디(%s)로 유저를 찾을 수 없습니다.";
 
     private final UserJpaRepository userJpaRepository;
 
@@ -38,21 +39,31 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User getById(Long userId) {
         return userJpaRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUNT, String.format(USER_NOT_FOUNT.getMessage(), userId)));
+                .orElseThrow(() -> new NotFoundException(
+                                USER_NOT_FOUND,
+                                String.format(USER_NOT_FOUND_MESSAGE, userId)
+                        )
+                );
     }
 
     @Override
     public User getByOauthProviderIdAndOauthProvider(String oauthProviderId, OAuthProvider oauthProvider) {
         return userJpaRepository.findByOauthProviderIdAndOauthProvider(oauthProviderId, oauthProvider)
                 .orElseThrow(() -> new NotFoundException(
-                        USER_NOT_FOUNT,
-                        String.format(USER_NOT_REGISTERED, oauthProviderId, oauthProvider)));
+                                USER_NOT_FOUND,
+                                String.format(USER_NOT_REGISTERED_MESSAGE, oauthProviderId, oauthProvider)
+                        )
+                );
     }
 
     @Override
     public User getByNickname(String nickname) {
         return userJpaRepository.findByNickname(nickname)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUNT, nickname));
+                .orElseThrow(() -> new NotFoundException(
+                                USER_NOT_FOUND,
+                                String.format(USER_NOT_FOUND_MESSAGE, nickname)
+                        )
+                );
     }
 
     @Override

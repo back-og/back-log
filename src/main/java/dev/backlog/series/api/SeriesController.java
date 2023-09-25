@@ -1,5 +1,6 @@
 package dev.backlog.series.api;
 
+import dev.backlog.common.annotation.Login;
 import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.series.dto.SeriesCreateRequest;
 import dev.backlog.series.dto.SeriesSummaryResponse;
@@ -24,37 +25,37 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("/api/series")
+@RequestMapping("/api/series/v1")
 @RequiredArgsConstructor
 public class SeriesController {
 
     private final SeriesService seriesService;
     private final SeriesQueryService seriesQueryService;
 
-    @PostMapping("/v1")
+    @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody SeriesCreateRequest seriesCreateRequest,
-                                       AuthInfo authInfo) {
+                                       @Login AuthInfo authInfo) {
         seriesService.create(seriesCreateRequest, authInfo);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/v1")
+    @GetMapping
     public ResponseEntity<SliceResponse<SeriesSummaryResponse>> findSeries(String nickname,
                                                                            @PageableDefault(size = 30, sort = "updatedAt", direction = DESC) Pageable pageable) {
         SliceResponse<SeriesSummaryResponse> series = seriesQueryService.findSeries(nickname, pageable);
         return ResponseEntity.ok(series);
     }
 
-    @PutMapping("/v1/{seriesId}")
-    public ResponseEntity<Void> updateSeries(AuthInfo authInfo,
+    @PutMapping("/{seriesId}")
+    public ResponseEntity<Void> updateSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId,
                                              @Valid @RequestBody SeriesUpdateRequest seriesUpdateRequest) {
         seriesService.updateSeries(authInfo, seriesId, seriesUpdateRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/v1/{seriesId}")
-    public ResponseEntity<Void> deleteSeries(AuthInfo authInfo,
+    @DeleteMapping("/{seriesId}")
+    public ResponseEntity<Void> deleteSeries(@Login AuthInfo authInfo,
                                              @PathVariable Long seriesId) {
         seriesService.deleteSeries(authInfo, seriesId);
         return ResponseEntity.noContent().build();

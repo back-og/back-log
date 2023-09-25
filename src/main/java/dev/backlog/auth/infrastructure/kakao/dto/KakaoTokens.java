@@ -1,4 +1,4 @@
-package dev.backlog.auth.infrastructure.kakao;
+package dev.backlog.auth.infrastructure.kakao.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

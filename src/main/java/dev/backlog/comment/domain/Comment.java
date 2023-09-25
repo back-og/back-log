@@ -11,11 +11,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +40,13 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
     @Column(nullable = false, length = 50)
     private String content;
 
@@ -53,6 +64,15 @@ public class Comment extends BaseEntity {
         this.post = post;
         this.content = content;
         this.isDeleted = isDeleted;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateParent(Comment parent) {
+        this.parent = parent;
+        parent.getChildren().add(this);
     }
 
 }

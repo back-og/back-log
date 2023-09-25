@@ -3,15 +3,17 @@ package dev.backlog.post.service.query;
 import dev.backlog.comment.domain.Comment;
 import dev.backlog.comment.domain.repository.CommentRepository;
 import dev.backlog.common.config.TestContainerConfig;
+import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.like.domain.repository.PostLikeRepository;
-import dev.backlog.common.dto.SliceResponse;
 import dev.backlog.post.domain.Post;
 import dev.backlog.post.domain.repository.HashtagRepository;
+import dev.backlog.post.domain.repository.PostCacheRepository;
 import dev.backlog.post.domain.repository.PostHashtagRepository;
 import dev.backlog.post.domain.repository.PostRepository;
 import dev.backlog.post.dto.PostResponse;
 import dev.backlog.post.dto.PostSummaryResponse;
+import dev.backlog.post.dto.SeriesPostsFindRequest;
 import dev.backlog.series.domain.Series;
 import dev.backlog.series.domain.repository.SeriesRepository;
 import dev.backlog.user.domain.User;
@@ -30,13 +32,14 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
-import static dev.backlog.common.fixture.EntityFixture.게시물1;
 import static dev.backlog.common.fixture.EntityFixture.게시물_모음;
+import static dev.backlog.common.fixture.EntityFixture.공개_게시물;
 import static dev.backlog.common.fixture.EntityFixture.댓글_모음;
-import static dev.backlog.common.fixture.EntityFixture.시리즈1;
-import static dev.backlog.common.fixture.EntityFixture.유저1;
-import static dev.backlog.common.fixture.EntityFixture.좋아요1;
+import static dev.backlog.common.fixture.EntityFixture.시리즈;
+import static dev.backlog.common.fixture.EntityFixture.유저;
+import static dev.backlog.common.fixture.EntityFixture.좋아요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -67,17 +70,20 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Autowired
     private HashtagRepository hashtagRepository;
 
-    private User 유저1;
-    private Post 게시물1;
+    @Autowired
+    private PostCacheRepository postCacheRepository;
+
+    private User 유저;
+    private Post 게시물;
     private List<Post> 게시물_모음;
     private List<Comment> 댓글_모음;
 
     @BeforeEach
     void setUp() {
-        유저1 = 유저1();
-        게시물1 = 게시물1(유저1, null);
-        게시물_모음 = 게시물_모음(유저1, null);
-        댓글_모음 = 댓글_모음(유저1, 게시물1);
+        유저 = 유저();
+        게시물 = 공개_게시물(유저, null);
+        게시물_모음 = 게시물_모음(유저, null);
+        댓글_모음 = 댓글_모음(유저, 게시물);
     }
 
     @AfterEach
@@ -89,15 +95,16 @@ class PostQueryServiceTest extends TestContainerConfig {
         postRepository.deleteAll();
         seriesRepository.deleteAll();
         userRepository.deleteAll();
+        postCacheRepository.deleteAll();
     }
 
     @DisplayName("게시글을 상세 조회할 수 있다.")
     @Test
     void findPostByIdTest() {
         //given
-        User user = userRepository.save(유저1);
+        User user = userRepository.save(유저);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
-        Post post = postRepository.save(게시물1);
+        Post post = postRepository.save(게시물);
         commentRepository.saveAll(댓글_모음);
 
         //when
@@ -111,10 +118,13 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void sameUserCannotIncreaseViewCountForSamePostWithin3Hours() {
         //given
-        User user = userRepository.save(유저1);
-        AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
-        Post post = postRepository.save(게시물1);
+        User user = userRepository.save(유저);
+        Post post = postRepository.save(게시물);
         commentRepository.saveAll(댓글_모음);
+
+        long randomId = new Random().nextLong();
+        Long anotherUserId = (randomId == user.getId()) ? 0l : randomId;
+        AuthInfo authInfo = new AuthInfo(anotherUserId, "토큰");
 
         //when
         PostResponse firstSamePostResponse = postQueryService.findPostById(post.getId(), authInfo);
@@ -133,12 +143,12 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findLikedPostsByUserTest() {
         //given
-        User user = userRepository.save(유저1);
+        User user = userRepository.save(유저);
         AuthInfo authInfo = new AuthInfo(user.getId(), "토큰");
 
         List<Post> posts = postRepository.saveAll(게시물_모음);
         for (Post post : posts) {
-            PostLike postLike = 좋아요1(user, post);
+            PostLike postLike = 좋아요(user, post);
             postLikeRepository.save(postLike);
         }
 
@@ -159,14 +169,15 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findPostsByUserAndSeriesTest() {
         //given
-        User user = userRepository.save(유저1);
-        Series series = seriesRepository.save(시리즈1(user));
+        User user = userRepository.save(유저);
+        Series series = seriesRepository.save(시리즈(user));
         postRepository.saveAll(게시물_모음(user, series));
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.ASC, "createdAt");
+        SeriesPostsFindRequest seriesPostsFindRequest = new SeriesPostsFindRequest(user.getNickname(), "시리즈");
 
         //when
-        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsByUserAndSeries(user.getNickname(), series.getName(), pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.findPostsByUserAndSeries(seriesPostsFindRequest, pageRequest);
 
         //then
         assertAll(
@@ -180,7 +191,7 @@ class PostQueryServiceTest extends TestContainerConfig {
     @Test
     void findPostsInLatestOrderTest() {
         //given
-        userRepository.save(유저1);
+        userRepository.save(유저);
         postRepository.saveAll(게시물_모음);
 
         PageRequest pageRequest = PageRequest.of(1, 20, Sort.Direction.DESC, "createdAt");
@@ -201,17 +212,17 @@ class PostQueryServiceTest extends TestContainerConfig {
     @ValueSource(strings = {"today, week, month, year, default"})
     void findLikedPostsTest(String timePeriod) {
         //given
-        User user1 = 유저1();
-        User user2 = 유저1();
+        User user1 = 유저();
+        User user2 = 유저();
         userRepository.saveAll(List.of(user1, user2));
 
-        Post post1 = 게시물1(user1, null);
-        Post post2 = 게시물1(user1, null);
+        Post post1 = 공개_게시물(user1, null);
+        Post post2 = 공개_게시물(user1, null);
         postRepository.saveAll(List.of(post1, post2));
 
-        PostLike like1 = 좋아요1(user1, post1);
-        PostLike like2 = 좋아요1(user1, post2);
-        PostLike like3 = 좋아요1(user2, post1);
+        PostLike like1 = 좋아요(user1, post1);
+        PostLike like2 = 좋아요(user1, post2);
+        PostLike like3 = 좋아요(user2, post1);
         postLikeRepository.saveAll(List.of(like1, like2, like3));
 
         PageRequest pageRequest = PageRequest.of(0, 30);
@@ -231,12 +242,12 @@ class PostQueryServiceTest extends TestContainerConfig {
     @DisplayName("사용자 닉네임으로 게시물리스트를 조회해 요약 리스트로 반환한다.")
     @Test
     void searchByUserNicknameTest() {
-        User user = userRepository.save(유저1);
+        User user = userRepository.save(유저);
         postRepository.saveAll(게시물_모음);
 
         int pageSize = 20;
         PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "createdAt");
-        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByUserNickname(user.getNickname(), "", pageRequest);
+        SliceResponse<PostSummaryResponse> sliceResponse = postQueryService.searchByNicknameAndHashtag(user.getNickname(), "", pageRequest);
 
         assertThat(sliceResponse.numberOfElements()).isEqualTo(pageSize);
         assertThat(sliceResponse.hasNext()).isTrue();

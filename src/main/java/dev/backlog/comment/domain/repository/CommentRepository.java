@@ -19,4 +19,6 @@ public interface CommentRepository {
 
     void deleteAll();
 
+    void delete(Comment comment);
+
 }

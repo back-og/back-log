@@ -21,8 +21,8 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static dev.backlog.common.fixture.DtoFixture.시리즈생성요청;
-import static dev.backlog.common.fixture.DtoFixture.시리즈수정요청;
+import static dev.backlog.common.fixture.DtoFixture.시리즈_생성_요청;
+import static dev.backlog.common.fixture.DtoFixture.시리즈_수정_요청;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -38,6 +38,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SeriesController.class)
@@ -54,7 +55,7 @@ class SeriesControllerTest extends ControllerTestConfig {
     void createTest() throws Exception {
         Long userId = 1L;
         Long seriesId = 1L;
-        SeriesCreateRequest seriesCreateRequest = 시리즈생성요청();
+        SeriesCreateRequest seriesCreateRequest = 시리즈_생성_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(seriesService.create(eq(seriesCreateRequest), any())).thenReturn(seriesId);
 
@@ -78,22 +79,18 @@ class SeriesControllerTest extends ControllerTestConfig {
 
     @DisplayName("시리즈 목록을 최신 순서로 조회할 수 있다.")
     @Test
-    void findSeries() throws Exception {
-        //given
+    void findSeriesTest() throws Exception {
         final long seriesId = 1l;
-        final long userId = 1l;
         SliceResponse<SeriesSummaryResponse> sliceResponse = getSeriesSliceResponse(seriesId);
 
-        when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
         when(seriesQueryService.findSeries(any(), any(PageRequest.class))).thenReturn(sliceResponse);
 
-        //when, then
         mockMvc.perform(get("/api/series/v1")
                         .param("nickname", "닉네임")
                         .param("page", String.valueOf(0))
                         .param("size", String.valueOf(30))
                         .param("sort", "updatedAt,desc")
-                        .header("Authorization", TOKEN))
+                )
                 .andExpect(status().isOk())
                 .andDo(document("series-find",
                                 resourceDetails().tag("시리즈").description("시리즈 목록 조회")
@@ -115,7 +112,17 @@ class SeriesControllerTest extends ControllerTestConfig {
                                         fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("시리즈 수정 시간")
                                 )
                         )
-                );
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("numberOfElements").value(sliceResponse.numberOfElements()))
+                .andExpect(jsonPath("hasNext").value(sliceResponse.hasNext()))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[0].seriesId").value(sliceResponse.data().get(0).seriesId()))
+                .andExpect(jsonPath("data[0].thumbnailImage").value(sliceResponse.data().get(0).thumbnailImage()))
+                .andExpect(jsonPath("data[0].name").value(sliceResponse.data().get(0).name()))
+                .andExpect(jsonPath("data[0].postCount").value(sliceResponse.data().get(0).postCount()))
+                .andExpect(jsonPath("data[0].updatedAt").exists());
+
     }
 
     @DisplayName("시리즈를 수정할 수 있다.")
@@ -123,7 +130,7 @@ class SeriesControllerTest extends ControllerTestConfig {
     void updateSeriesTest() throws Exception {
         final Long seriesId = 1L;
         final Long userId = 1L;
-        SeriesUpdateRequest seriesUpdateRequest = 시리즈수정요청();
+        SeriesUpdateRequest seriesUpdateRequest = 시리즈_수정_요청();
         when(jwtTokenProvider.extractUserId(TOKEN)).thenReturn(userId);
 
         mockMvc.perform(put("/api/series/v1/{seriesId}", seriesId)
@@ -133,12 +140,16 @@ class SeriesControllerTest extends ControllerTestConfig {
                 .andDo(document("series-update",
                                 resourceDetails().tag("시리즈").description("시리즈 수정 요청")
                                         .requestSchema(Schema.schema("SeriesUpdateRequest")),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(parameterWithName("seriesId").description("시리즈 식별자")),
                                 requestFields(
                                         fieldWithPath("seriesName").type(JsonFieldType.STRING).description("시리즈 이름")
                                 )
                         )
-                ).andExpect(status().isNoContent());
+                )
+                .andExpect(status().isNoContent());
     }
 
     @DisplayName("시리즈를 삭제할 수 있다.")
@@ -153,10 +164,14 @@ class SeriesControllerTest extends ControllerTestConfig {
                 )
                 .andDo(document("series-delete",
                                 resourceDetails().tag("시리즈").description("시리즈 삭제 요청"),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("토큰")
+                                ),
                                 pathParameters(parameterWithName("seriesId").description("시리즈 식별자")
                                 )
                         )
-                ).andExpect(status().isNoContent());
+                )
+                .andExpect(status().isNoContent());
     }
 
     private SliceResponse<SeriesSummaryResponse> getSeriesSliceResponse(long seriesId) {

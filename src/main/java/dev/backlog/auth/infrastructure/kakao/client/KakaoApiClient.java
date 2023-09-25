@@ -1,8 +1,8 @@
 package dev.backlog.auth.infrastructure.kakao.client;
 
-import dev.backlog.auth.infrastructure.kakao.KakaoTokens;
 import dev.backlog.auth.infrastructure.kakao.config.KakaoProperties;
 import dev.backlog.auth.infrastructure.kakao.dto.KakaoMemberResponse;
+import dev.backlog.auth.infrastructure.kakao.dto.KakaoTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

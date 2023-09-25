@@ -1,6 +1,7 @@
 package dev.backlog.post.domain;
 
 import dev.backlog.common.entity.BaseEntity;
+import dev.backlog.common.exception.DataLengthExceededException;
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
@@ -23,14 +24,22 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.backlog.post.exception.PostErrorCode.INVALID_DATA_LENGTH;
+
 @Entity
 @Getter
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
-    private static final int NEGATIVE_NUMBER = 0;
+    private static final String INVALID_TITLE_LENGTH_MESSAGE = "입력된 제목의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+    private static final String INVALID_CONTENT_LENGTH_MESSAGE = "입력된 본문의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+    private static final String INVALID_SUMMARY_LENGTH_MESSAGE = "입력된 요약의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+
+    private static final int MAX_CONTENT_LENGTH = 5000;
+    private static final int MAX_SUMMARY_LENGTH = 100;
     private static final long INITIAL_VIEW_COUNT = 0L;
+    private static final int MAX_TITLE_LENGTH = 50;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,22 +53,22 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostHashtag> postHashtags = new ArrayList<>();
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     private String title;
 
     @Column(nullable = false)
     private Long viewCount;
 
-    @Column(nullable = false, length = 5000)
+    @Column(nullable = false, length = MAX_CONTENT_LENGTH)
     private String content;
 
-    @Column(length = 100)
+    @Column(length = MAX_SUMMARY_LENGTH)
     private String summary;
 
     @Column(nullable = false)
@@ -82,6 +91,9 @@ public class Post extends BaseEntity {
             String thumbnailImage,
             String path
     ) {
+        validateTitleLength(title);
+        validateContentLength(content);
+        validateSummaryLength(summary);
         this.series = series;
         this.user = user;
         this.title = title;
@@ -113,14 +125,17 @@ public class Post extends BaseEntity {
     }
 
     public void updateTitle(String title) {
+        validateTitleLength(title);
         this.title = title;
     }
 
     public void updateContent(String content) {
+        validateContentLength(content);
         this.content = content;
     }
 
     public void updateSummary(String summary) {
+        validateSummaryLength(summary);
         this.summary = summary;
     }
 
@@ -138,6 +153,30 @@ public class Post extends BaseEntity {
 
     public void updateSeries(Series series) {
         this.series = series;
+    }
+
+    private void validateTitleLength(String title) {
+        if (title.length() > MAX_TITLE_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_TITLE_LENGTH_MESSAGE, title.length(), MAX_TITLE_LENGTH));
+        }
+    }
+
+    private void validateContentLength(String content) {
+        if (content.length() > MAX_CONTENT_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_CONTENT_LENGTH_MESSAGE, content.length(), MAX_CONTENT_LENGTH));
+        }
+    }
+
+    private void validateSummaryLength(String summary) {
+        if (summary.length() > MAX_SUMMARY_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_SUMMARY_LENGTH_MESSAGE, summary.length(), MAX_SUMMARY_LENGTH));
+        }
     }
 
 }

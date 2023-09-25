@@ -1,6 +1,8 @@
 package dev.backlog.user.domain;
 
 import dev.backlog.auth.domain.oauth.OAuthProvider;
+import dev.backlog.common.entity.BaseEntity;
+import dev.backlog.common.exception.DataLengthExceededException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -19,12 +21,22 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static dev.backlog.user.exception.UserErrorCode.INVALID_DATA_LENGTH;
+
 @Entity
 @Getter
 @Where(clause = "is_deleted = false")
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
+
+    private static final String INVALID_NICKNAME_LENGTH_MESSAGE = "입력된 닉네임의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+    private static final String INVALID_INTRODUCTION_LENGTH_MESSAGE = "입력된 소개의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+    private static final String INVALID_BLOG_TITLE_LENGTH_MESSAGE = "입력된 제목의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+
+    private static final int MAX_NICKNAME_LENGTH = 20;
+    private static final int MAX_INTRODUCTION_LENGTH = 100;
+    private static final int MAX_BLOG_TITLE_LENGTH = 20;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +49,7 @@ public class User {
     @Column(nullable = false)
     private String oauthProviderId;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = MAX_NICKNAME_LENGTH)
     private String nickname;
 
     @Column(nullable = false)
@@ -47,10 +59,10 @@ public class User {
     @Column(nullable = false)
     private String profileImage;
 
-    @Column(length = 100)
+    @Column(length = MAX_INTRODUCTION_LENGTH)
     private String introduction;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = MAX_BLOG_TITLE_LENGTH)
     private String blogTitle;
 
     @Column(nullable = false)
@@ -69,6 +81,9 @@ public class User {
             String introduction,
             String blogTitle
     ) {
+        validateNicknameLength(nickname);
+        validateIntroductionLength(introduction);
+        validateBlogTitleLength(blogTitle);
         this.oauthProvider = oauthProvider;
         this.oauthProviderId = oauthProviderId;
         this.nickname = nickname;
@@ -92,8 +107,9 @@ public class User {
         return Objects.hash(id);
     }
 
-    public void updateNickName(String nickName) {
-        this.nickname = nickName;
+    public void updateNickName(String nickname) {
+        validateNicknameLength(nickname);
+        this.nickname = nickname;
     }
 
     public void updateEmail(String email) {
@@ -105,10 +121,12 @@ public class User {
     }
 
     public void updateIntroduction(String introduction) {
+        validateIntroductionLength(introduction);
         this.introduction = introduction;
     }
 
     public void updateBlogTitle(String blogTitle) {
+        validateBlogTitleLength(blogTitle);
         this.blogTitle = blogTitle;
     }
 
@@ -120,6 +138,33 @@ public class User {
     public void unmarkUserAsDeleted() {
         this.isDeleted = false;
         this.deletedDate = LocalDate.of(9999, 12, 31);
+    }
+
+    private void validateNicknameLength(String nickname) {
+        if (nickname.length() > MAX_NICKNAME_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_NICKNAME_LENGTH_MESSAGE, nickname.length(), MAX_NICKNAME_LENGTH)
+            );
+        }
+    }
+
+    private void validateIntroductionLength(String introduction) {
+        if (introduction.length() > MAX_INTRODUCTION_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_INTRODUCTION_LENGTH_MESSAGE, introduction.length(), MAX_INTRODUCTION_LENGTH)
+            );
+        }
+    }
+
+    private void validateBlogTitleLength(String blogTitle) {
+        if (blogTitle.length() > MAX_BLOG_TITLE_LENGTH) {
+            throw new DataLengthExceededException(
+                    INVALID_DATA_LENGTH,
+                    String.format(INVALID_BLOG_TITLE_LENGTH_MESSAGE, blogTitle.length(), MAX_BLOG_TITLE_LENGTH)
+            );
+        }
     }
 
 }

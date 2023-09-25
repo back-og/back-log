@@ -1,6 +1,7 @@
-package dev.backlog.common;
+package dev.backlog.common.config;
 
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
+import dev.backlog.common.annotation.Login;
 import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(AuthInfo.class);
+        return parameter.getParameterType().equals(AuthInfo.class) && parameter.hasParameterAnnotation(Login.class);
     }
 
     @Override
@@ -28,13 +29,23 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String authHeader = httpServletRequest.getHeader("Authorization");
 
+        Login login = parameter.getParameterAnnotation(Login.class);
+
+        if (login.required()) {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                Long userId = jwtTokenProvider.extractUserId(token);
+                return new AuthInfo(userId, token);
+            }
+            throw new IllegalArgumentException("잘못된 권한 헤더입니다.");
+        }
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             Long userId = jwtTokenProvider.extractUserId(token);
-
             return new AuthInfo(userId, token);
         }
-        throw new IllegalArgumentException("잘못된 권한 헤더입니다.");
+        return null;
     }
 
 }
