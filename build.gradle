@@ -146,19 +146,20 @@ tasks.named('test') {
 
 swaggerSources {
     sample {
-        setInputFile(file("${project.buildDir}/resources/main/static/backlog.yaml"))
+        setInputFile(file("${project.buildDir}/api-spec/backlog.yaml"))
     }
 }
 
 openapi3 {
-    server = "https://bbacklog.site"
+    servers = [
+            { url = "http://localhost:8080" },
+            { url = "https://bbacklog.site"}
+    ]
     title = "API 문서"
     description = "RestDocsWithSwagger Docs"
     version = "0.0.1"
     outputFileNamePrefix = "backlog"
     format = "yaml"
-
-    outputDirectory = 'build/resources/main/static'
 }
 
 tasks.withType(GenerateSwaggerUI) {
@@ -180,7 +181,7 @@ tasks.withType(GenerateSwaggerUI) {
     doLast {
         delete 'src/main/resources/static/backlog.yaml'
         copy {
-            from "build/resources/main/static/backlog.yaml"
+            from "build/api-spec/backlog.yaml"
             into "src/main/resources/static/"
         }
     }
@@ -189,7 +190,7 @@ tasks.withType(GenerateSwaggerUI) {
 bootJar {
     dependsOn generateSwaggerUISample
     from("${generateSwaggerUISample.outputDir}") {
-        into 'static/'
+        into 'static/docs'
     }
 }
 
