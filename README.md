@@ -23,14 +23,13 @@
 
 ## 👨🏻‍💻 사용자 요청 흐름도
 
-<img src="https://github.com/back-og/back-log/assets/66556716/29ed3d26-dc90-46e8-b2fa-a322a922979e"
- width="700" height="250">
+<img src="https://github.com/back-og/back-log/assets/66556716/298a6471-f9e4-49d8-bdd4-06169b9fcdd9" width="700" height="250">
 
 <br><br>
 
 ## ⛓ CI/CD
 
-<img src="https://github.com/back-og/back-log/assets/66556716/d0d4df7e-7cc4-4d64-a6b7-a7ef1e9b600b" width="700" height="400">  
+<img src="https://github.com/back-og/back-log/assets/66556716/2c18cbc0-0faa-46cc-8c4e-e47c6c20d216" width="700" height="400">  
 
 <br> <br>
 
@@ -38,25 +37,24 @@
 
 ### 🏷 서버
 
-<img src="https://github.com/back-og/back-log/assets/66556716/951cadef-112f-42aa-840e-370306c84222" width="700" height="330">
+<img src="https://github.com/back-og/back-log/assets/66556716/d462ce19-0dd2-4899-af3a-56fa4f4467d1" width="700" height="330">
 
 ### 🏷 인프라
-
-<img src="https://github.com/back-og/back-log/assets/66556716/6531c015-e9bb-4921-8ffe-600ca45a54aa" width="700" height="130">
-
+<img src="https://github.com/back-og/back-log/assets/66556716/aad8ca3f-9ab1-4827-94ae-ca1ecd9f72a2" width="700" height="130">
 
 <br> <br>
 
 ## 📊 테스트 커버리지
 
-<img src="https://github.com/back-og/back-log/assets/66556716/820396cf-abbd-4b9c-9862-b703e8146576" width="700" height="400">  
+<img src="https://github.com/back-og/back-log/assets/66556716/57e8dfa9-a934-428a-8437-86bf71e4534d" width="700" height="600">  
 
 <br> <br>   
 
 ## 📋 API 문서화
+<img src="https://github.com/back-og/back-log/assets/66556716/fb2d55ff-d152-4248-a5e7-1956a5368de1" width="700" height="600">  
+<img src="https://github.com/back-og/back-log/assets/66556716/90063c0e-236f-4897-ac57-c369ee55e927" width="700" height="600">  
 
-<img src="https://github.com/back-og/back-log/assets/66556716/0ed102e5-33ed-4846-aaf1-9982caeeb8ac" width="700" height="600">
-<img src="https://github.com/back-og/back-log/assets/66556716/38053d8e-0da2-4555-879f-0c51461e9593" width="700" height="600">
+
 
 <br> <br>
 
