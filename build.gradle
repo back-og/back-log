@@ -177,14 +177,20 @@ tasks.withType(GenerateSwaggerUI) {
 
         swaggerUIFile.append securitySchemesContent
     }
+}
+
+
+task copySwaggerUI(type: Copy) {
+    from "${project.buildDir}/api-spec/backlog.yaml"
+    into "src/main/resources/static/"
 
     doLast {
-        delete 'src/main/resources/static/backlog.yaml'
-        copy {
-            from "build/api-spec/backlog.yaml"
-            into "src/main/resources/static/"
-        }
+        println "Swagger UI file copied to src/main/resources/static/"
     }
+}
+
+tasks.withType(GenerateSwaggerUI).all {
+    finalizedBy copySwaggerUI
 }
 
 bootJar {
