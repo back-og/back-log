@@ -2,6 +2,7 @@ package dev.backlog.series.domain;
 
 import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.common.exception.DataLengthExceededException;
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,8 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static dev.backlog.auth.exception.AuthErrorCode.AUTHORIZATION_FAILED;
 import static dev.backlog.series.exception.SeriesErrorCode.INVALID_DATA_LENGTH;
-
 
 @Entity
 @Getter
@@ -27,7 +28,7 @@ import static dev.backlog.series.exception.SeriesErrorCode.INVALID_DATA_LENGTH;
 public class Series extends BaseEntity {
 
     private static final String INVALID_NAME_LENGTH_MESSAGE = "입력된 이름의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
-
+    private static final String AUTHORIZATION_FAILED_MESSAGE = "유저(%s)에 대한 접근 권한이 없습니다.";
     private static final int MAX_NAME_LENGTH = 20;
 
     @Id
@@ -50,7 +51,10 @@ public class Series extends BaseEntity {
 
     public void verifySeriesOwner(User user) {
         if (!this.user.equals(user)) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new InvalidAuthException(
+                    AUTHORIZATION_FAILED,
+                    String.format(AUTHORIZATION_FAILED_MESSAGE, user.getId())
+            );
         }
     }
 
