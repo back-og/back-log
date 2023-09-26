@@ -1,3 +1,5 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+
 buildscript {
     ext {
         restdocsApiSpecVersion = '0.18.3' // restdocsApiSpecVersion 버전 변수 설정
@@ -126,6 +128,7 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
 
     /* QueryDsl */
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -141,30 +144,54 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-openapi3 {
-    server = "https://bbacklog.site"
-    title = "backlog API 문서"
-    description = "Spring REST Docs with SwaggerUI."
-    version = "0.0.1"
-    outputFileNamePrefix = 'backlog'
-    format = 'json'
-
-    outputDirectory = 'build/resources/main/static'
+swaggerSources {
+    sample {
+        setInputFile(file("${project.buildDir}/api-spec/backlog.yaml"))
+    }
 }
 
-task copyDocs {
-    dependsOn(':openapi3')
+openapi3 {
+    servers = [
+            { url = "http://localhost:8080" },
+            { url = "https://bbacklog.site" }
+    ]
+    title = "API 문서"
+    description = "RestDocsWithSwagger Docs"
+    version = "0.0.1"
+    outputFileNamePrefix = "backlog"
+    format = "yaml"
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/backlog.yaml")
+
+        def securitySchemesContent =  "  securitySchemes:\n" +  \
+                                      "    APIKey:\n" +  \
+                                      "      type: apiKey\n" +  \
+                                      "      name: Authorization\n" +  \
+                                      "      in: header\n" + \
+                                      "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
+
+        swaggerUIFile.append securitySchemesContent
+    }
+
     doLast {
-        delete 'src/main/resources/static/backlog.json'
+        delete 'src/main/resources/static/backlog.yaml'
         copy {
-            from "build/resources/main/static/backlog.json"
+            from "build/api-spec/backlog.yaml"
             into "src/main/resources/static/"
         }
     }
 }
 
 bootJar {
-    dependsOn(':copyDocs')
+    dependsOn generateSwaggerUISample
+    from("${generateSwaggerUISample.outputDir}") {
+        into 'static/docs'
+    }
 }
 
 jar {
