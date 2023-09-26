@@ -144,6 +144,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+swaggerSources {
+    sample {
+        setInputFile(file("${project.buildDir}/resources/main/static/backlog.yaml"))
+    }
+}
+
 openapi3 {
     server = "https://bbacklog.site"
     title = "API 문서"
@@ -156,23 +162,21 @@ openapi3 {
 }
 
 tasks.withType(GenerateSwaggerUI) {
-    dependsOn ':openapi3'
+    dependsOn 'openapi3'
     doFirst {
         def swaggerUIFile = file("${openapi3.outputDirectory}/backlog.yaml")
 
-        def securitySchemesContent = "  securitySchemes:\n" +
-                "    APIKey:\n" +
-                "      type: apiKey\n" +
-                "      name: Authorization\n" +
-                "      in: header\n" +
-                "security:\n" +
+        def securitySchemesContent = "  securitySchemes:\n" +   \
+                                       "    APIKey:\n" +   \
+                                       "      type: apiKey\n" +   \
+                                       "      name: Authorization\n" +   \
+                                       "      in: header\n" +  \
+                                       "security:\n" +
                 "  - APIKey: []  # Apply the security scheme here"
 
         swaggerUIFile.append securitySchemesContent
     }
-}
 
-task copyDocs {
     doLast {
         delete 'src/main/resources/static/backlog.yaml'
         copy {
@@ -183,8 +187,10 @@ task copyDocs {
 }
 
 bootJar {
-    dependsOn tasks.withType(GenerateSwaggerUI)
-    dependsOn(':copyDocs')
+    dependsOn generateSwaggerUISample
+    from("${generateSwaggerUISample.outputDir}") {
+        into 'static/'
+    }
 }
 
 jar {
