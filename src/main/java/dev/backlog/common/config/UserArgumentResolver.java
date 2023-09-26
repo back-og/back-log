@@ -2,6 +2,7 @@ package dev.backlog.common.config;
 
 import dev.backlog.auth.domain.oauth.JwtTokenProvider;
 import dev.backlog.common.annotation.Login;
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.user.dto.AuthInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,13 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import static dev.backlog.auth.exception.AuthErrorCode.AUTHENTICATION_FAILED;
+
 @Component
 @RequiredArgsConstructor
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final String AUTHENTICATION_FAILED_MESSAGE = "(%s)는 잘못된 권한 헤더입니다.";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -37,7 +42,10 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
                 Long userId = jwtTokenProvider.extractUserId(token);
                 return new AuthInfo(userId, token);
             }
-            throw new IllegalArgumentException("잘못된 권한 헤더입니다.");
+            throw new InvalidAuthException(
+                    AUTHENTICATION_FAILED,
+                    String.format(AUTHENTICATION_FAILED_MESSAGE, authHeader)
+            );
         }
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

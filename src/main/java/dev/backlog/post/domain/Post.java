@@ -2,6 +2,7 @@ package dev.backlog.post.domain;
 
 import dev.backlog.common.entity.BaseEntity;
 import dev.backlog.common.exception.DataLengthExceededException;
+import dev.backlog.common.exception.InvalidAuthException;
 import dev.backlog.like.domain.PostLike;
 import dev.backlog.series.domain.Series;
 import dev.backlog.user.domain.User;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.backlog.auth.exception.AuthErrorCode.AUTHORIZATION_FAILED;
 import static dev.backlog.post.exception.PostErrorCode.INVALID_DATA_LENGTH;
 
 @Entity
@@ -35,6 +37,7 @@ public class Post extends BaseEntity {
     private static final String INVALID_TITLE_LENGTH_MESSAGE = "입력된 제목의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
     private static final String INVALID_CONTENT_LENGTH_MESSAGE = "입력된 본문의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
     private static final String INVALID_SUMMARY_LENGTH_MESSAGE = "입력된 요약의 길이(%s)가 최대 길이(%s)를 넘겼습니다.";
+    private static final String AUTHORIZATION_FAILED_MESSAGE = "유저(%s)에 대한 접근 권한이 없습니다.";
 
     private static final int MAX_CONTENT_LENGTH = 5000;
     private static final int MAX_SUMMARY_LENGTH = 100;
@@ -107,7 +110,10 @@ public class Post extends BaseEntity {
 
     public void verifyPostOwner(User user) {
         if (!this.user.equals(user)) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new InvalidAuthException(
+                    AUTHORIZATION_FAILED,
+                    String.format(AUTHORIZATION_FAILED_MESSAGE, user.getId())
+            );
         }
     }
 
