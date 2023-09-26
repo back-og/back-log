@@ -146,7 +146,7 @@ tasks.named('test') {
 
 swaggerSources {
     sample {
-        setInputFile(file("${project.buildDir}/api-spec/backlog.yaml"))
+        setInputFile(file("${project.buildDir}/resources/main/static/backlog.yaml"))
     }
 }
 
@@ -160,6 +160,8 @@ openapi3 {
     version = "0.0.1"
     outputFileNamePrefix = "backlog"
     format = "yaml"
+
+    outputDirectory = 'build/resources/main/static'
 }
 
 tasks.withType(GenerateSwaggerUI) {
@@ -181,7 +183,7 @@ tasks.withType(GenerateSwaggerUI) {
     doLast {
         delete 'src/main/resources/static/backlog.yaml'
         copy {
-            from "build/api-spec/backlog.yaml"
+            from "build/resources/main/static/backlog.yaml"
             into "src/main/resources/static/"
         }
     }
