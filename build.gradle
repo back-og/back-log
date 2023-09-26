@@ -151,7 +151,7 @@ swaggerSources {
 }
 
 openapi3 {
-    servers = "https://bbacklog.site"
+    server = "https://bbacklog.site"
     title = "API 문서"
     description = "RestDocsWithSwagger Docs"
     version = "0.0.1"
