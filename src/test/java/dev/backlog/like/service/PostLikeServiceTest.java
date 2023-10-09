@@ -29,7 +29,7 @@ class PostLikeServiceTest {
             executorService.submit(() -> {
                 try {
                     Long userId = userIdCounter.getAndIncrement();
-                    postLikeService.switchLike(1L, new AuthInfo(userId, "토큰"));
+                    postLikeService.toggleLikeStatus(1L, new AuthInfo(userId, "토큰"));
                 } finally {
                     latch.countDown();
                 }

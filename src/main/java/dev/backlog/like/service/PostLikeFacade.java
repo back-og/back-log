@@ -1,5 +1,6 @@
 package dev.backlog.like.service;
 
+import dev.backlog.like.dto.LikeStatusResponse;
 import dev.backlog.user.dto.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +13,13 @@ public class PostLikeFacade {
 
     private final PostLikeService postLikeService;
 
-    public void switchLike(Long postId, AuthInfo authInfo) throws InterruptedException {
+    public LikeStatusResponse switchLike(Long postId, AuthInfo authInfo) {
         while (true) {
             try {
-                postLikeService.switchLike(postId, authInfo);
-                break;
+                return postLikeService.toggleLikeStatus(postId, authInfo);
             } catch (Exception e) {
-                log.info("예외 발생", e);
-                Thread.sleep(50);
+                e.printStackTrace();
             }
         }
-
     }
 }

@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @Transactional
@@ -25,23 +23,33 @@ public class PostLikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public LikeStatusResponse switchLike(Long postId, AuthInfo authInfo) {
-        log.info("switchLikeService");
+    @Transactional
+    public LikeStatusResponse toggleLikeStatus(Long postId, AuthInfo authInfo) {
         User user = userRepository.getById(authInfo.userId());
         Post post = postRepository.getById(postId);
-        Optional<PostLike> postLike = postLikeRepository.findByUserAndPostId(user, postId);
 
-        switchLike(postLike, post, user);
-        boolean isLiked = postLike.isEmpty();
+        PostLike postLike = postLikeRepository.findByUserAndPostId(user, postId).orElse(null);
+
+        updateLikeStatus(postLike, post, user);
+
+        boolean isLiked = postLike == null;
         return new LikeStatusResponse(post.getLikeCount(), isLiked);
     }
 
-    private void switchLike(Optional<PostLike> postLike, Post post, User user) {
-        if (postLike.isPresent()) {
-            postLikeRepository.delete(postLike.get());
-            post.decreaseLikeCount();
-            return;
+    private void updateLikeStatus(PostLike postLike, Post post, User user) {
+        if (postLike != null) {
+            removeLike(postLike, post);
+        } else {
+            addLike(post, user);
         }
+    }
+
+    private void removeLike(PostLike postLike, Post post) {
+        postLikeRepository.delete(postLike);
+        post.decreaseLikeCount();
+    }
+
+    private void addLike(Post post, User user) {
         postLikeRepository.save(new PostLike(user, post));
         post.increaseLikeCount();
     }

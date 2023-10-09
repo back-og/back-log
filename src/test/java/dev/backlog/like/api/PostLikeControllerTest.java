@@ -40,7 +40,7 @@ class PostLikeControllerTest extends ControllerTestConfig {
         AuthInfo authInfo = new AuthInfo(userId, token);
         LikeStatusResponse response = new LikeStatusResponse(1, true);
         when(jwtTokenProvider.extractUserId(token)).thenReturn(userId);
-        when(postLikeService.switchLike(postId, authInfo)).thenReturn(response);
+        when(postLikeService.toggleLikeStatus(postId, authInfo)).thenReturn(response);
 
         mockMvc.perform(put("/api/posts/{postId}/like", postId)
                         .contentType(MediaType.APPLICATION_JSON)
